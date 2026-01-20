@@ -1,0 +1,725 @@
+---
+title: "Causal Inference"
+author: "Ozan Aksoy"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Why Causal Inference?"
+date: today
+date-format: long
+format:
+  revealjs:
+    theme: simple
+    width: 1600
+    height: 1000
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
+---
+
+# Potential outcomes, counterfactuals and A Christmas Carol
+
+![](img/Scrooge.jpg){fig-align="center" width=100%}
+
+# The potential outcome framework
+
+::: columns 
+::: {.column width="50%"}
+|Unit |	Control |	Treatm. | Effect      |   	
+|-----|-------- |-------- |------------:|
+|$i$  | $Y_i^C$ | $Y_i^T$ | $\delta_i$  |  
+|1    |  8	    | 9       |	 1          |
+|2    |  5      | 3	      | -2          |
+|3    |  6	    | 4	      | -2          |
+|4    |  6	    | 2	      | -4          |
+|5    | 15      |	18      |	 3          |
+|6    | 13      |	16      |	 3          |
+|7    |  8	    | 9	      |  1          |
+|8    |  2	    | 0	      | -2          |
+|9    |  4	    | 3	      | -1          |
+|10   |	 2	    | 0	      | -2          |
+|Mean|	 6.9    |	6.4     | -0.5        | 
+:::
+
+::: {.column width="50%"}
+
+"The science table"
+
+$D = T$:  Treatment
+
+$D = C$:  Control 
+
+$Y = Y^T$ if $D = T$ 
+
+$Y = Y^C$ if $D = C$ 
+
+
+**Average causal effect:**
+
+$\bar{\delta} = 6.4 - 6.9 = -0.5$
+
+:::
+:::
+
+# Potential vs. observed outcomes
+
+::: columns 
+::: {.column width="60%"}
+|Unit | Status   |	PO Cont |	PO Treat| Observed    |   	
+|-----|----------| -------- |-------- |------------:|
+|$i$  | $D$      |  $Y_i^C$ | $Y_i^T$ | $Y_{obs}$   |  
+|1    | T        |  ?       | 9       |	 9          |
+|2    | C        |  5       | ?	      |  5          |
+|3    | C        |  6	      | ?	      |  6          |
+|4    | C        |  6	      | ?	      |  6          |
+|5    | T        |  ?       |	18      |	 18         |
+|6    | T        |  ?       |	16      |	 16         |
+|7    | T        |  ?	      | 9	      |  9          |
+|8    | C        |  2	      | ?	      |  2          |
+|9    | C        |  4	      | ?	      |  4          |
+|10   | C        |  2	      | ?	      |  2          |
+|Mean |	         |	4.2     | 13      |             |
+:::
+
+::: {.column width="40%"}
+
+Observed "effect":
+
+$13-4.2=8.8^{**}$!!
+
+
+
+**Wrong conclusions:**
+
+New treatment adds 9 years of life
+
+If all treated average life = 13
+
+Random sample doesn't help.
+
+:::
+:::
+
+# Fundamental problem of causal inference
+
+* For subject $i$, the **causal effect** of the treatment is the difference between
+two outcomes:
+
+* $\delta_{i} = Y_i^T-Y_i^C$ ($Y_i^T$: $i$'s PO in treatment, $Y_i^C$: $i$'s PO in control)
+
+* But only one of the two potential outcomes is realised/observed
+
+* (Unless Christmas spirits help...)
+
+|Group    | $D$      |  $Y_i^T$ | $Y_i^C$ |
+|----------|----------|----------|---------|
+|Treatment | T        |  **Observable**    | *Counterfactual* |
+|Control   | C        |  *Counterfactual*  | **Observable**   |
+|          |          |                    |                  |
+
+# "Naive" estimator for the treatment effect
+
+$\hat{\delta}_{naive} = Avr(Y_i^{obs} | D = T) - Avr(Y_i^{obs} | D = C)$
+
+(Observed difference between treatment and control)
+
+::: columns 
+::: {.column width="60%"}
+|Unit | Status   |	PO Cont |	PO Treat| Observed    |   	
+|-----|----------| -------- |-------- |------------:|
+|$i$  | $D$      |  $Y_i^C$ | $Y_i^T$ | $Y_{obs}$   |  
+|1    | T        |  ?       | 9       |	 9          |
+|2    | C        |  5       | ?	      |  5          |
+|3    | C        |  6	      | ?	      |  6          |
+|4    | C        |  6	      | ?	      |  6          |
+|5    | T        |  ?       |	18      |	 18         |
+|6    | T        |  ?       |	16      |	 16         |
+|7    | T        |  ?	      | 9	      |  9          |
+|8    | C        |  2	      | ?	      |  2          |
+|9    | C        |  4	      | ?	      |  4          |
+|10   | C        |  2	      | ?	      |  2          |
+|Mean |	         |	4.2     | 13      |             |
+:::
+
+::: {.column width="40%"}
+
+* Naive estimator for the example:
+
+$\hat{\delta}_{naive} = \frac{9+18+16+9}{4} - \frac{5+6+6+2+4+2}{6} = 8.8$
+
+* What is wrong?
+
+:::
+:::
+
+
+## ATE, ATT, ATC
+
+- **<span style="color:red;">Individual Causal / Treatment Effect</span>:**  
+  $\delta_i = Y_i^T - Y_i^C$
+
+- **Average Treatment Effect (ATE)** for the entire population:  
+
+  $$
+  \text{ATE}
+  = \text{Average}(\delta)
+  = E\!\left[Y_i^T - Y_i^C\right]
+  = \color{red}{E[Y_i^T] - E[Y_i^C]}
+  $$
+
+- **Average Treatment Effect for the Treated (ATT):**  
+
+  $$
+  \text{ATT}
+  = \text{Average}(\delta \mid D = T)
+  = E(Y_i^T - Y_i^C \mid D = T)
+  = \color{red}{E(Y_i^T \mid D = T) - E(Y_i^C \mid D = T)}
+  $$
+
+- **Average Treatment Effect for the Controls (ATC) or sometimes ATUT:**  
+
+  $$
+  \text{ATC}
+  = \text{Average}(\delta \mid D = C)
+  = E(Y_i^T - Y_i^C \mid D = C)
+  = \color{red}{E(Y_i^T \mid D = C) - E(Y_i^C \mid D = C)}
+  $$
+
+
+## ATE, ATT, ATC: numerical example
+
+::: columns
+::: {.column width="50%"}
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th colspan="3"><span style="color:red;">Potential outcomes</span></th>
+</tr>
+<tr>
+<th>Unit</th>
+<th>D</th>
+<th>Control</th>
+<th>Treatm.</th>
+<th>Effect</th>
+</tr>
+<tr>
+<th><em>i</em></th>
+<th></th>
+<th>$Y_i^C$</th>
+<th>$Y_i^T$</th>
+<th>$\delta_i$</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>T</td><td>8</td><td>9</td><td>1</td></tr>
+<tr><td>2</td><td>C</td><td>5</td><td>3</td><td>-2</td></tr>
+<tr><td>3</td><td>C</td><td>6</td><td>4</td><td>-2</td></tr>
+<tr><td>4</td><td>C</td><td>6</td><td>2</td><td>-4</td></tr>
+<tr><td>5</td><td>T</td><td>15</td><td>18</td><td>3</td></tr>
+<tr><td>6</td><td>T</td><td>13</td><td>16</td><td>3</td></tr>
+<tr><td>7</td><td>T</td><td>8</td><td>9</td><td>1</td></tr>
+<tr><td>8</td><td>C</td><td>2</td><td>0</td><td>-2</td></tr>
+<tr><td>9</td><td>C</td><td>4</td><td>3</td><td>-1</td></tr>
+<tr><td>10</td><td>C</td><td>2</td><td>0</td><td>-2</td></tr>
+</tbody>
+</table>
+
+:::
+
+::: {.column width="50%"}
+
+- **ATE** = ?
+- **ATT** = ?
+- **ATC** = ?
+
+:::
+:::
+
+
+## ATE, ATT, ATC: numerical example
+
+::: columns
+::: {.column width="50%"}
+
+|Unit |Status |	Control |	Treatm. | Effect      |   	
+|-----|------ |-------- |-------- |------------:|
+|$i$  | $D$   | $Y_i^C$ | $Y_i^T$ | $\delta_i$  |  
+|1    |  T    |  8	    | 9       |	 1          |
+|2    |  C    |  5      | 3	      | -2          |
+|3    |  C    |   6	    | 4	      | -2          |
+|4    |  C    |   6	    | 2	      | -4          |
+|5    |  T    |  15     |	18      |	 3          |
+|6    |  T    |  13     |	16      |	 3          |
+|7    |  T    |   8	    | 9	      |  1          |
+|8    |  C    |   2	    | 0	      | -2          |
+|9    |  C    |   4	    | 3	      | -1          |
+|10   |  C    | 	 2    | 0	      | -2          |
+|Mean |       | 	 6.9  |	6.4     | -0.5        | 
+
+:::
+
+::: {.column width="50%"}
+
+- **ATE** $= E[Y_i^T] - E[Y_i^C] = 6.4 - 6.9 = -0.5$
+- **ATT** $= \text{Avrg}(\delta \mid D = T) = \frac{1 + 3 + 3 + 1}{4} = 2$
+- **ATC** $= \text{Avrg}(\delta \mid D = C) = \frac{-2 - 2 - 4 - 2 - 1 - 2}{6} = -2.17$
+
+- <span style="color:red;">Beware:</span> these are not
+readily obtainable in
+observational data 
+:::
+:::
+
+
+# Naive estimator versus the estimand
+
+Estimand: Average Treatment Effect (ATE)
+
+$$
+\begin{align}
+\widehat{\delta}_{\text{naive}}
+&= \underbrace{\text{Avrg}(\delta)}_{\text{ATE}} \\
+&\quad + \underbrace{\text{Avrg}(Y_i^C \mid D = T) - \text{Avrg}(Y_i^C \mid D = C)}_{\text{Selection (baseline) bias}} \\
+&\quad + (1 - \pi) \times 
+\underbrace{\left[
+\text{Avrg}(\delta \mid D = T) - \text{Avrg}(\delta \mid D = C)
+\right]}_{\text{ATT - ATC (differential treatment effect) bias}
+}
+\end{align}
+$$
+($\pi =$ proportion of sample in the treatment group. The more people are
+treated, the smaller will be the diﬀerential treatment eﬀect bias because the
+’naive’ estimate would be already more based on those who are treated)
+
+
+## Naive estimate vs. ATE: Selection Baseline Bias
+
+::: columns
+::: {.column width="50%"}
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th colspan="3"><span style="color:red;">Potential outcomes</span></th>
+</tr>
+<tr>
+<th>Unit</th>
+<th>D</th>
+<th>Control</th>
+<th>Treatm.</th>
+<th>Effect</th>
+</tr>
+<tr>
+<th><em>i</em></th>
+<th></th>
+<th>$Y_i^C$</th>
+<th>$Y_i^T$</th>
+<th>$\delta_i$</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>T</td><td><span style="color:red;">8</span></td><td>9</td><td>1</td></tr>
+<tr><td>2</td><td>C</td><td>5</td><td>3</td><td>-2</td></tr>
+<tr><td>3</td><td>C</td><td>6</td><td>4</td><td>-2</td></tr>
+<tr><td>4</td><td>C</td><td>6</td><td>2</td><td>-4</td></tr>
+<tr><td>5</td><td>T</td><td><span style="color:red;">15</span></td><td>18</td><td>3</td></tr>
+<tr><td>6</td><td>T</td><td><span style="color:red;">13</span></td><td>16</td><td>3</td></tr>
+<tr><td>7</td><td>T</td><td><span style="color:red;">8</span></td><td>9</td><td>1</td></tr>
+<tr><td>8</td><td>C</td><td>2</td><td>0</td><td>-2</td></tr>
+<tr><td>9</td><td>C</td><td>4</td><td>3</td><td>-1</td></tr>
+<tr><td>10</td><td>C</td><td>2</td><td>0</td><td>-2</td></tr>
+<tr><td><strong>Average</strong></td><td></td><td>6.9</td><td>6.4</td><td>-0.5</td></tr>
+</tbody>
+</table>
+
+:::
+
+::: {.column width="50%"}
+
+- **Selection Baseline Bias**: even in the absence of treatment, those in the treatment group are different from those in the control group
+- Even without the drug, those in the treatment group would have lived longer
+- $\frac{44}{4} - \frac{25}{6} = 11 - 4.2 = 6.8$
+
+:::
+:::
+
+## Naive estim. vs. ATE: Differential Treatm. Effect
+
+::: columns
+::: {.column width="50%"}
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th colspan="3"><span style="color:red;">Potential outcomes</span></th>
+</tr>
+<tr>
+<th>Unit</th>
+<th>D</th>
+<th>Control</th>
+<th>Treatm.</th>
+<th>Effect</th>
+</tr>
+<tr>
+<th><em>i</em></th>
+<th></th>
+<th>$Y_i^C$</th>
+<th>$Y_i^T$</th>
+<th>$\delta_i$</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>T</td><td>8</td><td>9</td><td><span style="color:red;">1</span></td></tr>
+<tr><td>2</td><td>C</td><td>5</td><td>3</td><td><span style="color:green;">-2</span></td></tr>
+<tr><td>3</td><td>C</td><td>6</td><td>4</td><td><span style="color:green;">-2</span></td></tr>
+<tr><td>4</td><td>C</td><td>6</td><td>2</td><td><span style="color:green;">-4</span></td></tr>
+<tr><td>5</td><td>T</td><td>15</td><td>18</td><td><span style="color:red;">3</span></td></tr>
+<tr><td>6</td><td>T</td><td>13</td><td>16</td><td><span style="color:red;">3</span></td></tr>
+<tr><td>7</td><td>T</td><td>8</td><td>9</td><td><span style="color:red;">1</span></td></tr>
+<tr><td>8</td><td>C</td><td>2</td><td>0</td><td><span style="color:green;">-2</span></td></tr>
+<tr><td>9</td><td>C</td><td>4</td><td>3</td><td><span style="color:green;">-1</span></td></tr>
+<tr><td>10</td><td>C</td><td>2</td><td>0</td><td><span style="color:green;">-2</span></td></tr>
+<tr><td><strong>Average</strong></td><td></td><td>6.9</td><td>6.4</td><td>-0.5</td></tr>
+</tbody>
+</table>
+
+:::
+
+::: {.column width="50%"}
+
+- **Differential Treatment Effect:** difference in the treatment effect between those in the treatment and those in the control group  
+- The drug has a different effect on the treatment and the control group  
+- $0.6 \times (\text{ATT} - \text{ATC}) = 0.6 \times (2 + 2.17) = 2.5$
+
+:::
+:::
+
+## Naive estimator vs. ATE: numerical example
+
+$$
+\begin{align}
+8.8
+&= -0.5 
+&& (\text{ATE}) \\
+&\quad + \frac{44}{4} - \frac{25}{6} 
+&& (= 6.8:\ \text{selection (baseline) bias}) \\
+&\quad + 0.6 \cdot (2 + 2.17)
+&& (= 2.5:\ \text{ATT--ATC bias})
+\end{align}
+$$
+
+
+## Randomisation as the solution
+
+- **<span style="color:red;">Conditional independence</span>**: \(D\) is given randomly to individuals
+- In this case, selection bias $= 0$, $ATT - ATC = 0$, thus:
+- $\widehat{\delta}_{\text{naive}} = \underbrace{\text{Avrg}(\delta)}_{\text{ATE}}$
+- So randomisation solves various biases and the fundamental problem of causal inference (on average)
+
+. . .
+
+Random assignment has been called the **gold standard** for causal inference: it guarantees the necessary assumptions for causal inference hold by design.
+
+. . .
+
+::: callout-note
+What is the difference between random *assignment* and random *sampling*???
+:::
+
+
+- BUT: we cannot do experiments all the time?
+- What if we need to work with observational data?
+
+## Key assumtion when randomising: SUTVA
+
+When relying on the Rubin/Neyman Causal Model with potential outcomes, we rely on SUTVA:
+
+- SUTVA: Stable Unit Stable Unit Treatment Value Assumption.
+
+- An observation's outcome is not affected by other observations' assignments.
+  * If your neighbor is treated or not, that cannot affect your potential outcomes (e.g. make your $\delta_i$ larger).
+  * This means that there cannot be any spill-over effects or general equilibrium effects.
+
+- Example: Immunization randomised control trial may violate SUTVA because immunization also has a group effect.
+
+## Forms of validity
+
+<br>
+
+Bias in the naive **estimator** when trying to reach our **estimand** (ATE): baseline differences (under the control condition), and differential response to the treatment (under the exposure condition).
+
+. . .
+
+When exposure is randomised properly, we know that who ends up in each treatment arm has nothing to do with their potential outcomes!
+
+. . .
+
+This is why we generally say that randomised experiments are great for [internal validity]{style="color:green;"}: we can rule out systematic bias in our study sample!
+
+This does not imply that our results are [externally valid]{style="color:red;"}, i.e., that they apply to people outside our study! We need further assumptions to move from one to another.
+
+## Types of experiments
+
+-   [**Laboratory experiments**]{.fragment .highlight-blue}: Usually conducted with a small sample (of undergraduate psychology students), many times involving games in a computer. Helpful for cognitive/behavioral questions.
+
+-   [**Field experiments**]{.fragment .highlight-blue}: In order to obtain more *externally valid* results, experiments conducted in the field (i.e., under real-world conditions) are the way to go. Definitely more expensive though. Audit studies are a particular type of field experiment.
+
+-   [**Survey experiments**]{.fragment .highlight-blue}: One can randomize treatment conditions *in a survey* to evaluate how participants change their responses based on certain stimulus. Vignettes and list experiments are examples of this approach.
+
+-   [**(Bonus) Quasi-experiments**]{.fragment .highlight-blue}: Researchers usually call quasi-experiments to real-world situations that offer as-if random variation in a treatment of interest. For example, earthquakes, change in laws, date of birth, etc.
+
+## How to randomise?
+
+<br>
+
+How much dispersion (i.e. uncertainty) is in our distribution will be affected by [**the level**]{style="color:blue;"} at which randomization (i.e. treatment) happens: at the individual or cluster/group level?
+
+::: callout-note
+The more the aggregation, the more uncertainty. So why would we want to randomize at the cluster level?
+:::
+
+Conditional randomization (i.e., blocking) increases efficiency, when we have variables that are highly predictive of the outcome of interest
+
+::: callout-note
+One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control
+:::
+
+## Blocking
+
+<br>
+
+Similar to the intuition for stratified random *sampling* in the context of surveys, blocking may increase precision in experimental design
+
+Precision gains are similar to increasing the sample size
+
+* Collect background information on covariates relevant *to the outcome*
+
+* Pre-stratify your sample, then randomise within blocks
+
+  + This ensures that, with respect to the blocked factors, both treatment arms are identical
+  
+  + It is essentially the same as running a separate experiment in each strata
+  
+  
+## Blocking 
+
+<br>
+
+For estimation, obtain block-specific effects, and average according to population shares. With $J$ strata:
+
+$$
+\tau_{\text{block}} = \sum_{j=1}^{J} \frac{N_j}{N} \tau_j
+$$
+
+
+## Short activity (3 mins) {background-color="#692044"}
+
+It may be hard to imagine an experiment that would be relevant for the type of questions we care about.
+
+Some even say that experiments tend to emphasize "small" versus "big" questions, promoting incremental/testable policies.
+
+However, there are examples of experiments addressing **big** and difficult questions. **Can you think of any example or a proposal?** ( [hint, see https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf](https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf) )
+
+
+------------------------------------------------------------------------
+
+
+## What is your estimand?
+
+Researchers tend to formalize their effect of interest as **regression coefficients** (i.e., their hypotheses are formulated within a statistical model)
+
+[[**This is too restrictive!**]()]{.fragment .fade-in}
+
+. . . 
+
+Potential outcomes offer a way to formalize what we mean by a *causal effect* outside any statistical model. Graphical models provides a way to formalize our *assumptions* without parametric restrictions.
+
+. . .
+
+This allows us to clearly separate *what do we want* (a certain **estimand**), what needs to be true so we get what we want (**identifying assumptions**), the statistical machinery to transform data into an answer for our question (an **estimator**), and the particular answer we get (our empirical **estimate**).
+
+:::{.aside}
+Lundberg, Johnson, and Stewart (2021) discuss this point in great detail.
+:::
+
+## What is your estimand?
+
+
+![](img/Lundberg_estimand.jpeg){fig-align="center" width=70%}
+
+
+## Statistics/ML vs Causal Inference
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Statistics/ML***
+
++ Passive observation of the data generating process
++ Estimand: Joint probabilities, CEF
+$$P(Y,X)$$
+$$E(Y|X=x)$$
++ Focus on asymptotics / out of sample prediction
++ Estimation problem: variance-bias tradeoff
++ Pearl: "deep learning is just curve fitting"
+:::
+
+::: {.column width="50%"}
+***Causal Inference***
+
++ Prediction **under interventions** on the DGP
++ Estimand: interventional quantities
+$$P(Y|do(x))$$ 
+$$E(Y|do(x)) - E(Y|do(x'))$$ 
+$$= E(Y_x) - E(Y_{x'})$$
++ Identification problem: consistency (infinite sample)
++ Estimation problem: in general, focus on bias over variance (but changing)
+:::
+
+:::
+---
+
+## The ladder of causation
+
+![](img/causation_ladder.png){fig-align="center" width=50%}
+
+:::{.aside}
+Drawing by Maayan Harel, TBOW
+
+Note: effects of causes (high up in the ladder) versus causes of effects (highest place)
+:::
+
+
+## The ladder of causation 
+
+:::{.panel-tabset}
+
+## Association
+
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| ---- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y \vert X)}$ | Seeing, Observing | Stats, Machine Learning | *What would I believe about Y if I see X?* | What is the expected income of a college graduate in a given field? |
+
+## Interventions
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| --- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y \vert do(x))}$ | Doing, Intervening | Experiments, Policy evaluation | *What would happen with Y if I change X?* | How would income levels change in response to college expansion? |
+
+## Counterfactuals
+
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| --- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y_x \vert x',y')}$ | Imagining, Retrospecting | Structural Models | *What would have happened with Y have I done X instead of X'? Why?* | What would have my parents' income been, have they graduated from college, given that they didn't go?| 
+:::
+
+:::{.aside}
+Pearl and Mackenzie (2018)
+
+Note: effects of causes (high up in the ladder) versus causes of effects (highest place)
+:::
+
+
+
+## Why should we care about causal inference?
+
+. . .
+
+<br>
+Most social science questions are in fact causal
+
+. . . 
+
+The social sciences are experimenting what some authors have described as the rise of "causal empiricism" (Samii, 2016), a "credibility revolution" (Angrist and Pischke, 2010), or simply a "causal revolution" (Pearl and MacKenzie, 2018)
+
+. . .
+
+In artificial intelligence/ML, causality have been deemed [**"the next frontier"**](https://phys.org/news/2019-02-causal-disentanglement-frontier-ai.html) and [**"the next most important thing"**](https://www.datasciencecentral.com/profiles/blogs/causality-the-next-most-important-thing-in-ai-ml)
+
+. . .
+
+The enormous progress in the last decades has been facilitated by the development of mathematical frameworks that provide researchers with tools to handle causal questions: [Potential Outcomes]{.fragment .highlight-red} and the [Structural Causal Model]{.fragment .highlight-red}
+
+---
+
+## What should you expect from this class?
+
+<br>
+
+This class is designed as a first course in causal inference, so we focus on essentials:
+
+* Familiarize yourself with the most widely used causal inference frameworks
+
+* Understand the role of randomisation to tackle causal questions
+
+* Use potential outcomes (and the do-operator) to formalize causal estimands
+
+* Use directed acyclic graphs (DAGs) to encode qualitative assumptions and derive testable implications
+
+* Selection on observables (regression, imputation, matching, weighting, doubly robust methods and flexible estimation using machine learning)
+
+* Difference-in-difference, synthetic controls, and extensions
+
+* Instrumental variables and regression discontinuity designs
+
+* Sensitivity analysis
+
+## Logistics
+
+<br>
+
+* **Lectures:** Wed 2-4pm
+
+* **Exercises:** hands-on practices that accompany the lectures (self-study), released weekly
+
+* **Bi-weekly drop-ins:** optional, lecturer and TA present for any questions, Fri 12-1pm weeks 2/4/6/8
+
+* **Summative assessments:** to be released bi-weekly
+
+. . . 
+
+We are in it together! 
+
+Ask questions, engage with the material, immerse yourself
+
+Get confused and frustrated but carry on
+
+Help each other (except summative assessments)
+
+Good methodological skills will empower you as a sociologist!
+
+Climbing the causal ladder can change you (as did Ebenezer Scrooge)
+
+
+## Correlation vs causation
+
+<br>
+
+![](https://imgs.xkcd.com/comics/correlation.png){width="900" fig-align="center"}
+
+:::aside
+[causality](https://imgs.xkcd.com/comics/correlation.png)
+:::
+
+
+## Selection bias 
+
+![](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png){ width="600"}
+
+:::aside
+[selection bias](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png)
+:::
