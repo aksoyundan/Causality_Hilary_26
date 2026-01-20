@@ -1,5 +1,5 @@
 ---
-title: "Causal Inference"
+title: "Causal Inference with Trial"
 author: "Ozan Aksoy"
 logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK"
 include-in-header:
