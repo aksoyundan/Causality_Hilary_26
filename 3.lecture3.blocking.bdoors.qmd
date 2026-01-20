@@ -1,0 +1,623 @@
+---
+title: "Blocking backdoors by selection on observables"
+author: "Ozan Aksoy"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Why Causal Inference?"
+date: today
+date-format: long
+format: 
+  revealjs:
+    theme: simple
+    width: 1600
+    height: 1000
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
+---
+
+# Outline {background-color="#17a091"}
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+## Blocking backdoor paths via selection on observables
+
+Most popular identification strategy: selection on observables, also known as conditional ignorability/independence (stats), unconfoundedness (econ), or conditional exchangeability (epi)
+
+* What is an observational study? 
+
+* What assumptions are required for identification?
+
+* Common estimation methods: 
+
+  1. Regression 
+
+  2. Matching
+
+  3. Weighting
+  
+  4. Augmented and doubly robust estimators (preview only)
+
+# Observational studies {background-color="#00a191"}
+
+## What is an observational study?
+
+We already discussed the importance of [**random assignment**]{style="color:green"} to justify drawing causal conclusions and conduct statistical inference
+
+. . .
+
+Observational data is generated when the treatment of interest is [**not**]{style="color:red"} in control of the researcher (e.g., survey data, administrative records, etc.)
+
+. . .
+
+An observational study is an attempt to use observational data to [*approximate*]{style="color:blue"} causal conclusions (or, as some would say, "to approximate an experiment")
+
+. . .
+
+While, in experiments, (conditional) ignorability is justified by design, in observational studies it relies on [untestable and extra-statistical]{.fragment .fade-in .highlight-red} assumptions
+
+
+## Credible observational studies
+
+Not all comparisons are created equal!
+
+. . .
+
+It is all too common to run some regression analysis and analyse its output as-if a credible *causal* ("controlled") comparison can be immediately obtained from the data
+
+. . .
+
+Most times, just recognizing that "our results are not causal" is not enough to prevent a causal interpretation!
+
+. . .
+
+[A credible observational study should be carefully designed to address common issues and rule out alternative explanations]{style="color:green"}
+
+## Credible observational studies
+
+<br>
+
+* Assignment is not random, but is it well understood?
+
+* Can we explain why some units that look similar receive different treatments?
+
+* Do we have reliable measures of our variables of interest? 
+
+* Does the timing of measurement allow us to order them?
+
+* Can we check "balance" in observable characteristics?
+
+* Can we quantify the influence that unobserved confounding would have on our results?
+
+* Can we rule out alternative explanations to the observed "treatment effect"?
+
+# Unconfoundedness {background-color="#00a191"}
+
+## General setting
+
+Let's assume the following:
+
+* We observe units $i = 1, \dots, n$
+* We observe a treatment $D \in {0,1}$
+* We assume potential outcomes $Y_{di}$ are well defined
+
+. . . 
+
+Our quantity of interest can be (most commonly) the ATE or the ATT
+
+. . . 
+
+We have a collection of $k$ [**pre-treatment**]{style="color:blue"} covariates: $X_i = [X_{i1}, \dots , X_{ik}]$
+
+* Predetermined / causally precede $D_i$
+* If $X_i$ causes both $D$ and $Y$, it would [*confound*]{style="color:red"} the relationship between them
+* If $X_i$ is potentially affected by $D_i$, then it may possibly be a [*mediator*]{style="color:red"}, and it should be handlded with double care
+
+More formally: $X$ is a valid adjustment set according to the backdoor criterion
+
+## Assumptions
+
+The main assumption in this context is usually referred as unconfoudedness, conditional ignorability, or conditional exhangeability (i.e. backdoor criterion is satisfied by X)
+
+It can be formalized as:
+
+$$
+\{Y^T_{i}, Y^C_{i}\} \indep D_i | X_i
+$$
+
+:::{.callout-note}
+## Read it like this
+Among units with the same values of $X$, the treatment $D_i$ is as-good-as randomly assigned
+:::
+
+. . .
+
+To actually be able to condition by $X$, we also require positivity (or overlap): the treatment is not deterministic at any relevant value of $X=x$
+
+$$
+0 < P(D_i = 1 | X_i) < 1
+$$
+
+## Identification of ATE/ATT
+
+**Intuition**: Within strata of X, we have an experiment
+
+**Proof**: Let's start with the strata effects $\tau(x)$
+
+$$
+\tau(x) = E[Y^T_{i} - Y^C_{i}|X=x] = E[Y^T_{i}|X=x] - E[Y^C_{i}|X=x]  
+$$
+$$
+= E[Y^T_{i}|X=x, D_i=1] - E[Y^C_{i}|X=x, D_i=0] 
+$$
+
+$$
+= E[Y_{i}|X=x, D_i=1] - E[Y_{i}|X=x, D_i=0]
+$$
+Then, using the **positivity** or overlap assumption:
+
+$$
+ATE = E_x[\tau(x)] = E_x(E[Y^T_{i} - Y^C_{i}|X=x] )
+$$
+
+$$
+= \sum_x \tau(x) p(x)
+$$
+
+## In a DAG framework
+
+
+```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height=2}
+plot(dagitty::dagitty('dag{ 
+  Abunchofvariables [pos="1,-1"] 
+  D [pos="0,0"] 
+  Y [pos="2,0"] 
+  D -> Y ; Abunchofvariables -> {D Y} }'))
+```
+
+$$E[Y \mid Do(D=1), Abunchofvariables] - E[Y \mid Do(D=0), Abunchofvariables]$$
+
+is identified under the assumptions
+
+[*Note:*]{style="color:red"} As we will see shortly, regression blocks the
+path $\rightarrow Y$ while matching and weighthing blocks the path $\rightarrow D$.
+Blocking any of these paths will identify the "causal" effect of D on Y.
+
+# Estimation {background-color="#00a191"}
+
+## Estimation overview
+
+Under our non-parametric assumptions, the ATE/ATT is identified by the adjustment formula
+
+In practice, different estimators can be used, each incorporate further assumptions 
+
+The most widely used estimators are
+
+- Regression
+- Matching
+- Weighting
+- Augmented estimators
+
+::: callout-note
+NOTE: none of these estimators are identification strategies.
+Never say "my results are causal, because I used {matching| weighting | a fancy new estimator of selection on observables}. You buy causality through model assumptions, make those assumptions credible and transparent."
+:::
+
+We will use them in the hands-on exercises of this week
+
+# Modeling the outcome: Regression {background-color="#E9004C"}
+
+## Regression: look at *the* coefficient!
+
+In regression we take a model-based approach
+
+For simplicity, let's assume that the potential outcomes follow certain functional form:
+
+$$
+E[Y^D_i|D_i,X_i] = \beta_0 + \beta_1 D_i + \gamma^{\top}X_i
+$$
+
+Which means that 
+
+$E[Y^C|X] = E[Y|D=0,X] = \mu_0 = \beta_0 + \gamma^{\top}X_i$ 
+
+$E[Y^T|X] = E[Y|D=1,X] = \mu_1 = \beta_0 + \beta_1 + \gamma^{\top}X_i$
+
+so $\beta_1 = E[Y^T|X] - E[Y^C|X]  = ATE$
+
+[Side note]{style="color:red;"}: subscripts in regression describe what a variable or coefficient 
+varies along, e.g. 
+
+$$
+Y_{it} = \beta_g + \beta_t + \beta_1 D_{it} + \beta_2 W_i + \epsilon_{it}
+$$
+so intercepts vary by some group (g) and time (t), while D varies by individuals
+and time W varies only by individuals by is time-constant.
+
+. . .
+
+What are we assuming about the treatment effect? What are we assuming about the potential outcomes? Are those assumptions sensible?
+
+## Regression: pros and cons
+
+Pros: 
+
+* Everybody loves a regression!
+
+* Easy to interpret
+
+* (Often) transparent
+
+* Flexible (interactions etc. can be added easily)
+
+* Uses variation efficiently
+
+Cons:
+
+* Restrictive functional form
+
+* Incorrect modeling decisions can ruin the results
+
+* Simplicity can be elusive, sometimes regression can give non-transparent
+results (e.g. TWFE in diff-in-diff--later...)
+
+* We lose interesting variation
+
+* Extrapolation, possibility of non-overlap
+
+## Regression extensions: penalised regression
+Regression (OLS in particular) finds $\beta$s in a way that 
+minimises sum of squares between predicted and observed variables, that is: 
+
+$$argmin_\beta \{ \sum(Y - \hat{Y})^2\}$$
+
+Penalised regressions minimise the same thing *plus* a function of $\beta$s:
+
+$$argmin_\beta \{ \sum(Y - \hat{Y})^2 + \lambda F(\beta) \}$$
+
+| Model | $F()$ | $\lambda$ |
+|---------|------|----------|
+| OLS   | NA                       | 0 |
+| LASSO | $\sum|\beta|$ (L1-norm)  | estimate w cross-validation |
+| Ridge | $\sum \beta^2$ (L2-norm) | estimate w cross-validation |
+
+LASSO/Ridge is for prediction (Machine Learning). But for causal inference, when we have A LOT of 
+potential confounders we can first use LASSO to reduce the dimensionality and then an OLS for the remaining set of control variables. (BEWARE: standardise all variables before LASSO)
+
+## Regression extensions: use it for imputation!
+
+One way of making use of models that is less sensitive to the specification of a single coefficient is to use the model for imputation.
+
+* Use the model(s) to predict the potential outcomes, and then calculate the difference of interest
+
+* For inference, use the bootstrap
+
+In epidemiology, this is known as g-computation ("g" stands for "generalized")
+
+This works well, above and beyond what looking at a single coefficient would give you
+
+Even more, this can be paired with flexible machine learning approaches (e.g. LASSO), going beyond linear regression models
+
+# Modeling the treatment assignment {background-color="#E9004C"}
+
+## Matching
+
+For each treated unit $i$ with covariates $X_i$, we will estimate $\tau_i = Y^T_{i} - Y^C_{i}$
+
+. . .
+
+For treated units, we immediately have $Y^T$. But where do we get $Y^C$ from?
+
+* **Matching**: borrow the missing potential outcomes from control units with (nearly) the same $X_i$ values
+
+The estimator is then:
+
+$$
+\hat{\tau}_{ATT} = \frac{1}{N_t} \sum_{D=1}(Y_i - Y_{j(i)})
+$$
+
+Where $Y_{j(i)}$ is the outcome of unit $j$, which is closest to $i$ in terms of their covariates
+
+. . .
+
+In the simples case, $j$ is a single unit, without replacement. In more complicated versions, it can be an (weighted) average of units that are reused several times
+
+. . .
+
+:::{.callout-warning}
+## But beware of the curse of dimensionality!
+:::
+
+## Matching: pros and cons
+
+Pros:
+
+* Does not rely on linearity or other restrictive assumptions
+
+* Design-based intuition
+
+* Flexible to get different estimands (ATE, ATT, ATC)
+
+* Reduces extrapolation 
+
+* Robust to model misspecification
+
+* Clear diagnostics on balance and overlap
+
+Cons:
+
+* Many different ways to do it, lots of decisions to be made
+
+* Better for discrete (e.g. binary) treatments
+
+* Curse of dimensionality
+
+* Doesn't work well in longitudinal settings with time varying covariates
+
+* Throws away data
+
+## Matching: choices, choices
+
+* Select variables to match on (confounders that would help block backdoors, avoid mediators! The same as regression)
+
+* Find a way to measure distance between matched treated and control cases
+
+  * [Exact matching]{style="color:red"}: a treated unit is matched with control with exact same values on confounders
+  
+  * [Distance matching]{style="color:red"}: find matches that are not too distant based on a distance metric
+  (e.g. Euclidean Distance or Mahalanobis distance--similar to ED with standardised units); decide on a *caliper/bandwidth* 
+
+
+* One-to-one or one-to-many matching?
+
+* How to break ties? When two exact control matches for a treatment?
+
+* If one-to-many matches, do we weight better matches more? If so how?
+
+* Matching with or without replacement? The default is the former
+
+Once you decide all those (!) checking balance between treatment and control and estimating ATE, ATT, or ATC are very easy!
+
+## Weighting 
+
+The idea of weighting comes from survey research: how do we get a representative sample?
+
+It is very similar to matching
+
+. . .
+
+* Instead of strata-specific effects that are then reweighted by $X$, make $X$ look similar across groups and then take a simple average!
+
+. . .
+
+Recall that the difference-in-means can be viewed as:
+
+$$
+\sum_x E[Y_i | D=1, X]\color{red}{P(X|D=1)} - \sum_x E[Y_i | D=0, X]\color{red}{P(X|D=0)}
+$$
+
+[How to solve the discrepancy in the weights?]{style="color:red"}
+
+. . .
+
+We want the weights of the diff-in-means to be $P(X)$ for everyone, so we can re-weight by $\frac{P(D_i)}{P(D_i|X_i)}$ (but, note that this requires a model for $P(D_i|X_i)$!)
+
+## Weighting: pros and cons
+
+Pros:
+
+* Uses all data
+
+* Conceptually clean
+
+* Can work with post-treatment variables (under sequential ignorability)
+
+* Handles many covariates easily
+
+Cons:
+
+* Extreme weights can mess things up
+
+* High variance 
+
+* Sensitive to selection modeling choices 
+
+* Not intuitive
+
+* Not familiar
+
+## How to weight: propensity scores
+
+*(Stabilized or trimmed) propensity score weights* can be used for weighting. Other names for the same object are *inverse probability of the treatment weighting* or simply *inverse probability weighting* (IPW)
+
+Those weights require estimating a model for the treatment assignment $P(D_i|X_i)$. In other words, they require we fit a [*propensity score*]{style="color:blue"} model, $P(D_i=1|X_i) = e(X_i)$ (or $\pi(X_i)$)
+
+. . .
+
+Using propensity score for weighting is based on a simple but powerful result. If:
+
+$$
+\{Y_1,Y_0\} \indep D_i | X_i
+$$
+Then,
+
+$$
+\{Y_1,Y_0\} \indep D_i | e(X_i)
+$$
+
+. . .
+
+The propensity score is a [*balancing score*]{style="color:green"}, that will achieve balance in the variables used to estimate the propensity score, [*in expectation*]{style="color:red"}
+
+NB: Propensity score *matching* an old practice is not advised anymore, but PS *weighting* is (currently) safe
+
+## Propensity score weights
+
+For the ATE, the corresponding IPWs are:
+
+$$
+w_i = \frac{D_i}{e(X_i)} + \frac{1-D_i}{1-e(X_i)}
+$$
+
+. . .  
+
+* What would this weights do for the treated units? And for the controls?
+
+With these weights, IPW estimator is simply:
+
+
+$$
+\widehat{\mathrm{ATE}}_{\mathrm{IPW}}
+=
+\frac{1}{n}\sum_{i=1}^n
+\left(
+\frac{D_i Y_i}{\hat e(X_i)}
+-
+\frac{(1-D_i) Y_i}{1-\hat e(X_i)}
+\right)
+= 
+\frac{1}{n}\sum_{i=1}^n
+(Y_i w_i)
+$$
+
+
+
+* How would you modify these weights to target ATT or ATC?
+
+**Hint**: multiply by $e(X_i)$ for ATT and by $1 - e(X_i)$ for ATC
+
+:::aside
+Following Chattopadhyay, Hase, and Zubizarreta (2020)
+:::
+
+## How to weight with a different scale: entropy balancing (calibration weights)
+
+When using propensity score weights, we want to achieve is balance on covariates. So we would:
+
+1) estimate a model for $e(X_i)$; 
+
+2) invert and and reweight sample; 
+
+3) check balance; 
+
+4) re-estimate propensity score if necessary.
+
+. . .
+
+Is that the only way?
+
+
+[*Entropy balancing*]{style="color:red"} or more generally [*calibration/optimisation*]{style="color:red"} weights *bypass* these steps, and directly find weights that exactly (up to a tolerance level) "balance" (moments of) the covariates
+
+If feasible, this will give you balance [*in the sample*]{style="color:green"}
+
+Luckily, we don't need to do this manually, R can do it for us
+
+## Balance and overlap
+
+Once matching or weigthing is done, one can/should check [*balance*]{style="color:red"} in X variables by comparing pre- and post- matching and weighting distributions of variables. There should not be systematic differences between the treatment and control group after matching/weighting. 
+
+[*Overlap or common support*]{style="color:red"} can/should be checked too. There must be substantial
+overlap between treatment and control groups re matching variables. This can be checked on covariates or
+propensity scores. 
+
+If common support is not good: [*trim*]{style="color:red"} (drop cases without common support)
+
+. . .
+
+NB: balance and overlap issues are less transparent in regression.
+
+## Summary for matching and weighting
+
+Matching and weighting share many common ideas
+
+Most importantly, they all allow for some diagnostics *before* conducting the outcome analysis: balance testing
+
+Checking balance does not require looking at the outcome, in fact one doesn't look at the outcome at all
+during finding matches or weights
+
+This can provide a guidance on the credibility of the results to come 
+
+. . . 
+
+* This is what Rubin meant by "design triumphs analysis"
+
+. . . 
+
+But be careful of overly relying on balance checking! (And use best practices, like equivalence testing)
+
+Also, beware of residual imbalance! Modeling the outcome can come handy, as we will see next
+
+
+
+# Augmented estimators {background-color="#E9004C"}
+
+## Augmented IPW 
+
+Can we get the best of both (regression on the one hand and weighting on the other) worlds? Yes, we can!
+
+Combine balancing (weighting) with outcome modeling (regression) in a single estimator: augmented IPW
+
+$$
+\hat{\tau}_{AIPW} = \frac{1}{n}\sum_{i=1}^n \Big( \hat{\mu}(1,X_i) - \hat{\mu}(0,X_i)
++ \frac{D_i}{\hat{e}(X_i)}(Y_i - \hat{\mu}(1,X_i)) - \frac{1-D_i}{1-\hat{e}(X_i)}(Y_i - \hat{\mu}(0,X_i)) \Big)
+$$
+This has the property of **doubly robustness** (DR): the model with be consistent for the treatment effect if either 
+
+1) the outcome model or, 
+
+2) the treatment model, are well specified
+
+. . .
+
+:::{.callout-tip}
+## Important
+The augmented estimator requires the same unconfoundedness assumption! No free lunch
+:::
+
+## What about machine learning?
+
+There are different ways of using machine learning for estimation
+
+* Flexible model of the outcome + imputation
+
+* Flexible model of the treatment + weighting
+
+Two frameworks have been proposed to incorporate ML methods in causal inference
+
+* E.g., Double/Debiased Machine Learning (DML): similar to doubly robust IPW estimator but the outcome and selection are predicted using ML
+
+## Wrap up
+
+* We looked at four ways of closing backdoors in simple confounding models
+  1. Regression
+  2. Matching
+  3. Weighting
+  4. Augmented estimators (doubly robust IPW and double/debiased machine learning)
+
+* What should we do in practice?
+
+Well, no approach is superior. Use a combination of approaches.
+
+* Regression is easy so do it even as robustness check.
+
+* If treatment is binary, IPW or entropy balancing weighting is probably advisable vis-a-vis matching, for the latter has many researcher degrees of freedom.
+
+* Try augmented estimators and double ML when you have **many (!)** confounders, interactions, or nonlinearities AND **large** dataset, but they can fail to converge in practice.
+
+Hands-on-exercises of this week treats these.
+
+## Remember: Regression, matching, weighting, doubly robust estimation, double machine learning or however fancy sounding method of selection on observables are NOT identification strategies!
+
+Identification comes from design, model, and extra-statistical assumptions, not from the estimator!
+

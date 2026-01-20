@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="4.lecture4_iv_files/libs/clipboard/clipboard.min.js"></script>
+<script src="4.lecture4_iv_files/libs/quarto-html/tabby.min.js"></script>
+<script src="4.lecture4_iv_files/libs/quarto-html/popper.min.js"></script>
+<script src="4.lecture4_iv_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="4.lecture4_iv_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="4.lecture4_iv_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="4.lecture4_iv_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.32">
+
+  <meta name="author" content="Ozan Aksoy">
+  <meta name="dcterms.date" content="2026-01-16">
+  <title>Instrumental variables: backdoors to nowhere</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="4.lecture4_iv_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="4.lecture4_iv_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="4.lecture4_iv_files/libs/revealjs/dist/theme/quarto-2c1b5f745a11cfad616ebade4a4a7d24.css">
+  <link href="4.lecture4_iv_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="4.lecture4_iv_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="4.lecture4_iv_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="4.lecture4_iv_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="4.lecture4_iv_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="4.lecture4_iv_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="4.lecture4_iv_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+  <script src="4.lecture4_iv_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="4.lecture4_iv_files/libs/viz-1.8.2/viz.js"></script>
+  <link href="4.lecture4_iv_files/libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+  <script src="4.lecture4_iv_files/libs/grViz-binding-1.0.11/grViz.js"></script>
+  <style>
+  .reveal .slide-logo {
+    max-height: unset;
+    height: 100px;
+  }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Instrumental variables: backdoors to nowhere</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Ozan Aksoy 
+</div>
+</div>
+</div>
+
+  <p class="date">January 16, 2026</p>
+</section>
+<section class="slide level2">
+
+
+</section>
+<section id="what-if-some-backdoors-are-open" class="slide level2">
+<h2>What if some backdoors are open?</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-70dfd45270e581524bda" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-70dfd45270e581524bda">{"x":{"diagram":"\ndigraph a {\n  graph []\n  node [shape = plaintext]\n    X [label = \"Indep var\"]\n    Y [label = \"Outcome\"]\n    C [label = \"Bunch of stuff\"]\n    D [label = \"Unobserved monster\", shape = oval]\n  edge []\n    X->Y\n    C->X\n    C->Y\n    D->X\n    D->Y\n{ rank = same; X; Y }\n{ rank = same; C; D }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-e4ad2ee409e669a40b6f" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-e4ad2ee409e669a40b6f">{"x":{"diagram":"\ndigraph b {\n  graph []\n  node [shape = plaintext]\n    Z [label = \"Exgenous thing\"]\n    X [label = \"Indep var\"]\n    Y [label = \"Outcome\"]\n    C [label = \"Bunch of stuff\"]\n    D [label = \"Unobserved monster\", shape = oval]\n  edge []\n    Z->X\n    X->Y\n    C->X\n    C->Y\n    D->X\n    D->Y\n{ rank = same; Z; X; Y }\n{ rank = same; C; D }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="why-do-instrumental-variables-work" class="slide level2">
+<h2>Why do instrumental variables work?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-86d20f350e551595a85a" style="width:480px;height:384px;"></div>
+<script type="application/json" data-for="htmlwidget-86d20f350e551595a85a">{"x":{"diagram":"\ndigraph iv {\n  graph []\n  node [shape = plaintext]\n    Z \n    X \n    Y \n    e \n  edge []\n    Z->X\n    X->Y\n    e->X [dir=both, style = \"dashed\"]\n    e->Y\n{ rank = same; Z; X; Y }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>Cov(Z,Y) has to be through Cov(X,Y)</p>
+<p>Cov(Z,Y)/Cov(Z,X) <em>has to be</em> <span class="math inline">\(X \rightarrow Y\)</span></p>
+</div></div>
+<p>Another way to see this (define <span class="math inline">\(X\rightarrow Y = \delta\)</span>, assume Z is binary):</p>
+<p><span class="math display">\[
+E[Y\mid Z = 1] - E[Y\mid Z = 0] = \\ \delta (E[X\mid Z = 1] - E[X\mid Z = 0]) + (E[e\mid Z = 1] - E[e\mid Z = 0])
+\\
+\frac{(E[Y\mid Z = 1] - E[Y\mid Z = 0])}{(E[X\mid Z = 1] - E[X\mid Z = 0])} = \\ \frac{\delta (E[X\mid Z = 1] - E[X\mid Z = 0]) + (E[e\mid Z = 1] - E[e\mid Z = 0])}{(E[X\mid Z = 1] - E[X\mid Z = 0])} = \delta
+\]</span></p>
+</section>
+<section id="assumptions-assumptions" class="slide level2">
+<h2>Assumptions, assumptions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-4f83817e50b97663846a" style="width:480px;height:384px;"></div>
+<script type="application/json" data-for="htmlwidget-4f83817e50b97663846a">{"x":{"diagram":"\ndigraph iv {\n  graph []\n  node [shape = plaintext]\n    Z \n    X \n    Y \n    e \n  edge []\n    Z->X\n    X->Y\n    e->X [dir=both, style = \"dashed\"]\n    e->Y\n{ rank = same; Z; X; Y }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><strong>(a) Z is a valid instrument</strong></p>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-650ccb0e79d87766a5db" style="width:480px;height:384px;"></div>
+<script type="application/json" data-for="htmlwidget-650ccb0e79d87766a5db">{"x":{"diagram":"\ndigraph iv {\n  graph []\n  node [shape = plaintext]\n    Z \n    X \n    Y \n    e \n  edge []\n    Z->X\n    X->Y\n    e->X [dir=both, style = \"dashed\"]\n    e->Z [dir=both, style = \"dashed\"]\n    e->Y\n{ rank = same; Z; X; Y }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><strong>(b) Z is NOT a valid instrument</strong></p>
+</div></div>
+<ul>
+<li><p><strong>Assumption 1: relevance</strong> <span class="math inline">\(Z \rightarrow X\)</span> is strong. Recall IV estimator = Cov(Z,Y)/Cov(Z,X). If <span class="math inline">\(Cov(Z,X) \rightarrow 0\)</span> the ratio is doomed!</p></li>
+<li><p><strong>Assumption 2: validity (aka exclusion restriction)</strong> No paths from Z to Y, except that goes only through X. This is often hard to justify!</p></li>
+<li><p><strong>Assumption 3:</strong> For IV estimator to be ATE, <span class="math inline">\(X \rightarrow Y\)</span> and <span class="math inline">\(Z \rightarrow X\)</span> should be constant and linear</p></li>
+</ul>
+</section>
+<section id="do-we-need-completely-random-instruments" class="slide level2">
+<h2>Do we need completely random instruments?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-acb45c58f3b1a8c0fd52" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-acb45c58f3b1a8c0fd52">{"x":{"diagram":"\ndigraph iv {\n  graph []\n  node [shape = plaintext]\n    C\n    B\n    D\n    Z \n    X \n    Y \n    A\n  edge []\n    C->Z\n    C->X\n    Z->X\n    X->Y\n    B->Z\n    B->Y\n    D->X\n    D->Y\n    Z->A\n    A->Y\n{ rank = same; C; B; D }\n{ rank = same; X; Y; Z }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p>All paths from Z to Y:</p>
+<p>Z <span class="math inline">\(\rightarrow\)</span> X <span class="math inline">\(\rightarrow\)</span> Y</p>
+<p>Z <span class="math inline">\(\rightarrow\)</span> X <span class="math inline">\(\leftarrow\)</span> D <span class="math inline">\(\rightarrow\)</span> Y</p>
+<p>Z <span class="math inline">\(\leftarrow\)</span> C <span class="math inline">\(\rightarrow\)</span> X <span class="math inline">\(\rightarrow\)</span> Y</p>
+<p>Z <span class="math inline">\(\leftarrow\)</span> C <span class="math inline">\(\rightarrow\)</span> X <span class="math inline">\(\leftarrow\)</span> D <span class="math inline">\(\rightarrow\)</span> Y</p>
+<p>Z <span class="math inline">\(\leftarrow\)</span> B <span class="math inline">\(\rightarrow\)</span> Y</p>
+<p>Z <span class="math inline">\(\rightarrow\)</span> A <span class="math inline">\(\rightarrow\)</span> Y</p>
+</div></div>
+<p>Which of these paths from Z to Y do <strong>not</strong> go through X? We should block them. So {B, A} needs to be blocked on the second-stage to identify <span class="math inline">\(X \rightarrow Y\)</span> through Z.</p>
+<p>Why block A?</p>
+<p>How about C?</p>
+</section>
+<section id="example-attendance-to-causality-and-future-income" class="slide level2">
+<h2>Example: attendance to causality and future income</h2>
+<table class="caption-top" style="width:100%;">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 23%">
+<col style="width: 33%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>attended</th>
+<th>not attended</th>
+<th>all</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Received reminders (future income)</td>
+<td>80 (£45)</td>
+<td>20 (£33)</td>
+<td>100 (£42.6)</td>
+</tr>
+<tr class="even">
+<td>No reminders (future income)</td>
+<td>100 (£48)</td>
+<td>100 (£34)</td>
+<td>200 (£41)</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[
+\delta = \frac{E[y_i\mid z_i=1]-E[y_i\mid z_i=0]}{E[x_i\mid z_i=1]-E[x_i\mid z_i=0]} = \frac{42.6 - 41}{0.8 - 0.5} = £5.33
+\]</span> . . .</p>
+<p>But what a minute, what does this £5.33 tell us? Reminders only shifted attendance for some?</p>
+</section>
+<section id="complier-types" class="slide level2">
+<h2>Complier types</h2>
+<p>What is the probability of switching attendance due to the reminder? We can estimate this due to randomisation!</p>
+<p>We need some further clarifications. Let’s divide the population in four latent subgroups:</p>
+<div class="fragment">
+<ul>
+<li><strong>Never-takers</strong> : those we don’t care about causal inference, or about lecture, so they won’t come anyways. What’s the effect of the reminder for them?</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Compliers</strong>: the forgetful (like me), so they will attend if reminded but not otherwise. What’s the effect of the reminder for them?</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Always-takers</strong>: the highly organized and causal inference lovers, that would attend under any circumstances. What’s the effect for this group?</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Defiers</strong>: those who were planning to attend, but when reminded, they would rather not! <em>We assume that this group does not exist (or if this group exists, compliers should not exist).</em> This assumption is called <strong>monotonicity</strong>!</li>
+</ul>
+<p>So, <span class="math inline">\(\delta\)</span> is completely due to compliers! And hence it is called <strong>Local Average Treatment Effect (LATE)</strong></p>
+</div>
+</section>
+<section id="example-late" class="slide level2">
+<h2>Example: LATE</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>attended</th>
+<th>not attended</th>
+<th>all</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T</td>
+<td>80 (£45)</td>
+<td>20 (£33)</td>
+<td>100 (£42.6)</td>
+</tr>
+<tr class="even">
+<td>C</td>
+<td>100 (£48)</td>
+<td>100 (£34)</td>
+<td>200 (£41)</td>
+</tr>
+</tbody>
+</table>
+<p>Proportion always takers: <span class="math inline">\(Pr[C=a] = \frac{100}{200} = 0.5\)</span></p>
+<p>Proportion never takers: <span class="math inline">\(Pr[C=n] = \frac{20}{100} = 0.2\)</span></p>
+<p>(Assuming no defiers) proportion compliers: <span class="math inline">\(Pr[C=c] = 1 - 0.5 - 0.2 = 0.3\)</span></p>
+<p><span class="math inline">\(E[Y \mid X=1, Z = 1] = \frac{Pr[C=c]}{Pr[C=c]+Pr[C=a]}E[Y^1|C=c] + \frac{Pr[C=a]}{Pr[C=c]+Pr[C=a]}E[Y^1|C=a]\)</span></p>
+<p><span class="math inline">\(45 = \frac{0.3}{0.3+0.5}E[Y^1|C=c] + \frac{0.5}{0.3+0.5}48 \rightarrow E[Y^1|C=c] = 40\)</span></p>
+<p><span class="math inline">\(E[Y \mid X=0, Z = 0] = \frac{Pr[C=c]}{Pr[C=c]+Pr[C=n]}E[Y^0|C=c] + \frac{Pr[C=n]}{Pr[C=c]+Pr[C=n]}E[Y^0|C=n]\)</span></p>
+<p><span class="math inline">\(34 = \frac{0.3}{0.3+0.2}E[Y^0|C=c] + \frac{0.2}{0.3+0.2}33 \rightarrow E[Y^0|C=c] = 34.66\)</span></p>
+<p><span class="math inline">\(E[\delta\mid C=c] = 40 - 34.66 = 5.33\)</span></p>
+</section>
+<section id="more-assumptions-assumptions" class="slide level2">
+<h2>More assumptions, assumptions</h2>
+<ul>
+<li><p><strong>Assumption 1: relevance</strong> <span class="math inline">\(Z \rightarrow X\)</span> is strong. Recall IV estimator = Cov(Z,Y)/Cov(Z,X). If <span class="math inline">\(Cov(Z,X) \rightarrow 0\)</span> the ratio is doomed!</p></li>
+<li><p><strong>Assumption 2: validity (aka exclusion restriction)</strong> No paths from Z to Y, except that goes only through X. This is often hard to justify!</p></li>
+<li><p><strong>Assumption 3:</strong> When <span class="math inline">\(X \rightarrow Y\)</span> and <span class="math inline">\(Z \rightarrow X\)</span> are not constant, <strong>monotonicity</strong> for LATE to be identified</p></li>
+<li><p><strong>Assumption 4:</strong> SUTVA</p></li>
+<li><p>Constant effects assumption (<span class="math inline">\(X \rightarrow Y\)</span> and <span class="math inline">\(Z \rightarrow X\)</span>): CLASICAL IV</p></li>
+<li><p>LATE is the modern approach</p></li>
+<li><p>…</p></li>
+</ul>
+</section>
+<section id="can-iv-assumptions-be-tested" class="slide level2">
+<h2>Can IV assumptions be tested?</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-430c70d4183b125963f4" style="width:288px;height:192px;"></div>
+<script type="application/json" data-for="htmlwidget-430c70d4183b125963f4">{"x":{"diagram":"\ndigraph iv {\n  graph []\n  node [shape = plaintext]\n    Z \n    X \n    Y \n    e \n  edge []\n    Z->X\n    X->Y\n    e->X [dir=both, style = \"dashed\"]\n    e->Y\n{ rank = same; Z; X; Y }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<ol type="1">
+<li><strong>Assumption 1: relevance</strong> <span class="math inline">\(Z \rightarrow X\)</span> is strong. Recall IV estimator = Cov(Z,Y)/Cov(Z,X). If <span class="math inline">\(Cov(Z,X) \rightarrow 0\)</span> the ratio is doomed!</li>
+</ol>
+<ul>
+<li>Easy peasy, just regress X on Z and check <span class="math inline">\(F\)</span> value, the larger the better</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Assumption 2: validity (aka exclusion restriction)</strong> No paths from Z to Y, except that goes only through X. This is often hard to justify!</li>
+</ol>
+<ul>
+<li>Not really possible. Why does <span class="math inline">\(E[Y|Z, X]\)</span> not a good test for this?. Some tests possible when you have multiple instruments, but then LATE is tricky in that case.</li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Assumption 3:</strong> <strong>Monotonicity</strong>?</li>
+</ol>
+<ul>
+<li>You need theory here (as everywhere)</li>
+</ul>
+<div class="fragment">
+<p>(hint: collider bias)</p>
+</div>
+</section>
+<section id="how-to-do-it-with-data" class="slide level2">
+<h2>How to do it with data?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href=""></a>z <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>) <span class="co">#create data</span></span>
+<span id="cb1-3"><a href=""></a>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb1-4"><a href=""></a>w <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb1-5"><a href=""></a>x <span class="ot">&lt;-</span> <span class="fl">0.9</span><span class="sc">*</span>z <span class="sc">+</span> <span class="fl">0.8</span><span class="sc">*</span>u <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>w <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb1-6"><a href=""></a>y <span class="ot">&lt;-</span> <span class="fl">0.8</span><span class="sc">*</span>x <span class="sc">+</span> <span class="fl">0.7</span><span class="sc">*</span>u <span class="sc">+</span> <span class="fl">0.1</span><span class="sc">*</span>w <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb1-7"><a href=""></a>d <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(y, x, z, u, w))</span>
+<span id="cb1-8"><a href=""></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>w,d)     <span class="co">#ols</span></span>
+<span id="cb1-9"><a href=""></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>w<span class="sc">+</span>u,d)   <span class="co">#ols-correct</span></span>
+<span id="cb1-10"><a href=""></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(x<span class="sc">~</span>z<span class="sc">+</span>w,d)     <span class="co">#stage-1-2sls</span></span>
+<span id="cb1-11"><a href=""></a>d<span class="sc">$</span>xhat <span class="ot">&lt;-</span> <span class="fu">predict</span>(m3) <span class="co">#predict xhat</span></span>
+<span id="cb1-12"><a href=""></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>xhat<span class="sc">+</span>w,d)  <span class="co">#stage-2-2sls</span></span>
+<span id="cb1-13"><a href=""></a></span>
+<span id="cb1-14"><a href=""></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(<span class="st">"</span></span>
+<span id="cb1-15"><a href=""></a><span class="st">digraph iv {</span></span>
+<span id="cb1-16"><a href=""></a><span class="st">  graph []</span></span>
+<span id="cb1-17"><a href=""></a><span class="st">  node [shape = plaintext]</span></span>
+<span id="cb1-18"><a href=""></a><span class="st">    z </span></span>
+<span id="cb1-19"><a href=""></a><span class="st">    u  [label = 'u (unobs)']</span></span>
+<span id="cb1-20"><a href=""></a><span class="st">    w </span></span>
+<span id="cb1-21"><a href=""></a><span class="st">    x</span></span>
+<span id="cb1-22"><a href=""></a><span class="st">    y</span></span>
+<span id="cb1-23"><a href=""></a><span class="st">  edge []</span></span>
+<span id="cb1-24"><a href=""></a><span class="st">    z-&gt;x</span></span>
+<span id="cb1-25"><a href=""></a><span class="st">    x-&gt;y</span></span>
+<span id="cb1-26"><a href=""></a><span class="st">    w-&gt;x</span></span>
+<span id="cb1-27"><a href=""></a><span class="st">    w-&gt;y</span></span>
+<span id="cb1-28"><a href=""></a><span class="st">    u-&gt;y</span></span>
+<span id="cb1-29"><a href=""></a><span class="st">    u-&gt;x</span></span>
+<span id="cb1-30"><a href=""></a><span class="st">{ rank = same; z; x; y }</span></span>
+<span id="cb1-31"><a href=""></a><span class="st">  }</span></span>
+<span id="cb1-32"><a href=""></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-73b7b628f57b16a6031a" style="width:576px;height:288px;"></div>
+<script type="application/json" data-for="htmlwidget-73b7b628f57b16a6031a">{"x":{"diagram":"\ndigraph iv {\n  graph []\n  node [shape = plaintext]\n    z \n    u  [label = \"u (unobs)\"]\n    w \n    x\n    y\n  edge []\n    z->x\n    x->y\n    w->x\n    w->y\n    u->y\n    u->x\n{ rank = same; z; x; y }\n  }\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div style="font-size: 50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>modelsummary<span class="sc">::</span><span class="fu">msummary</span>(<span class="fu">list</span>(<span class="st">"Incorrect-OLS"</span>    <span class="ot">=</span> m1, </span>
+<span id="cb2-2"><a href=""></a>                            <span class="st">"Correct-OLS"</span>      <span class="ot">=</span> m2,</span>
+<span id="cb2-3"><a href=""></a>                            <span class="st">"2SLS-2nd-stage"</span>   <span class="ot">=</span> m4, </span>
+<span id="cb2-4"><a href=""></a>                            <span class="st">"2SLS-1st-stage"</span>   <span class="ot">=</span> m3) </span>
+<span id="cb2-5"><a href=""></a>                      ,<span class="at">stars=</span> <span class="cn">TRUE</span>, <span class="at">gof_omit =</span> <span class="st">".*"</span>) <span class="co"># Note: SEs are incorrect</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
+
+    <script>
+      // Create table-specific functions using external factory
+      const tableFns_s1nz5jz96dcug14cd5v8 = TinyTable.createTableFunctions("tinytable_s1nz5jz96dcug14cd5v8");
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '12', j: 2 }, { i: '12', j: 3 }, { i: '12', j: 4 }, { i: '12', j: 5 } ], css_id: 'tinytable_css_gj4ctwr79xdwnyp3rpf7',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '11', j: 4 }, { i: '1', j: 5 }, { i: '2', j: 5 }, { i: '3', j: 5 }, { i: '4', j: 5 }, { i: '5', j: 5 }, { i: '6', j: 5 }, { i: '7', j: 5 }, { i: '8', j: 5 }, { i: '9', j: 5 }, { i: '10', j: 5 }, { i: '11', j: 5 } ], css_id: 'tinytable_css_n30fh8sq57yrk6koz6nc',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 } ], css_id: 'tinytable_css_tungbcxjvbofcypwy9fa',}, 
+          { positions: [ { i: '12', j: 1 } ], css_id: 'tinytable_css_nmcipn8kiuse5kduwf7r',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 } ], css_id: 'tinytable_css_f9oieznujsgn9a73hgfs',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_04k6emkvrrd2fn423p5l',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  tableFns_s1nz5jz96dcug14cd5v8.styleCell(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
+    <style>
+    /* tinytable css entries after */
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_gj4ctwr79xdwnyp3rpf7, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_gj4ctwr79xdwnyp3rpf7 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_n30fh8sq57yrk6koz6nc, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_n30fh8sq57yrk6koz6nc { text-align: center }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_tungbcxjvbofcypwy9fa, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_tungbcxjvbofcypwy9fa {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_nmcipn8kiuse5kduwf7r, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_nmcipn8kiuse5kduwf7r {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_f9oieznujsgn9a73hgfs, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_f9oieznujsgn9a73hgfs { text-align: left }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_04k6emkvrrd2fn423p5l, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_04k6emkvrrd2fn423p5l {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    </style>
+    <div class="container">
+      <table class="tinytable" id="tinytable_s1nz5jz96dcug14cd5v8" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        
+        <thead>
+              <tr>
+                <th scope="col" data-row="0" data-col="1"> </th>
+                <th scope="col" data-row="0" data-col="2">Incorrect-OLS</th>
+                <th scope="col" data-row="0" data-col="3">Correct-OLS</th>
+                <th scope="col" data-row="0" data-col="4">2SLS-2nd-stage</th>
+                <th scope="col" data-row="0" data-col="5">2SLS-1st-stage</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan="5">+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="1">(Intercept)</td>
+                  <td data-row="1" data-col="2">0.012</td>
+                  <td data-row="1" data-col="3">0.015</td>
+                  <td data-row="1" data-col="4">0.009</td>
+                  <td data-row="1" data-col="5">-0.013</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="1"></td>
+                  <td data-row="2" data-col="2">(0.012)</td>
+                  <td data-row="2" data-col="3">(0.010)</td>
+                  <td data-row="2" data-col="4">(0.019)</td>
+                  <td data-row="2" data-col="5">(0.013)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="1">x</td>
+                  <td data-row="3" data-col="2">1.042***</td>
+                  <td data-row="3" data-col="3">0.811***</td>
+                  <td data-row="3" data-col="4"></td>
+                  <td data-row="3" data-col="5"></td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="1"></td>
+                  <td data-row="4" data-col="2">(0.008)</td>
+                  <td data-row="4" data-col="3">(0.008)</td>
+                  <td data-row="4" data-col="4"></td>
+                  <td data-row="4" data-col="5"></td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="1">w</td>
+                  <td data-row="5" data-col="2">0.054***</td>
+                  <td data-row="5" data-col="3">0.102***</td>
+                  <td data-row="5" data-col="4">0.100***</td>
+                  <td data-row="5" data-col="5">0.179***</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">(0.012)</td>
+                  <td data-row="6" data-col="3">(0.010)</td>
+                  <td data-row="6" data-col="4">(0.019)</td>
+                  <td data-row="6" data-col="5">(0.013)</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="1">u</td>
+                  <td data-row="7" data-col="2"></td>
+                  <td data-row="7" data-col="3">0.696***</td>
+                  <td data-row="7" data-col="4"></td>
+                  <td data-row="7" data-col="5"></td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="1"></td>
+                  <td data-row="8" data-col="2"></td>
+                  <td data-row="8" data-col="3">(0.012)</td>
+                  <td data-row="8" data-col="4"></td>
+                  <td data-row="8" data-col="5"></td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="1">xhat</td>
+                  <td data-row="9" data-col="2"></td>
+                  <td data-row="9" data-col="3"></td>
+                  <td data-row="9" data-col="4">0.811***</td>
+                  <td data-row="9" data-col="5"></td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2"></td>
+                  <td data-row="10" data-col="3"></td>
+                  <td data-row="10" data-col="4">(0.021)</td>
+                  <td data-row="10" data-col="5"></td>
+                </tr>
+                <tr>
+                  <td data-row="11" data-col="1">z</td>
+                  <td data-row="11" data-col="2"></td>
+                  <td data-row="11" data-col="3"></td>
+                  <td data-row="11" data-col="4"></td>
+                  <td data-row="11" data-col="5">0.887***</td>
+                </tr>
+                <tr>
+                  <td data-row="12" data-col="1"></td>
+                  <td data-row="12" data-col="2"></td>
+                  <td data-row="12" data-col="3"></td>
+                  <td data-row="12" data-col="4"></td>
+                  <td data-row="12" data-col="5">(0.013)</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="now-with-the-fixest-package" class="slide level2">
+<h2>Now with the fixest package</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-2"><a href=""></a>z <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb3-3"><a href=""></a>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb3-4"><a href=""></a>w <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb3-5"><a href=""></a>x <span class="ot">&lt;-</span> <span class="fl">0.9</span><span class="sc">*</span>z <span class="sc">+</span> <span class="fl">0.8</span><span class="sc">*</span>u <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>w <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb3-6"><a href=""></a>y <span class="ot">&lt;-</span> <span class="fl">0.8</span><span class="sc">*</span>x <span class="sc">+</span> <span class="fl">0.7</span><span class="sc">*</span>u <span class="sc">+</span> <span class="fl">0.1</span><span class="sc">*</span>w <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">10000</span>)</span>
+<span id="cb3-7"><a href=""></a>d <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(y, x, z, u, w))</span>
+<span id="cb3-8"><a href=""></a><span class="co">#Note: corrected SEs, and F and Wu-hausman tests</span></span>
+<span id="cb3-9"><a href=""></a><span class="co">#F-test is for the relevance assumption of stage1</span></span>
+<span id="cb3-10"><a href=""></a></span>
+<span id="cb3-11"><a href=""></a><span class="co">#Wu-hausman compares coeffs of OLS (w.o u) vs IV</span></span>
+<span id="cb3-12"><a href=""></a>mF <span class="ot">&lt;-</span> fixest<span class="sc">::</span><span class="fu">feols</span>(y<span class="sc">~</span>w <span class="sc">|</span> x<span class="sc">~</span>z, <span class="at">data =</span> d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div style="font-size: 80%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">summary</span>(mF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>TSLS estimation - Dep. Var.: y
+                  Endo.    : x
+                  Instr.   : z
+Second stage: Dep. Var.: y
+Observations: 10,000
+Standard-errors: IID 
+            Estimate Std. Error   t value   Pr(&gt;|t|)    
+(Intercept) 0.008908   0.012199  0.730254 4.6525e-01    
+fit_x       0.811300   0.013770 58.916310  &lt; 2.2e-16 ***
+w           0.099559   0.012490  7.971024 1.7456e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+RMSE: 1.2195   Adj. R2: 0.144041
+F-test (1st stage), x: stat = 4,815.85, p &lt; 2.2e-16, on 1 and 9,997 DoF.
+           Wu-Hausman: stat =   478.80, p &lt; 2.2e-16, on 1 and 9,996 DoF.</code></pre>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div style="font-size: 50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>modelsummary<span class="sc">::</span><span class="fu">msummary</span>(<span class="fu">list</span>(<span class="st">'First stage'</span> <span class="ot">=</span> mF<span class="sc">$</span>iv_first_stage<span class="sc">$</span>x,</span>
+<span id="cb6-2"><a href=""></a>                            <span class="st">'Second stage'</span> <span class="ot">=</span> mF), <span class="at">stars=</span> <span class="cn">TRUE</span>, <span class="at">gof_omit =</span> <span class="st">".*"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
+
+    <script>
+      // Create table-specific functions using external factory
+      const tableFns_s1nz5jz96dcug14cd5v8 = TinyTable.createTableFunctions("tinytable_s1nz5jz96dcug14cd5v8");
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '8', j: 2 }, { i: '8', j: 3 } ], css_id: 'tinytable_css_gj4ctwr79xdwnyp3rpf7',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 } ], css_id: 'tinytable_css_n30fh8sq57yrk6koz6nc',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 } ], css_id: 'tinytable_css_tungbcxjvbofcypwy9fa',}, 
+          { positions: [ { i: '8', j: 1 } ], css_id: 'tinytable_css_nmcipn8kiuse5kduwf7r',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 } ], css_id: 'tinytable_css_f9oieznujsgn9a73hgfs',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_04k6emkvrrd2fn423p5l',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  tableFns_s1nz5jz96dcug14cd5v8.styleCell(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
+    <style>
+    /* tinytable css entries after */
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_gj4ctwr79xdwnyp3rpf7, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_gj4ctwr79xdwnyp3rpf7 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_n30fh8sq57yrk6koz6nc, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_n30fh8sq57yrk6koz6nc { text-align: center }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_tungbcxjvbofcypwy9fa, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_tungbcxjvbofcypwy9fa {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_nmcipn8kiuse5kduwf7r, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_nmcipn8kiuse5kduwf7r {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_f9oieznujsgn9a73hgfs, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_f9oieznujsgn9a73hgfs { text-align: left }
+    #tinytable_s1nz5jz96dcug14cd5v8 td.tinytable_css_04k6emkvrrd2fn423p5l, #tinytable_s1nz5jz96dcug14cd5v8 th.tinytable_css_04k6emkvrrd2fn423p5l {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    </style>
+    <div class="container">
+      <table class="tinytable" id="tinytable_s1nz5jz96dcug14cd5v8" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        
+        <thead>
+              <tr>
+                <th scope="col" data-row="0" data-col="1"> </th>
+                <th scope="col" data-row="0" data-col="2">First stage</th>
+                <th scope="col" data-row="0" data-col="3">Second stage</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan="3">+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="1">(Intercept)</td>
+                  <td data-row="1" data-col="2">-0.013</td>
+                  <td data-row="1" data-col="3">0.009</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="1"></td>
+                  <td data-row="2" data-col="2">(0.013)</td>
+                  <td data-row="2" data-col="3">(0.012)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="1">z</td>
+                  <td data-row="3" data-col="2">0.887***</td>
+                  <td data-row="3" data-col="3"></td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="1"></td>
+                  <td data-row="4" data-col="2">(0.013)</td>
+                  <td data-row="4" data-col="3"></td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="1">w</td>
+                  <td data-row="5" data-col="2">0.179***</td>
+                  <td data-row="5" data-col="3">0.100***</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">(0.013)</td>
+                  <td data-row="6" data-col="3">(0.012)</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="1">fit_x</td>
+                  <td data-row="7" data-col="2"></td>
+                  <td data-row="7" data-col="3">0.811***</td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="1"></td>
+                  <td data-row="8" data-col="2"></td>
+                  <td data-row="8" data-col="3">(0.014)</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</div>
+</div></div>
+<p>Other R packages for IV: <code>ivreg</code> (IV fitting), <code>ivpack</code> (alternative CIs with weak instruments), <code>ivDiag</code> (new F-test)</p>
+</section>
+<section id="iv-terminology" class="slide level2">
+<h2>IV terminology</h2>
+<p><img data-src="img/Felton_iv_terminology.png"></p>
+
+<aside><div>
+<p>By Felton and Stewart (2024)</p>
+</div></aside></section>
+<section>
+<section id="some-iv-extensions" class="title-slide slide level1 center">
+<h1>Some IV extensions</h1>
+<ul>
+<li><p>When X is binary, Y is continuous:</p>
+<ol type="1">
+<li>just LPM in stage 1</li>
+<li>fit logit in stage 1, use predicted <em>propensities</em> in stage 2 as IV</li>
+<li>fit stage-1 (nonlinear) and stage-2 simultaneously, allowing errors to correlate (SEM or <code>treatReg</code>)</li>
+</ol></li>
+<li><p>When X is continuous and Y is binary:</p>
+<ol type="1">
+<li>just LPM in stage 2 in IV</li>
+<li>fit nonlinear (probit) in stage 2 <code>ivprobit</code></li>
+<li>fit stage-1 (lm) and stage-2 (nonlinear) simultaneously, allowing errors to correlate (SEM)</li>
+</ol></li>
+<li><p>When both X and Y are binary:</p>
+<ol type="1">
+<li>just use LPM in both stages</li>
+<li>fit stage-1 and stage-2 simultaneously, both nonlinear allowing errors to correlate (SEM or <code>gjrm</code>)</li>
+</ol></li>
+</ul>
+</section>
+<section id="in-class-task-5mins" class="slide level2" data-background-color="#17a091">
+<h2>In-class task (5mins)</h2>
+<p>Think of your dissertation topic or some topic of interest</p>
+<p>Think about a key independent variable in this topic</p>
+<p>Can you think of an IV in this context?</p>
+<p>Discuss with your peer</p>
+</section>
+<section id="how-to-find-as-if-random-variation-good-instruments" class="slide level2">
+<h2>How to find as-if random variation (good instruments)</h2>
+<p>Randomised experiments can be used credibly for IV</p>
+<p>As-if randomisation can be found in “natural” experiments (random things that happen in the world)</p>
+<div class="fragment">
+<p><img data-src="img/Lal_iv_types.png"></p>
+</div>
+</section>
+<section id="validity-of-iv-is-often-rain-go-away-mellon-2024-ajps" class="slide level2">
+<h2>Validity of IV is often ?: Rain go away (Mellon 2024, AJPS)</h2>
+<p><img data-src="img/rain.jpg" style="width:60.0%"></p>
+</section>
+<section id="iv-bounds" class="slide level2">
+<h2>IV bounds</h2>
+<p>Under no additional restrictions, i.e., from the non-parametric assumptions encoded in the DAG alone, the treatment effect <strong>cannot</strong> be identified.</p>
+<p>However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect</p>
+</section></section>
+<section>
+<section id="issues-with-iv" class="title-slide slide level1 center">
+<h1>Issues with IV</h1>
+<div class="callout callout-warning no-icon callout-style-simple">
+<div class="callout-body">
+<div class="callout-content">
+<p>As described by Felton and Stewart (2024), IV is a powerful strategy, but a very fragile one that should be handled with care!</p>
+</div>
+</div>
+</div>
+</section>
+<section id="issues" class="slide level2">
+<h2>Issues</h2>
+<p>Despite being a more flexible approach, allowing for effect heterogeneity, and more clearly articulated in terms of the experimental analogy, IVs in practice are still very fragile</p>
+<p>Felton and Stewart (2024) identify three of these issues, all of them exacerbated by the presence of <em>weak instruments</em></p>
+<p>Here I will only focus on the first two problems they discuss: identification bias, and estimation bias</p>
+<p>The authors also discuss Type-M bias; as a complicated issue, I will not further expand on it</p>
+</section>
+<section id="issues-1" class="slide level2">
+<h2>Issues</h2>
+<p><img data-src="img/Felton_iv_problems.png"></p>
+</section>
+<section id="an-illustration" class="slide level2">
+<h2>An illustration</h2>
+<p><img data-src="img/Felton_iv_amplification.png"></p>
+</section>
+<section id="identification-bias" class="slide level2">
+<h2>Identification bias</h2>
+<p>Identification bias refers to the case when the required assumptions for an IV to be valid do not (perfectly hold)</p>
+<ul>
+<li>Unconfoundedness/exclusion violation: there is an unobserved confounder between the instrument and the outcome or a mechanism from the instrument and the outcome through which the instrument affect the outcome</li>
+</ul>
+<div class="fragment">
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Recommendation? Bias analysis</strong></p>
+</div>
+<div class="callout-content">
+<p>Sensitivity analysis, or quantitative bias analysis, refers to the exercise of measuring the impact of unobserved confounder of an assumed magnitude on the effect of interest</p>
+<p>For IVs, the sensitivity of the reduced form is usually the target of analysis</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="estimation-bias" class="slide level2">
+<h2>Estimation bias</h2>
+<p>Estimation bias arises in the IV setting because the 2SLS estimator is biased towards the OLS estimator</p>
+<p>This bias is always present, but becomes negligible for strong instruments and large sample sizes</p>
+<div class="fragment">
+<ul>
+<li>The weaker the first stage, and therefore the most similar the predicted values of <span class="math inline">\(D\)</span> to the observed input, the closest the final estimates will be</li>
+</ul>
+</div>
+<div class="fragment">
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Recommendation? Properly report F-statistic</strong></p>
+</div>
+<div class="callout-content">
+<p>Both Lal’s and Felton’s reviews find that, despite the test being widely referenced as a necessary check, few studies report the F-statistic of the first stage. From the ones that do so, many do it improperly, withouht accounting for non classical errors</p>
+<p>This exacerbates the estimation issues of IV</p>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section id="now-you-are-in-the-iv-league" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Now you are in the IV league!</h1>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Instrumental variables</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="4.lecture4_iv_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="4.lecture4_iv_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 1000,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

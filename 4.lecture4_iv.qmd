@@ -1,0 +1,578 @@
+---
+title: "Instrumental variables: backdoors to nowhere"
+author: "Ozan Aksoy"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Instrumental variables"
+date: today
+date-format: long
+format: 
+  revealjs:
+    theme: simple
+    width: 1600
+    height: 1000
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
+---
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+## What if some backdoors are open?
+
+```{r, echo=FALSE}
+DiagrammeR::grViz("
+digraph a {
+  graph []
+  node [shape = plaintext]
+    X [label = 'Indep var']
+    Y [label = 'Outcome']
+    C [label = 'Bunch of stuff']
+    D [label = 'Unobserved monster', shape = oval]
+  edge []
+    X->Y
+    C->X
+    C->Y
+    D->X
+    D->Y
+{ rank = same; X; Y }
+{ rank = same; C; D }
+  }
+")
+
+DiagrammeR::grViz("
+digraph b {
+  graph []
+  node [shape = plaintext]
+    Z [label = 'Exgenous thing']
+    X [label = 'Indep var']
+    Y [label = 'Outcome']
+    C [label = 'Bunch of stuff']
+    D [label = 'Unobserved monster', shape = oval]
+  edge []
+    Z->X
+    X->Y
+    C->X
+    C->Y
+    D->X
+    D->Y
+{ rank = same; Z; X; Y }
+{ rank = same; C; D }
+  }
+")
+
+```
+
+
+## Why do instrumental variables work?
+
+::: columns
+::: {.column width="50%"}
+
+```{r, echo=FALSE, fig.width=5, fig.height=4}
+DiagrammeR::grViz("
+digraph iv {
+  graph []
+  node [shape = plaintext]
+    Z 
+    X 
+    Y 
+    e 
+  edge []
+    Z->X
+    X->Y
+    e->X [dir=both, style = 'dashed']
+    e->Y
+{ rank = same; Z; X; Y }
+  }
+")
+```
+:::
+
+::: {.column width="50%"}
+
+Cov(Z,Y) has to be through Cov(X,Y)
+
+Cov(Z,Y)/Cov(Z,X) *has to be* $X \rightarrow Y$
+:::
+:::
+
+Another way to see this (define $X\rightarrow Y = \delta$, assume Z is binary):
+
+$$
+E[Y\mid Z = 1] - E[Y\mid Z = 0] = \\ \delta (E[X\mid Z = 1] - E[X\mid Z = 0]) + (E[e\mid Z = 1] - E[e\mid Z = 0])
+\\
+\frac{(E[Y\mid Z = 1] - E[Y\mid Z = 0])}{(E[X\mid Z = 1] - E[X\mid Z = 0])} = \\ \frac{\delta (E[X\mid Z = 1] - E[X\mid Z = 0]) + (E[e\mid Z = 1] - E[e\mid Z = 0])}{(E[X\mid Z = 1] - E[X\mid Z = 0])} = \delta
+$$
+
+## Assumptions, assumptions
+
+::: columns
+::: {.column width="50%"}
+
+```{r, echo=FALSE, fig.width=5, fig.height=4}
+DiagrammeR::grViz("
+digraph iv {
+  graph []
+  node [shape = plaintext]
+    Z 
+    X 
+    Y 
+    e 
+  edge []
+    Z->X
+    X->Y
+    e->X [dir=both, style = 'dashed']
+    e->Y
+{ rank = same; Z; X; Y }
+  }
+")
+```
+
+
+**(a) Z is a valid instrument**
+:::
+
+
+::: {.column width="50%"}
+
+```{r, echo=FALSE, fig.width=5, fig.height=4}
+DiagrammeR::grViz("
+digraph iv {
+  graph []
+  node [shape = plaintext]
+    Z 
+    X 
+    Y 
+    e 
+  edge []
+    Z->X
+    X->Y
+    e->X [dir=both, style = 'dashed']
+    e->Z [dir=both, style = 'dashed']
+    e->Y
+{ rank = same; Z; X; Y }
+  }
+")
+```
+
+**(b) Z is NOT a valid instrument**
+
+:::
+:::
+
+* **Assumption 1: relevance**  $Z \rightarrow X$ is strong. Recall IV estimator = Cov(Z,Y)/Cov(Z,X). If
+$Cov(Z,X) \rightarrow 0$ the ratio is doomed!
+
+* **Assumption 2: validity (aka exclusion restriction)**  No paths from Z to Y, except that goes only through X. This is often hard to justify!
+
+* **Assumption 3:** For IV estimator to be ATE, $X \rightarrow Y$ and $Z \rightarrow X$ should be constant and linear
+
+## Do we need completely random instruments?
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=FALSE}
+DiagrammeR::grViz("
+digraph iv {
+  graph []
+  node [shape = plaintext]
+    C
+    B
+    D
+    Z 
+    X 
+    Y 
+    A
+  edge []
+    C->Z
+    C->X
+    Z->X
+    X->Y
+    B->Z
+    B->Y
+    D->X
+    D->Y
+    Z->A
+    A->Y
+{ rank = same; C; B; D }
+{ rank = same; X; Y; Z }
+  }
+")
+```
+:::
+::: {.column width="50%"}
+
+All paths from Z to Y:
+
+Z $\rightarrow$ X $\rightarrow$ Y
+
+Z $\rightarrow$ X $\leftarrow$ D $\rightarrow$ Y
+
+Z $\leftarrow$ C $\rightarrow$ X $\rightarrow$ Y
+
+Z $\leftarrow$ C $\rightarrow$ X $\leftarrow$ D $\rightarrow$ Y
+
+Z $\leftarrow$ B $\rightarrow$ Y
+
+Z $\rightarrow$ A $\rightarrow$ Y
+:::
+:::
+
+Which of these paths from Z to Y do **not** go through X? We should block them.
+So {B, A} needs to be blocked on the second-stage to identify $X \rightarrow Y$ through Z.
+
+Why block A?
+
+How about C?
+
+## Example: attendance to causality and future income
+
+|         | attended | not attended | all     |
+|---------|----------|--------------|---------|
+| Received reminders (future income) | 80 (£45)  | 20 (£33)  | 100 (£42.6)  |
+| No reminders       (future income) | 100 (£48) | 100 (£34) | 200 (£41)    | 
+
+$$
+\delta = \frac{E[y_i\mid z_i=1]-E[y_i\mid z_i=0]}{E[x_i\mid z_i=1]-E[x_i\mid z_i=0]} = \frac{42.6 - 41}{0.8 - 0.5} = £5.33 
+$$
+. . . 
+
+But what a minute, what does this £5.33 tell us? Reminders only shifted attendance
+for some?
+
+
+## Complier types
+
+What is the probability of switching attendance due to the reminder? We can estimate this due to randomisation!
+
+We need some further clarifications. Let's divide the population in four latent subgroups:
+
+. . .
+
+* **Never-takers** : those we don't care about causal inference, or about lecture, so they won't come anyways. What's the effect of the reminder for them?
+
+. . . 
+
+* **Compliers**: the forgetful (like me), so they will attend if reminded but not otherwise. What's the effect of the reminder for them?
+
+. . . 
+
+* **Always-takers**: the highly organized and causal inference lovers, that would attend under any circumstances. What's the effect for this group?
+
+. . .
+
+*  **Defiers**: those who were planning to attend, but when reminded, they would rather not! *We assume that this group does not exist (or if this group exists, compliers should not exist).* This assumption is called **monotonicity**!
+
+So, $\delta$ is completely due to compliers! And hence it is called **Local Average Treatment Effect (LATE)**
+
+## Example: LATE
+
+|         | attended | not attended | all     |
+|---------|----------|--------------|---------|
+| T | 80 (£45)  | 20 (£33)  | 100 (£42.6)  |
+| C | 100 (£48) | 100 (£34) | 200 (£41)    | 
+
+Proportion always takers: $Pr[C=a] = \frac{100}{200} = 0.5$
+
+Proportion never takers:  $Pr[C=n] = \frac{20}{100} = 0.2$
+
+(Assuming no defiers) proportion compliers: $Pr[C=c] = 1 - 0.5 - 0.2 = 0.3$
+
+$E[Y \mid X=1, Z = 1] = \frac{Pr[C=c]}{Pr[C=c]+Pr[C=a]}E[Y^1|C=c] + \frac{Pr[C=a]}{Pr[C=c]+Pr[C=a]}E[Y^1|C=a]$
+
+$45 = \frac{0.3}{0.3+0.5}E[Y^1|C=c] + \frac{0.5}{0.3+0.5}48 \rightarrow E[Y^1|C=c] = 40$
+
+$E[Y \mid X=0, Z = 0] = \frac{Pr[C=c]}{Pr[C=c]+Pr[C=n]}E[Y^0|C=c] + \frac{Pr[C=n]}{Pr[C=c]+Pr[C=n]}E[Y^0|C=n]$
+
+$34 = \frac{0.3}{0.3+0.2}E[Y^0|C=c] + \frac{0.2}{0.3+0.2}33 \rightarrow E[Y^0|C=c] = 34.66$
+
+$E[\delta\mid C=c] = 40 - 34.66 = 5.33$
+
+
+## More assumptions, assumptions
+
+* **Assumption 1: relevance**  $Z \rightarrow X$ is strong. Recall IV estimator = Cov(Z,Y)/Cov(Z,X). If
+$Cov(Z,X) \rightarrow 0$ the ratio is doomed!
+
+* **Assumption 2: validity (aka exclusion restriction)**  No paths from Z to Y, except that goes only through X. This is often hard to justify!
+
+* **Assumption 3:** When $X \rightarrow Y$ and $Z \rightarrow X$ are not constant, **monotonicity** for LATE to be identified
+
+* **Assumption 4:** SUTVA 
+
+* Constant effects assumption ($X \rightarrow Y$ and $Z \rightarrow X$): CLASICAL IV
+
+* LATE is the modern approach
+
+* ...
+
+## Can IV assumptions be tested?
+
+```{r, echo=FALSE, fig.width=3, fig.height=2}
+DiagrammeR::grViz("
+digraph iv {
+  graph []
+  node [shape = plaintext]
+    Z 
+    X 
+    Y 
+    e 
+  edge []
+    Z->X
+    X->Y
+    e->X [dir=both, style = 'dashed']
+    e->Y
+{ rank = same; Z; X; Y }
+  }
+")
+```
+
+
+1. **Assumption 1: relevance**  $Z \rightarrow X$ is strong. Recall IV estimator = Cov(Z,Y)/Cov(Z,X). If
+$Cov(Z,X) \rightarrow 0$ the ratio is doomed!
+
+  * Easy peasy, just regress X on Z and check $F$ value, the larger the better
+
+2. **Assumption 2: validity (aka exclusion restriction)**  No paths from Z to Y, except that goes only through X. This is often hard to justify!
+
+  * Not really possible. Why does $E[Y|Z, X]$ not a good test for this?. Some tests possible when you have multiple instruments, but then LATE is tricky in that case.
+
+3. **Assumption 3:** **Monotonicity**?
+
+  * You need theory here (as everywhere)
+  
+. . . 
+
+ (hint: collider bias)
+
+## How to do it with data?
+::: columns
+::: {.column width="50%"}
+
+```{r, message=FALSE, warning=FALSE, echo = TRUE, fig.width=6, fig.height=3}
+set.seed(123)
+z <- rnorm(10000) #create data
+u <- rnorm(10000)
+w <- rnorm(10000)
+x <- 0.9*z + 0.8*u + 0.2*w + rnorm(10000)
+y <- 0.8*x + 0.7*u + 0.1*w + rnorm(10000)
+d <- as.data.frame(cbind(y, x, z, u, w))
+m1 <- lm(y~x+w,d)     #ols
+m2 <- lm(y~x+w+u,d)   #ols-correct
+m3 <- lm(x~z+w,d)     #stage-1-2sls
+d$xhat <- predict(m3) #predict xhat
+m4 <- lm(y~xhat+w,d)  #stage-2-2sls
+
+DiagrammeR::grViz("
+digraph iv {
+  graph []
+  node [shape = plaintext]
+    z 
+    u  [label = 'u (unobs)']
+    w 
+    x
+    y
+  edge []
+    z->x
+    x->y
+    w->x
+    w->y
+    u->y
+    u->x
+{ rank = same; z; x; y }
+  }
+")
+```
+:::
+
+::: {.column width="50%"}
+
+::: {style="font-size: 50%;"}
+```{r, message=FALSE, warning=FALSE, echo = TRUE}
+modelsummary::msummary(list("Incorrect-OLS"    = m1, 
+                            "Correct-OLS"      = m2,
+                            "2SLS-2nd-stage"   = m4, 
+                            "2SLS-1st-stage"   = m3) 
+                      ,stars= TRUE, gof_omit = ".*") # Note: SEs are incorrect
+```
+:::
+
+:::
+:::
+
+## Now with the fixest package
+
+::: columns
+::: {.column width="50%"}
+
+```{r, message=FALSE, warning=FALSE, echo = TRUE}
+set.seed(123)
+z <- rnorm(10000)
+u <- rnorm(10000)
+w <- rnorm(10000)
+x <- 0.9*z + 0.8*u + 0.2*w + rnorm(10000)
+y <- 0.8*x + 0.7*u + 0.1*w + rnorm(10000)
+d <- as.data.frame(cbind(y, x, z, u, w))
+#Note: corrected SEs, and F and Wu-hausman tests
+#F-test is for the relevance assumption of stage1
+
+#Wu-hausman compares coeffs of OLS (w.o u) vs IV
+mF <- fixest::feols(y~w | x~z, data = d)
+```
+
+::: {style="font-size: 80%;"}
+```{r, message=FALSE, warning=FALSE, echo = TRUE}
+summary(mF)
+```
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {style="font-size: 50%;"}
+```{r, message=FALSE, warning=FALSE, echo = TRUE}
+modelsummary::msummary(list('First stage' = mF$iv_first_stage$x,
+                            'Second stage' = mF), stars= TRUE, gof_omit = ".*")
+```
+:::
+:::
+:::
+
+Other R packages for IV: `ivreg` (IV fitting), `ivpack` (alternative CIs with weak instruments), `ivDiag` (new F-test)
+
+## IV terminology
+
+![](img/Felton_iv_terminology.png)
+
+:::aside
+By Felton and Stewart (2024)
+:::
+
+
+# Some IV extensions
+
+* When X is binary, Y is continuous: 
+  1. just LPM in stage 1
+  2. fit logit in stage 1, use predicted *propensities* in stage 2 as IV
+  3. fit stage-1 (nonlinear) and stage-2 simultaneously, allowing errors to correlate (SEM or `treatReg`)
+  
+* When X is continuous and Y is binary:
+  1. just LPM in stage 2 in IV
+  2. fit nonlinear (probit) in stage 2 `ivprobit`
+  3. fit stage-1 (lm) and stage-2 (nonlinear) simultaneously, allowing errors to correlate (SEM)
+  
+* When both X and Y are binary:
+
+  1. just use LPM in both stages 
+  2. fit stage-1 and stage-2 simultaneously, both nonlinear allowing errors to correlate (SEM or `gjrm`)
+
+
+## In-class task (5mins) {background-color="#17a091"}
+
+Think of your dissertation topic or some topic of interest
+
+Think about a key independent variable in this topic
+
+Can you think of an IV in this context?
+
+Discuss with your peer
+
+
+## How to find as-if random variation (good instruments)
+
+Randomised experiments can be used credibly for IV
+
+As-if randomisation can be found in "natural" experiments (random things that happen in the world)
+
+. . .
+
+![](img/Lal_iv_types.png)
+
+## Validity of IV is often ?: Rain go away (Mellon 2024, AJPS)
+
+![](img/rain.jpg){width=60%}
+
+## IV bounds
+
+Under no additional restrictions, i.e., from the non-parametric assumptions encoded in the DAG alone, the treatment effect **cannot** be identified.
+
+However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect
+
+
+# Issues with IV
+
+:::{.callout-warning}
+As described by Felton and Stewart (2024), IV is a powerful strategy, but a very fragile one that should be handled with care!
+:::
+
+
+## Issues
+
+Despite being a more flexible approach, allowing for effect heterogeneity, and more clearly articulated in terms of the experimental analogy, IVs in practice are still very fragile 
+
+Felton and Stewart (2024) identify three of these issues, all of them exacerbated by the presence of *weak instruments*
+
+Here I will only focus on the first two problems they discuss: identification bias, and estimation bias
+
+The authors also discuss Type-M bias; as a complicated issue, I will not further expand on it
+
+## Issues
+
+![](img/Felton_iv_problems.png)
+
+## An illustration
+
+![](img/Felton_iv_amplification.png)
+
+## Identification bias
+
+Identification bias refers to the case when the required assumptions for an IV to be valid do not (perfectly hold)
+
+* Unconfoundedness/exclusion violation: there is an unobserved confounder between the instrument and the outcome or a mechanism from the instrument and the outcome
+through which the instrument affect the outcome
+
+. . . 
+
+:::{.callout-tip}
+## Recommendation? Bias analysis
+
+Sensitivity analysis, or quantitative bias analysis, refers to the exercise of measuring the impact of unobserved confounder of an assumed magnitude on the effect of interest
+
+For IVs, the sensitivity of the reduced form is usually the target of analysis
+:::
+
+## Estimation bias
+
+Estimation bias arises in the IV setting because the 2SLS estimator is biased towards the OLS estimator
+
+This bias is always present, but becomes negligible for strong instruments and large sample sizes
+
+. . . 
+
+
+* The weaker the first stage, and therefore the most similar the predicted values of $D$ to the observed input, the closest the final estimates will be
+
+. . . 
+
+:::{.callout-tip}
+## Recommendation? Properly report F-statistic
+
+Both Lal's and Felton's reviews find that, despite the test being widely referenced as a necessary check, few studies report the F-statistic of the first stage. From the ones that do so, many do it improperly, withouht accounting for non classical errors
+
+This exacerbates the estimation issues of IV 
+:::
+
+
+# Now you are in the IV league! {background-color="#17a091"}
