@@ -409,6 +409,7 @@ treated, the smaller will be the diﬀerential treatment eﬀect bias because th
 :::
 :::
 
+
 ## Naive estimator vs. ATE: numerical example
 
 $$
@@ -422,6 +423,17 @@ $$
 && (= 2.5:\ \text{ATT--ATC bias})
 \end{align}
 $$
+
+
+## Naive estimator vs. ATT or ATC
+
+* Assumption 1: $E[Y^T|D=1] = E[Y^T|D=0]$
+* Assumption 2: $E[Y^C|D=1] = E[Y^C|D=0]$
+
+* When both assumptions hold: $\widehat{\delta}_{\text{naive}} = E(\delta) = ATE$
+* When only assumption 1 holds: $\widehat{\delta}_{\text{naive}} = E(\delta|D=0) = ATC$
+* When only assumption 2 holds: $\widehat{\delta}_{\text{naive}} = E(\delta|D=1) = ATT$
+* When neither holds, take a course on causality!
 
 
 ## Randomisation as the solution

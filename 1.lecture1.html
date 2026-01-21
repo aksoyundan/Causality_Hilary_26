@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Ozan Aksoy">
-  <meta name="dcterms.date" content="2026-01-20">
+  <meta name="dcterms.date" content="2026-01-21">
   <title>Causal Inference</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -146,7 +146,7 @@ Ozan Aksoy
 </div>
 </div>
 
-  <p class="date">January 20, 2026</p>
+  <p class="date">January 21, 2026</p>
 </section>
 <section id="potential-outcomes-counterfactuals-and-a-christmas-carol" class="title-slide slide level1 center">
 <h1>Potential outcomes, counterfactuals and A Christmas Carol</h1>
@@ -1413,6 +1413,17 @@ C
 &amp;&amp; (= 2.5:\ \text{ATT--ATC bias})
 \end{align}
 \]</span></p>
+</section>
+<section id="naive-estimator-vs.-att-or-atc" class="slide level2">
+<h2>Naive estimator vs.&nbsp;ATT or ATC</h2>
+<ul>
+<li><p>Assumption 1: <span class="math inline">\(E[Y^T|D=1] = E[Y^T|D=0]\)</span></p></li>
+<li><p>Assumption 2: <span class="math inline">\(E[Y^C|D=1] = E[Y^C|D=0]\)</span></p></li>
+<li><p>When both assumptions hold: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta) = ATE\)</span></p></li>
+<li><p>When only assumption 1 holds: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta|D=0) = ATC\)</span></p></li>
+<li><p>When only assumption 2 holds: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta|D=1) = ATT\)</span></p></li>
+<li><p>When neither holds, take a course on causality!</p></li>
+</ul>
 </section>
 <section id="randomisation-as-the-solution" class="slide level2">
 <h2>Randomisation as the solution</h2>
