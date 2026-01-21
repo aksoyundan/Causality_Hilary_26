@@ -1417,12 +1417,12 @@ C
 <section id="naive-estimator-vs.-att-or-atc" class="slide level2">
 <h2>Naive estimator vs.&nbsp;ATT or ATC</h2>
 <ul>
-<li><p>Assumption 1: <span class="math inline">\(E[Y^T|D=1] = E[Y^T|D=0]\)</span></p></li>
-<li><p>Assumption 2: <span class="math inline">\(E[Y^C|D=1] = E[Y^C|D=0]\)</span></p></li>
+<li><p>Assumption 1: <span class="math inline">\(E[Y^T|D=T] = E[Y^T|D=C]\)</span></p></li>
+<li><p>Assumption 2: <span class="math inline">\(E[Y^C|D=T] = E[Y^C|D=C]\)</span></p></li>
 <li><p>When both assumptions hold: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta) = ATE\)</span></p></li>
-<li><p>When only assumption 1 holds: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta|D=0) = ATC\)</span></p></li>
-<li><p>When only assumption 2 holds: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta|D=1) = ATT\)</span></p></li>
-<li><p>When neither holds, take a course on causality!</p></li>
+<li><p>When only assumption 1 holds: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta|D=C) = ATC\)</span></p></li>
+<li><p>When only assumption 2 holds: <span class="math inline">\(\widehat{\delta}_{\text{naive}} = E(\delta|D=T) = ATT\)</span></p></li>
+<li><p>When neither holds, go home … and take a course on causality!</p></li>
 </ul>
 </section>
 <section id="randomisation-as-the-solution" class="slide level2">
