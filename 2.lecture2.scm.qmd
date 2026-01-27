@@ -387,6 +387,7 @@ $X \rightarrow A \rightarrow B \leftarrow Y$
 
 $X \rightarrow A \rightarrow C \leftarrow Y$, so:
 
+1. $X \perp Y$
 
 2. $X \perp Y \mid A$
 
@@ -1004,6 +1005,66 @@ impliedConditionalIndependencies(w)
 
 * See this weeks exercise for applied DAG examples with and without data!!
 
+
+## Simple example
+
+::: {.columns}
+
+::: {.column width="30%"}
+```{r, echo=FALSE}
+w <- dagitty('dag {
+             Z -> Y Z -> X X -> Y}' )
+plot(w)
+```
+:::
+
+:::{.column width="70%"}
+
+\textbf{Model (binary variables):}
+
+$$
+P(Z=1) = 0.5, \qquad P(Z=0) = 0.5
+$$
+
+
+$$
+P(X=1 \mid Z=1) = 0.8, P(X=1 \mid Z=0) = 0.2
+$$
+
+$$
+P(Y=1 \mid X,Z) =
+\begin{cases}
+0.9 & \text{if } X=1,\, Z=1 \\
+0.6 & \text{if } X=1,\, Z=0 \\
+0.7 & \text{if } X=0,\, Z=1 \\
+0.1 & \text{if } X=0,\, Z=0
+\end{cases}
+$$
+:::
+
+:::
+
+$$
+P(Y=1 \mid do(X=1))
+= \sum_{z} P(Y=1 \mid X=1, Z=z)\,P(Z=z)
+= 0.6 \cdot 0.5 + 0.9 \cdot 0.5
+= 0.75
+$$
+
+$$
+P(Y=1 \mid do(X=0))
+= \sum_{z} P(Y=1 \mid X=0, Z=z)\,P(Z=z)
+= 0.1 \cdot 0.5 + 0.7 \cdot 0.5
+= 0.40
+$$
+
+$$
+P(Y=1 \mid do(X=1)) - P(Y=1 \mid do(X=0)) = 0.75 - 0.4 = 0.35
+$$
+
+$$
+Naive \ quantities \ P(Y=1 \mid X)) = 0.84, P(Y=1 \mid X=0) = 0.22
+$$
 
 ## SCM/DAG: Key insights
 

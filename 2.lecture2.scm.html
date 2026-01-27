@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Ozan Aksoy">
-  <meta name="dcterms.date" content="2025-12-29">
+  <meta name="dcterms.date" content="2026-01-27">
   <title>Graphical Causal Inference (DAG, SCM)</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -190,7 +190,7 @@
       margin-right: 0; 
     }
   </style>
-  <link href="2.lecture2.scm_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+  <link href="2.lecture2.scm_files/libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
   <script src="2.lecture2.scm_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
   <script src="2.lecture2.scm_files/libs/viz-1.8.2/viz.js"></script>
   <link href="2.lecture2.scm_files/libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
@@ -217,7 +217,7 @@ Ozan Aksoy
 </div>
 </div>
 
-  <p class="date">December 29, 2025</p>
+  <p class="date">January 27, 2026</p>
 </section>
 <section id="recap-from-previous-session" class="slide level2">
 <h2>Recap from previous session</h2>
@@ -342,8 +342,8 @@ Ozan Aksoy
 <div class="column" style="width:30%;">
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-3e5e957553383c9332ac" style="width:288px;height:288px;"></div>
-<script type="application/json" data-for="htmlwidget-3e5e957553383c9332ac">{"x":{"diagram":"\ndigraph fork {\n  graph [rankdir = \"LR\", splines=false]\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  A [label = \"A\"]\n  X [label = \"X\"]\n  Y [label = \"Y\"]\n  A -> X\n  A -> Y\n  {rank = same; X; Y}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-2b9ce730baf16299cee4" style="width:288px;height:288px;"></div>
+<script type="application/json" data-for="htmlwidget-2b9ce730baf16299cee4">{"x":{"diagram":"\ndigraph fork {\n  graph [rankdir = \"LR\", splines=false]\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  A [label = \"A\"]\n  X [label = \"X\"]\n  Y [label = \"Y\"]\n  A -> X\n  A -> Y\n  {rank = same; X; Y}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p><strong>(a) fork</strong></p>
@@ -352,8 +352,8 @@ Ozan Aksoy
 </div><div class="column" style="width:30%;">
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-e825b2c251fcac5d6535" style="width:384px;height:288px;"></div>
-<script type="application/json" data-for="htmlwidget-e825b2c251fcac5d6535">{"x":{"diagram":"\ndigraph chain {\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  X [label = \"X\"]\n  A [label = \"A\"]\n  Y [label = \"Y\"]\n  X -> A\n  A -> Y\n  {rank = same; X; A; Y}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-e6abd38e2ef12db4d6b4" style="width:384px;height:288px;"></div>
+<script type="application/json" data-for="htmlwidget-e6abd38e2ef12db4d6b4">{"x":{"diagram":"\ndigraph chain {\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  X [label = \"X\"]\n  A [label = \"A\"]\n  Y [label = \"Y\"]\n  X -> A\n  A -> Y\n  {rank = same; X; A; Y}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p><strong>(b) chain</strong></p>
@@ -362,8 +362,8 @@ Ozan Aksoy
 </div><div class="column" style="width:30%;">
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-edae55b4e10017cb7a30" style="width:288px;height:288px;"></div>
-<script type="application/json" data-for="htmlwidget-edae55b4e10017cb7a30">{"x":{"diagram":"\ndigraph collider {\n  graph [rankdir = \"LR\", splines=false]\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  X [label = \"X\"]\n  Y [label = \"Y\"]\n  A [label = \"A\"]\n  X -> A\n  Y -> A\n  {rank = same; X; Y}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-165a3e5b56555c4d938b" style="width:288px;height:288px;"></div>
+<script type="application/json" data-for="htmlwidget-165a3e5b56555c4d938b">{"x":{"diagram":"\ndigraph collider {\n  graph [rankdir = \"LR\", splines=false]\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  X [label = \"X\"]\n  Y [label = \"Y\"]\n  A [label = \"A\"]\n  X -> A\n  Y -> A\n  {rank = same; X; Y}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p><strong>(c) collider (inverted fork)</strong></p>
@@ -470,14 +470,15 @@ Ozan Aksoy
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-ce84a54b982364ae5322" style="width:288px;height:288px;"></div>
-<script type="application/json" data-for="htmlwidget-ce84a54b982364ae5322">{"x":{"diagram":"\ndigraph ex1 {\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  A [label = \"A\"]\n  B [label = \"B\"]\n  C [label = \"C\"]\n  X [label = \"X\"]\n  Y [label = \"Y\"]\n  X -> A\n  A -> B\n  A -> C\n  Y -> C\n  Y -> B\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-1fb122f963516183cb64" style="width:288px;height:288px;"></div>
+<script type="application/json" data-for="htmlwidget-1fb122f963516183cb64">{"x":{"diagram":"\ndigraph ex1 {\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  A [label = \"A\"]\n  B [label = \"B\"]\n  C [label = \"C\"]\n  X [label = \"X\"]\n  Y [label = \"Y\"]\n  X -> A\n  A -> B\n  A -> C\n  Y -> C\n  Y -> B\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p><strong>(a) Paths between X and Y</strong></p>
 <p><span class="math inline">\(X \rightarrow A \rightarrow B \leftarrow Y\)</span></p>
 <p><span class="math inline">\(X \rightarrow A \rightarrow C \leftarrow Y\)</span>, so:</p>
-<ol start="2" type="1">
+<ol type="1">
+<li><p><span class="math inline">\(X \perp Y\)</span></p></li>
 <li><p><span class="math inline">\(X \perp Y \mid A\)</span></p></li>
 <li><p><span class="math inline">\(X \perp Y \mid (A,B)\)</span></p></li>
 <li><p><span class="math inline">\(X \perp Y \mid (A, C)\)</span></p></li>
@@ -486,8 +487,8 @@ Ozan Aksoy
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-af703a48a4e28ec8132e" style="width:384px;height:288px;"></div>
-<script type="application/json" data-for="htmlwidget-af703a48a4e28ec8132e">{"x":{"diagram":"\ndigraph chain {\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  X -> A\n  X -> B\n  B -> C\n  B -> Y\n  C -> Y\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-3ee5713789ed28088902" style="width:384px;height:288px;"></div>
+<script type="application/json" data-for="htmlwidget-3ee5713789ed28088902">{"x":{"diagram":"\ndigraph chain {\n  node [shape = circle, fixedsize=true, width=0.5, fontsize=18]\n  X -> A\n  X -> B\n  B -> C\n  B -> Y\n  C -> Y\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p><strong>(b) Paths between X and Y</strong></p>
@@ -548,8 +549,8 @@ Ozan Aksoy
 <div class="column" style="width:30%;">
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-aa3db95a86587e228a75" style="width:480px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-aa3db95a86587e228a75">{"x":{"diagram":"\ndigraph {\n  U -> Income\n  U -> Health\n  Income -> Wine\n  Health -> Wine\n  Income -> Lifespan\n  Health -> Lifespan\n  Wine -> Lifespan\n  Wine -> Accident\n  Accident -> Lifespan\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-96d568108f380209444f" style="width:480px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-96d568108f380209444f">{"x":{"diagram":"\ndigraph {\n  U -> Income\n  U -> Health\n  Income -> Wine\n  Health -> Wine\n  Income -> Lifespan\n  Health -> Lifespan\n  Wine -> Lifespan\n  Wine -> Accident\n  Accident -> Lifespan\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div><div class="column" style="width:70%;">
@@ -567,8 +568,8 @@ Ozan Aksoy
 <div class="column" style="width:30%;">
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-6fe1a2a2f09658a39809" style="width:480px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-6fe1a2a2f09658a39809">{"x":{"diagram":"\ndigraph {\n  U -> Income\n  U -> Health\n  Income -> Wine\n  Health -> Wine\n  Income -> Lifespan\n  Health -> Lifespan\n  Wine -> Lifespan\n  Wine -> Accident\n  Accident -> Lifespan\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-9324b9a68f4be4ad024f" style="width:480px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-9324b9a68f4be4ad024f">{"x":{"diagram":"\ndigraph {\n  U -> Income\n  U -> Health\n  Income -> Wine\n  Health -> Wine\n  Income -> Lifespan\n  Health -> Lifespan\n  Wine -> Lifespan\n  Wine -> Accident\n  Accident -> Lifespan\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div><div class="column" style="width:70%;">
@@ -1008,6 +1009,56 @@ Z1 _||_ Z2</code></pre>
 <li><p>And many more things</p></li>
 <li><p>See this weeks exercise for applied DAG examples with and without data!!</p></li>
 </ul>
+</section>
+<section id="simple-example" class="slide level2">
+<h2>Simple example</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="2.lecture2.scm_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:70%;">
+<p></p>
+<p><span class="math display">\[
+P(Z=1) = 0.5, \qquad P(Z=0) = 0.5
+\]</span></p>
+<p><span class="math display">\[
+P(X=1 \mid Z=1) = 0.8, P(X=1 \mid Z=0) = 0.2
+\]</span></p>
+<p><span class="math display">\[
+P(Y=1 \mid X,Z) =
+\begin{cases}
+0.9 &amp; \text{if } X=1,\, Z=1 \\
+0.6 &amp; \text{if } X=1,\, Z=0 \\
+0.7 &amp; \text{if } X=0,\, Z=1 \\
+0.1 &amp; \text{if } X=0,\, Z=0
+\end{cases}
+\]</span></p>
+</div></div>
+<p><span class="math display">\[
+P(Y=1 \mid do(X=1))
+= \sum_{z} P(Y=1 \mid X=1, Z=z)\,P(Z=z)
+= 0.6 \cdot 0.5 + 0.9 \cdot 0.5
+= 0.75
+\]</span></p>
+<p><span class="math display">\[
+P(Y=1 \mid do(X=0))
+= \sum_{z} P(Y=1 \mid X=0, Z=z)\,P(Z=z)
+= 0.1 \cdot 0.5 + 0.7 \cdot 0.5
+= 0.40
+\]</span></p>
+<p><span class="math display">\[
+P(Y=1 \mid do(X=1)) - P(Y=1 \mid do(X=0)) = 0.75 - 0.4 = 0.35
+\]</span></p>
+<p><span class="math display">\[
+Naive \ quantities \ P(Y=1 \mid X)) = 0.84, P(Y=1 \mid X=0) = 0.22
+\]</span></p>
 </section>
 <section id="scmdag-key-insights" class="slide level2">
 <h2>SCM/DAG: Key insights</h2>
