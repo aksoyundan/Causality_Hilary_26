@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Ozan Aksoy">
-  <meta name="dcterms.date" content="2026-01-05">
+  <meta name="dcterms.date" content="2026-01-27">
   <title>Difference-in-differences</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -147,7 +147,7 @@ Ozan Aksoy
 </div>
 </div>
 
-  <p class="date">January 5, 2026</p>
+  <p class="date">January 27, 2026</p>
 </section>
 <section>
 <section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
@@ -242,7 +242,7 @@ E[\color{blue}{Y_{1,post}|D=1}] - E[\color{red}{Y_{0,post}|D=1}]
 <section id="candidate-comparisons-1" class="slide level2">
 <h2>Candidate comparisons</h2>
 <p>Let’s check some candidates to fill in for <span class="math display">\[\color{red}{E[Y_{0,post}|D=1]}\]</span></p>
-<p>(Recall that we have our data in a 2x2 matrix)</p>
+<p>(Recall that we have our <strong>observed</strong> data in a 2x2 matrix)</p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 31%">
@@ -273,7 +273,7 @@ E[\color{blue}{Y_{1,post}|D=1}] - E[\color{red}{Y_{0,post}|D=1}]
 <section id="candidate-comparisons-2" class="slide level2">
 <h2>Candidate comparisons</h2>
 <p>Let’s check some candidates to fill in for <span class="math display">\[\color{red}{E[Y_{0,post}|D=1]}\]</span></p>
-<p>(Recall that we have our data in a 2x2 matrix)</p>
+<p>(Recall that we have our <strong>observed</strong> data in a 2x2 matrix)</p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 31%">
@@ -304,7 +304,7 @@ E[\color{blue}{Y_{1,post}|D=1}] - E[\color{red}{Y_{0,post}|D=1}]
 <section id="candidate-comparisons-3" class="slide level2">
 <h2>Candidate comparisons</h2>
 <p>Let’s check some candidates to fill in for <span class="math display">\[\color{red}{E[Y_{0,post}|D=1]}\]</span></p>
-<p>(Recall that we have our data in a 2x2 matrix)</p>
+<p>(Recall that we have our <strong>observed</strong> data in a 2x2 matrix)</p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 31%">
@@ -338,7 +338,7 @@ E[\color{blue}{Y_{1,post}|D=1}] - E[\color{red}{Y_{0,post}|D=1}]
 <p><span class="math display">\[
 \delta = \big(E[Y|D=1,Post] - E[Y|D=1, Pre] \big) - \big(E[Y|D=0,Post] - E[Y|D=0, Pre] \big)
 \]</span></p>
-<p>By consistency, we can write</p>
+<p>Assuming SUTVA, we can write</p>
 <p><span class="math display">\[
 \delta = \big(E[Y_1|D=1,Post] - E[Y_0|D=1,Pre] \big) - \big(E[Y_0|D=0,Post] - E[Y_0|D=0,Pre] \big)
 \]</span></p>
@@ -351,7 +351,7 @@ E[\color{blue}{Y_{1,post}|D=1}] - E[\color{red}{Y_{0,post}|D=1}]
 \]</span></p>
 <p><span class="math display">\[
 + \color{red}{E[Y_0|D=1, Post] -E[Y_0|D=1, Post]}
-\]</span> Recombining the terms, we get:</p>
+\]</span> Rearranging the terms, we get:</p>
 <p><span class="math display">\[
 \delta = \underbrace{E[Y_1|D=1,Post] - \color{red}{E[Y_0|D=1,Post]}}_{ATT}
 \]</span></p>
@@ -361,7 +361,7 @@ E[\color{blue}{Y_{1,post}|D=1}] - E[\color{red}{Y_{0,post}|D=1}]
 </section>
 <section id="identification-assumptions" class="slide level2">
 <h2>Identification assumptions</h2>
-<p>Therefore, the identification assumptions we need for the Diff-in-diff estimator to be consistent is called <em>parallel trends</em></p>
+<p>Therefore, the identification assumptions we need for the diff-in-diff estimator to be consistent is called <em>parallel trends</em></p>
 <p><span class="math display">\[
 E(\Delta Y_0|D=1) = E(\Delta Y_0|D=0)
 \]</span></p>
@@ -380,7 +380,7 @@ E(\Delta Y_0|D=1) = E(\Delta Y_0|D=0)
 <p><span class="math display">\[
 \Delta Y_0 \perp\!\!\!\perp D
 \]</span></p>
-<p>As with other identification assumptions, parallel trends is an unverifiable assumption! Why???</p>
+<p>As with other identification assumptions, parallel trends is an unverifiable assumption! Why?</p>
 <div class="fragment">
 <ul>
 <li><p>It’s an assumption about counterfactual variables!</p></li>
@@ -433,8 +433,9 @@ E(Y) = \alpha + \gamma D + \lambda T + \delta (D \times T)
 <p>This is known as the two-way fixed effect model</p>
 </div>
 </section></section>
-<section id="problems-with-twfe" class="title-slide slide level1 center" data-background-color="#17a091">
-<h1>Problems with TWFE</h1>
+<section>
+<section id="problems-with-twfe-when-treatment-is-dynamic" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Problems with TWFE when treatment is dynamic</h1>
 <p>It is tempting to apply the same logic and extend the TWFE model for multiple time period and multiple groups.</p>
 <p>But not so fast!</p>
 <p>Now we know this bring it own (many) issues:</p>
@@ -444,11 +445,109 @@ E(Y) = \alpha + \gamma D + \lambda T + \delta (D \times T)
 <li><p>Think about design vs model-based arguments</p></li>
 </ul>
 </section>
-
+<section id="did-with-multiple-periods" class="slide level2">
+<h2>DID with multiple periods</h2>
+<p>With multiple periods, we usually turn to the two-way FE:</p>
+<p><span class="math display">\[
+y_{it} = \beta_{TWFE} D_{it} + \alpha_i + \zeta_t + \epsilon_{it}.
+\]</span> Where <span class="math inline">\(\alpha_i\)</span> is the unit fixed effects, <span class="math inline">\(\zeta_t\)</span> is fixed effects for time periods.</p>
+<p>And we assume that <span class="math inline">\(\beta_{TWFE}\)</span> produces a similarly intuitive causal estimator.</p>
+<p>However, …</p>
+</section>
+<section id="however" class="slide level2 smaller" data-auto-animate="true" data-auto-animate-id="1">
+<h2 data-id="quarto-animate-title">However, …</h2>
+<p>with 3 groups: 1) Early treated, 2) Late treated, 3) Never treated.</p>
+<p><img data-src="img/DiD2.jpeg" style="width:75.0%"></p>
+</section>
+<section id="how-bad-is-it" class="slide level2 smaller" data-auto-animate="true" data-auto-animate-id="2">
+<h2 data-id="quarto-animate-title">How bad is it?</h2>
+<p>Ruttenauer and Aksoy (2026) <img data-src="img/Setup_ATT.png"></p>
+</section></section>
+<section>
 <section id="extensions-and-alternatives" class="title-slide slide level1 center" data-background-color="#17a091">
 <h1>Extensions and alternatives</h1>
 
 </section>
+<section id="a-potential-solution" class="slide level2 smaller" data-auto-animate="true" data-auto-animate-id="2">
+<h2 data-id="quarto-animate-title">A potential solution</h2>
+<p>Disaggregation based estimators, such as <span class="citation" data-cites="Callaway.2020">@Callaway.2020</span>.</p>
+<p><img data-src="img/DiD.jpeg" style="width:75.0%"></p>
+</section>
+<section id="a-potential-solution-1" class="slide level2 smaller" data-auto-animate="true" data-auto-animate-id="2">
+<h2 data-id="quarto-animate-title">A potential solution</h2>
+<p>Dynamic Diff-in-Diff <span class="citation" data-cites="Callaway.2020">[@Callaway.2020]</span></p>
+<ol type="1">
+<li>Estimate all single <span class="math inline">\(2 \times 2\)</span> Diff-in-Diff comparisons</li>
+</ol>
+<!-- -  generalizes this $2 \times 2$ Diff-in-Diff to a multi-group and multi-timing setting by computing group-time average treatment effects -->
+<ul>
+<li>for each treatment-group <span class="math inline">\(g\)</span> and time period <span class="math inline">\(t\)</span></li>
+</ul>
+<p><span class="math display">\[
+\delta_{g,t} = \mathrm{E}(\Delta y_{g}) - \mathrm{E}(\Delta y_{C}) = [\mathrm{E}(y_{g}^{t}) - \mathrm{E}(y_{g}^{g-1})] - [\mathrm{E}(y_{C}^{t}) - \mathrm{E}(y_{C}^{g-1})],
+\]</span></p>
+<ul>
+<li>where the control group can either be the never-treated or the not-yet-treated.</li>
+</ul>
+<div class="fragment">
+<ol start="2" type="1">
+<li>Average the ‘good’ comparisons into a single / time-specific treatment measure</li>
+</ol>
+<p><span class="math display">\[
+  \theta_D(e) := \sum_{g=1}^G \mathbf{1} \{ g + e \leq T \} \delta(g,g+e) P(G=g | G+e \leq T),
+\]</span></p>
+<ul>
+<li>where <span class="math inline">\(e\)</span> specifies for how long a unit has been exposed to the treatment.</li>
+</ul>
+</div>
+</section>
+<section id="another-solution-borusyak-did-imputation" class="slide level2 smaller scrollable" data-visibility="uncounted">
+<h2>Another solution: Borusyak DiD imputation</h2>
+<p>We start with the assumption that we can write the underlying model as:</p>
+<p><span class="math display">\[
+Y_{it} = A_{it}^{'}\lambda_i + X_{it}^{'}\delta + D_{it}^{'}\Gamma_{it}^{'}\theta + \varepsilon_{it}  
+\]</span></p>
+<ul>
+<li>where <span class="math inline">\(A_{it}^{'}\lambda_i\)</span> contains unit FEs, but also allows to interact them with some observed covariates unaffected by the treatment status</li>
+<li>and <span class="math inline">\(X_{it}^{'}\delta\)</span> nests period FEs but additionally allows any time-varying covariates,</li>
+<li><span class="math inline">\(\lambda_i\)</span> is a vector of unit-specific nuisance parameters,</li>
+<li>and <span class="math inline">\(\delta\)</span> is a vector of nuisance parameters associated with common covariates.</li>
+</ul>
+<h3 id="the-algorithm">The algorithm</h3>
+<ol type="1">
+<li>For every treated observation, estimate expected untreated potential outcomes <span class="math inline">\(A_{it}^{'}\lambda_i + X_{it}^{'}\delta\)</span> by some unbiased linear estimator <span class="math inline">\(\hat Y_{it}(0)\)</span> using data from the untreated observations only,</li>
+<li>For each treated observation (<span class="math inline">\(\in\Omega_1\)</span>), set <span class="math inline">\(\hat\tau_{it} = Y_{it} - \hat{Y}_{it}(0)\)</span>,</li>
+<li>Estimate the target by a weighted sum <span class="math inline">\(\hat\tau = \sum_{it\in\Omega_1}w_{it}\hat\tau_{it}\)</span>.</li>
+</ol>
+<p>See <span class="citation" data-cites="Borusyak.2021">@Borusyak.2021</span>.</p>
+</section>
+<section id="yet-another-solution-extended-twfe" class="slide level2 smaller scrollable" data-visibility="uncounted">
+<h2>Yet another solution: Extended TWFE</h2>
+<p><span class="citation" data-cites="Wooldridge.2021">@Wooldridge.2021</span>. issues of TWFE are not flaws of the estimator, but of a misspecification of the functional form.</p>
+<p><span class="math display">\[
+y_{it} = \eta + \zeta_t + \boldsymbol{\mathbf{X}}_i(\beta + \nu_t) + \sum_{j=g} \left( \alpha_g + \boldsymbol{\mathbf{X}}_i \beta_g + \mathbf{1}\{t &gt; g\}(\alpha_g \times \zeta_t + \bar{\boldsymbol{\mathbf{X}}_g}\beta_{gt})  \right)  + \epsilon_{it}.
+\]</span></p>
+<p><span class="math inline">\(\eta\)</span> is the global intercept, <span class="math inline">\(\zeta_t\)</span> are time fixed effects, and <span class="math inline">\(\boldsymbol{\mathbf{X}}_i\)</span> is the vector of pre-treatment covariates. The coefficients <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\nu_t\)</span> capture the baseline and time-varying effects of these covariates. <span class="math inline">\(\alpha_g\)</span> denotes fixed effects for treatment cohorts, where each group <span class="math inline">\(g\)</span> receives treatment at time <span class="math inline">\(g\)</span>. The indicator <span class="math inline">\(\mathbf{1}\{t &gt; g\}\)</span> equals 1 if unit <span class="math inline">\(i\)</span> is observed after treatment and 0 otherwise. <span class="math inline">\(\bar{\boldsymbol{\mathbf{X}}_g}\)</span> represents group-mean-centered pre-treatment covariates, and <span class="math inline">\(\beta_{gt}\)</span> captures the interaction between group indicators and covariates. The term <span class="math inline">\(\alpha_g \times \zeta_t\)</span> represents interactions between cohort and time indicators, which are used to recover group- and time-specific treatment effects <span class="math inline">\(\delta_{g,t}\)</span>.</p>
+<p>Individual coefficients are not directly interpretable. However, they can be used to compute </p>
+</section>
+<section id="and-many-other-solutions" class="slide level2">
+<h2>And (many) other solutions</h2>
+<ul>
+<li><p>Conventional TWFE with an event-study framework (time FE*treatment interactions)</p></li>
+<li><p>Extended TWFE (Wooldridge)</p></li>
+<li><p>Disaggregation based methods (Callaway &amp; Santanna, Sun and Abraham)</p></li>
+<li><p>Model-based imputation (Borusyak ea)</p></li>
+<li><p>Matrix completion (Athey)</p></li>
+</ul>
+<p>Ruttenauer and Aksoy (2026): option 1 is often OK in sociology, it doesn’t harm to check another one for robustness (e.g.&nbsp;Borusyak ea or CS)</p>
+</section>
+<section id="elephant-in-the-room" class="slide level2">
+<h2>Elephant in the room</h2>
+<p>The new dynamic DID methods indeed solve time/group heterogeneity problem. But they cannot help with violations of causal assumptions</p>
+<p><img data-src="img/Hettreat_ATT_combined.png" style="width:60.0%"></p>
+<p>Ruttenauer and Aksoy (2026). Note in the figure conventional TWFE is the most naive form (single coefficient).</p>
+
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK" class="slide-logo"></p>

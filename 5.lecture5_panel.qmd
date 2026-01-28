@@ -31,6 +31,14 @@ callout-appearance: minimal
 \newcommand\indep{\perp\!\!\!\perp}
 \newcommand\nindep{\not\!\perp\!\!\!\perp}
 
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\plim}{\operatornamewithlimits{plim}}
+\newcommand{\diag}{\mathrm{diag}}
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\bm}[1]{\boldsymbol{\mathbf{#1}}}
 
 ##
 
@@ -271,7 +279,7 @@ $\alpha + \gamma + \lambda + \delta$: treated, post period
 This is known as the two-way fixed effect model
 
 
-# Problems with TWFE {background-color="#17a091"}
+# Problems with TWFE when treatment is dynamic {background-color="#17a091"}
 
 It is tempting to apply the same logic and extend the TWFE model for multiple time period and multiple groups.
 
@@ -285,5 +293,119 @@ Now we know this bring it own (many) issues:
 
 * Think about design vs model-based arguments
 
+## DID with multiple periods
+
+With multiple periods, we usually turn to the two-way FE:
+
+$$
+y_{it} = \beta_{TWFE} D_{it} + \alpha_i + \zeta_t + \epsilon_{it}.
+$$
+Where $\alpha_i$ is the unit fixed effects, $\zeta_t$ is fixed effects for
+time periods.
+
+And we assume that $\beta_{TWFE}$ produces a similarly intuitive causal estimator. 
+
+However, ... 
+
+
+## However, ...  {.smaller auto-animate=true auto-animate-id=1}
+
+with 3 groups: 1) Early treated, 2) Late treated, 3) Never treated.
+
+![](img/DiD2.jpeg){width=75%}
+
+## How bad is it? {.smaller  auto-animate=true auto-animate-id=2}
+Ruttenauer and Aksoy (2026)
+![](img/Setup_ATT.png)
 
 # Extensions and alternatives {background-color="#17a091"}
+
+## A potential solution {.smaller  auto-animate=true auto-animate-id=2} 
+
+Disaggregation based estimators, such as @Callaway.2020.
+
+![](img/DiD.jpeg){width=75%}
+
+## A potential solution {.smaller auto-animate=true auto-animate-id=2}
+
+Dynamic Diff-in-Diff [@Callaway.2020]
+
+1) Estimate all single $2 \times 2$ Diff-in-Diff comparisons
+
+<!-- -  generalizes this $2 \times 2$ Diff-in-Diff to a multi-group and multi-timing setting by computing group-time average treatment effects -->
+-  for each treatment-group $g$ and time period $t$
+
+
+$$
+\delta_{g,t} = \E(\Delta y_{g}) - \E(\Delta y_{C}) = [\E(y_{g}^{t}) - \E(y_{g}^{g-1})] - [\E(y_{C}^{t}) - \E(y_{C}^{g-1})],
+$$
+
+- where the control group can either be the never-treated or the not-yet-treated.
+
+. . .
+
+2) Average the 'good' comparisons into a single / time-specific treatment measure
+
+$$
+  \theta_D(e) := \sum_{g=1}^G \mathbf{1} \{ g + e \leq T \} \delta(g,g+e) P(G=g | G+e \leq T),
+$$
+
+- where $e$ specifies for how long a unit has been exposed to the treatment.
+
+## Another solution: Borusyak DiD imputation {visibility="uncounted"  .smaller .scrollable}
+
+We start with the assumption that we can write the underlying model as:
+
+$$
+Y_{it} = A_{it}^{'}\lambda_i + X_{it}^{'}\delta + D_{it}^{'}\Gamma_{it}^{'}\theta + \varepsilon_{it}  
+$$
+
+-  where $A_{it}^{'}\lambda_i$ contains unit FEs, but also allows to interact them with some observed covariates unaffected by the treatment status
+-  and $X_{it}^{'}\delta$ nests period FEs but additionally allows any time-varying covariates,
+-  $\lambda_i$ is a vector of unit-specific nuisance parameters,
+-  and $\delta$ is a vector of nuisance parameters associated with common covariates.
+
+### The algorithm
+
+(1) For every treated observation, estimate expected untreated potential outcomes $A_{it}^{'}\lambda_i + X_{it}^{'}\delta$ by some unbiased linear estimator $\hat Y_{it}(0)$ using data from the untreated observations only,
+(2) For each treated observation ($\in\Omega_1$), set $\hat\tau_{it} = Y_{it} - \hat{Y}_{it}(0)$, 
+(3) Estimate the target by a weighted sum $\hat\tau = \sum_{it\in\Omega_1}w_{it}\hat\tau_{it}$.
+
+See @Borusyak.2021.
+
+
+## Yet another solution: Extended TWFE {visibility="uncounted"  .smaller .scrollable}
+
+@Wooldridge.2021. issues of TWFE are not flaws of the estimator, but of a misspecification of the functional form. 
+
+$$
+y_{it} = \eta + \zeta_t + \bm X_i(\beta + \nu_t) + \sum_{j=g} \left( \alpha_g + \bm X_i \beta_g + \mathbf{1}\{t > g\}(\alpha_g \times \zeta_t + \bar{\bm X_g}\beta_{gt})  \right)  + \epsilon_{it}.
+$$
+
+$\eta$ is the global intercept, $\zeta_t$ are time fixed effects, and $\bm X_i$ is the vector of pre-treatment covariates. The coefficients $\beta$ and $\nu_t$ capture the baseline and time-varying effects of these covariates. $\alpha_g$ denotes fixed effects for treatment cohorts, where each group $g$ receives treatment at time $g$. The indicator $\mathbf{1}\{t > g\}$ equals 1 if unit $i$ is observed after treatment and 0 otherwise. $\bar{\bm X_g}$ represents group-mean-centered pre-treatment covariates, and $\beta_{gt}$ captures the interaction between group indicators and covariates. The term $\alpha_g \times \zeta_t$ represents interactions between cohort and time indicators, which are used to recover group- and time-specific treatment effects $\delta_{g,t}$.
+
+Individual coefficients are not directly interpretable. However, they can be used to compute \emph{marginal effects}
+
+## And (many) other solutions
+
+* Conventional TWFE with an event-study framework (time FE*treatment interactions)
+
+* Extended TWFE (Wooldridge)
+
+* Disaggregation based methods (Callaway & Santanna, Sun and Abraham)
+
+* Model-based imputation (Borusyak ea)
+
+* Matrix completion (Athey)
+
+Ruttenauer and Aksoy (2026): option 1 is often OK in sociology, it doesn't harm
+to check another one for robustness (e.g. Borusyak ea or CS)
+
+## Elephant in the room
+The new dynamic DID methods indeed solve time/group heterogeneity problem.
+But they cannot help with violations of causal assumptions
+
+![](img/Hettreat_ATT_combined.png){width=60%}
+
+Ruttenauer and Aksoy (2026). Note in the figure conventional TWFE is the most
+naive form (single coefficient).
