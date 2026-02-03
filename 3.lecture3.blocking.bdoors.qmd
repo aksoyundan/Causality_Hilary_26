@@ -36,6 +36,8 @@ Most popular identification strategy: selection on observables, also known as co
 
 * What is an observational study? 
 
+* What is an omitted variable bias?
+
 * What assumptions are required for identification?
 
 * Common estimation methods: 
@@ -46,7 +48,7 @@ Most popular identification strategy: selection on observables, also known as co
 
   3. Weighting
   
-  4. Augmented and doubly robust estimators (preview only)
+  4. Augmented and doubly robust estimators
 
 # Observational studies {background-color="#00a191"}
 
@@ -100,6 +102,486 @@ Most times, just recognizing that "our results are not causal" is not enough to 
 * Can we quantify the influence that unobserved confounding would have on our results?
 
 * Can we rule out alternative explanations to the observed "treatment effect"?
+
+
+# Omitted variable bias (OVB) {background-color="#00a191"}
+
+## OVB is everywhere! 
+
+:::{.r-stack}
+
+![](img/ovb_greta_effect.png){.fragment}
+
+![](img/ovb_mortality_museums.png){.fragment}
+
+![](img/ovb_walking.jpg){.fragment}
+
+![](img/ovb_opioids.jpg){.fragment width="750"}
+
+:::
+
+
+## The anatomy of OVB 
+
+## OVB structure {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {.left style="margin-top: 200px;"}
+$$Y_i \color{white}{=  \alpha + {\beta} X_i + \gamma W_i + \epsilon_i}$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yonly.svg)
+
+:::
+
+:::
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 200px;"}
+$$Y_i =  \alpha \color{white}{+ {\beta} X_i + \gamma W_i + \epsilon_i}$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yonly.svg)
+
+:::
+
+:::
+
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 200px;"}
+$$Y_i =  \alpha + \color{blue}{\beta} X_i \color{white}{+ \gamma W_i + \epsilon_i}$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yx_beta.svg)
+:::
+
+:::
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 200px;"}
+$$Y_i =  \alpha + \beta X_i \color{white}{+ \gamma W_i + \epsilon_i}$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxw_beta.svg)
+:::
+
+:::
+
+
+
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 200px;"}
+$$Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxw_gamma.svg)
+:::
+
+:::
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 200px;"}
+$$Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxw_block.svg)
+:::
+
+:::
+
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 200px;"}
+$$Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxw_block2.svg)
+:::
+
+:::
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 200px;"}
+$$Y_i =  \alpha + {\beta} X_i + \gamma W_i + \epsilon_i$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxwe_beta.svg)
+
+
+:::
+
+:::
+
+::: {.fragment}
+$\text{corr}(X_i; \epsilon_i) = 0$
+:::
+
+:::{.fragment}
+$X \rightarrow \dots \leftarrow \epsilon$ is $d-$separated
+:::
+
+
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 100px;"}
+$$\color{grey}{Y_i =  \alpha + \beta X_i + \gamma W_i + \epsilon_i}$$
+
+$$Y_i =  \zeta + \tilde{\beta} X_i + u_i$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxu_tilde.svg)
+:::
+
+:::
+
+
+
+
+
+
+## OVB {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 100px;"}
+$$\color{grey}{Y_i =  \alpha + \beta X_i +  \color{red}{\gamma W_i + \epsilon_i}}$$
+
+$$Y_i =  \zeta + \tilde{\beta} X_i + \color{red}{u_i}$$
+
+
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxu2_tilde.svg)
+:::
+
+:::
+
+
+:::{.fragment}
+$\text{corr}(X_i ; u_i) \neq 0$
+:::
+
+:::{.fragment}
+$X \rightarrow u$ is $d-$connected
+:::
+
+
+
+
+## The OBV formula  {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 100px;"}
+$$\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}$$
+
+$$
+\color{red}{\tilde{\beta}} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+$$
+
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxu2.svg)
+:::
+
+:::
+
+
+
+
+
+
+## The OBV formula  {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 100px;"}
+$$\color{grey}{Y_i =  \zeta + \tilde{\beta} X_i + u_i}$$
+
+$$
+\tilde{\beta} = \frac{\text{Cov}(X_i , \color{green}{Y_i})}{\text{Var}(X_i)}
+$$
+
+$$
+= \frac{\text{Cov}(X_i, \color{green}{\alpha + \beta X_i + \gamma W_i + \epsilon_i})}{\text{Var}(X_i)}
+$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxu2.svg)
+:::
+
+:::
+
+
+
+
+
+## The OBV formula  {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 100px;"}
+$$\color{grey}{Y_i =  \zeta + \tilde{\beta} X_i + u_i}$$
+
+$$
+\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+$$
+
+$$
+= \frac{\color{green}{\text{Cov}(X_i}, \alpha + \color{blue}{\beta} X_i + \color{red}{\gamma} \color{green}{W_i} + \epsilon_i)}{\color{green}{\text{Var}(X_i)}}
+$$
+
+$$
+= \color{blue}{\beta} + \underbrace{\color{red}{\gamma} \times \color{green}{\frac{\text{Cov}(X_i,W_i)}{\text{Var}(X_i)}}}_{\text{Bias}}
+$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxu2.svg)
+:::
+
+:::
+
+
+
+
+## The OBV formula  {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 100px;"}
+$$\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}$$
+
+$$
+\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+$$
+
+$$
+= \frac{\text{Cov}(X_i, \alpha + \beta X_i + \gamma W_i + \epsilon_i)}{\text{Var}(X_i)}
+$$
+
+$$
+= \color{blue}{\beta} + \underbrace{\color{red}{\gamma}}_{\text{Impact}} \times \underbrace{\color{green}{\delta}}_{\text{Imbalance}}
+$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxu2.svg)
+:::
+
+:::
+
+
+
+
+## The OBV formula  {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Regression***
+
+::: {style="margin-top: 100px;"}
+$$\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}$$
+
+$$
+\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+$$
+
+$$
+= \frac{\text{Cov}(X_i, \alpha + \beta X_i + \gamma W_i + \epsilon_i)}{\text{Var}(X_i)}
+$$
+
+$$
+= \color{blue}{\beta} + \underbrace{\color{red}{\gamma}}_{\text{Impact}} \times \underbrace{\color{green}{\delta}}_{\text{Imbalance}}
+$$
+:::
+
+
+:::
+
+::: {.column width="50%"}
+***Path diagram***
+
+![](img/dag_yxw_delta.svg)
+:::
+
+:::
+
+
+
+## What to do? {background-color="#00a191"}
+
+## 
+
+![](img/ovb_authors.jpg){.center}
+
 
 # Unconfoundedness {background-color="#00a191"}
 
@@ -242,11 +724,60 @@ $$
 Y_{it} = \beta_g + \beta_t + \beta_1 D_{it} + \beta_2 W_i + \epsilon_{it}
 $$
 so intercepts vary by some group (g) and time (t), while D varies by individuals
-and time W varies only by individuals by is time-constant.
+and time W varies only by individuals but is time-constant.
 
 . . .
 
 What are we assuming about the treatment effect? What are we assuming about the potential outcomes? Are those assumptions sensible?
+
+## *The* coefficient is a conditional variance weighted ATE under effect heterogeneity
+
+| S | P(S, D = 0) | E(Y \| S, D = 0) | P(S, D = 1) | E(Y  \| S, D = 1) |
+|---|-------------|------------------|-------------|------------------|
+| 1 | 0.36        | 4                | 0.08        | 0                |
+| 2 | 0.12        | 6                | 0.12        | 10                |
+| 3 | 0.12        | 10               | 0.20        | 12               |
+
+True ATE: $-4\times(0.36+0.08) + 4\times(0.12+0.12) + 2\times(0.12+0.20) = -.16$
+
+. . . 
+
+When lm(Y ~ D + as.factor(S)) $\rightarrow \beta_D \approx  0.62^{*}$!! why?
+
+. . .
+
+<font size="6">
+$\beta_D$ = $\Delta E[Y|S=1] \frac{var[D|S=1]P[S=1]}{\sum var[D|S=s]P[S=s]} +
+\Delta E[Y|S=2] \frac{var[D|S=2]P[S=2]}{\sum var[D|S=s]P[S=s]} +
+\Delta E[Y|S=3] \frac{var[D|S=3]P[S=3]}{\sum var[D|S=s]P[S=s]}$
+</font>
+
+. . . 
+
+$var[D|S=1] = (\frac{.08}{.08+.36})(1-\frac{.08}{.08+.36})= .15$, $P[S=1] = .08+.36 = .44$
+$var[D|S=2] = (\frac{.12}{.12+.12})(1-\frac{.12}{.12+.12})= .25$, $P[S=2] = .12+.12 = .24$
+$var[D|S=3] = (\frac{.20}{.20+.12})(1-\frac{.20}{.20+.12})= .23$, $P[S=3] = .12+.20 = .32$
+
+. . . 
+
+$\beta_D = {\bf -4} \frac{.15 \times .44}{.15 \times .44 + .25 \times .24 + .23 \times .32}
+          + {\bf 4} \frac{.25 \times .24}{.15 \times .44 + .25 \times .24 + .23 \times .32} 
+          + {\bf 2} \frac{.23 \times .32}{.15 \times .44 + .25 \times .24 + .23 \times .32} = 0.62$
+
+## Beware that $\beta$ may not always represent ATE even if causal assumptions are valid
+
+* When there is heterogeneity in causal effect, beware that $\beta$ is weighted by the conditional variance of treatment
+
+* Those with a lot of variance in treatment represented more strongly in $\beta$
+
+    * E.g. in DID groups which received treatment in the middle of the timeframe rather than start or end
+    * This "rediscovery" of variance weighting sparked the new dynamic DID literature
+    * With continuous and many controls weights going in $\beta$ are even more complex
+    
+* You *could* recover true ATE by, e.g., lm(Y ~ D*as.factor(S)) in the example before
+
+    * But when you have too many controls or more than one effect of interest, should you take all interactions?
+
 
 ## Regression: pros and cons
 
@@ -270,6 +801,8 @@ Cons:
 
 * Simplicity can be elusive, sometimes regression can give non-transparent
 results (e.g. TWFE in diff-in-diff--later...)
+
+* $\beta$ is often some strange variance weighted ATE
 
 * We lose interesting variation
 
@@ -306,7 +839,7 @@ In epidemiology, this is known as g-computation ("g" stands for "generalized")
 
 This works well, above and beyond what looking at a single coefficient would give you
 
-Even more, this can be paired with flexible machine learning approaches (e.g. LASSO), going beyond linear regression models
+Even more, this can be paired with flexible machine learning approaches (e.g. LASSO), going beyond linear regression models (see augmented methods)
 
 # Modeling the treatment assignment {background-color="#E9004C"}
 
@@ -593,9 +1126,18 @@ There are different ways of using machine learning for estimation
 
 * Flexible model of the treatment + weighting
 
-Two frameworks have been proposed to incorporate ML methods in causal inference
+* Or combibine both: **Double/debiased ML**
 
-* E.g., Double/Debiased Machine Learning (DML): similar to doubly robust IPW estimator but the outcome and selection are predicted using ML
+*Double/Debiased Machine Learning (DML): similar to doubly robust IPW estimator but the outcome and selection are predicted using ML
+
+* DML works in three steps:
+
+1. Predict outcome $Y$ with ML using covariates (e.g. LASSO/forest ...) and obtain residuals $Y-\widehat{Y}$
+
+2. Predict treatment $D$ with ML using covariates (e.g. LASSO/forest ...) and obtain residuals $D-\widehat{D}$
+
+3. Regress ($Y-\widehat{Y}$) on ($D-\widehat{D}$) for the doubly robust DML estimate
+
 
 ## Wrap up
 
@@ -613,7 +1155,7 @@ Well, no approach is superior. Use a combination of approaches.
 
 * If treatment is binary, IPW or entropy balancing weighting is probably advisable vis-a-vis matching, for the latter has many researcher degrees of freedom.
 
-* Try augmented estimators and double ML when you have **many (!)** confounders, interactions, or nonlinearities AND **large** dataset, but they can fail to converge in practice.
+* Try augmented estimators and double ML when you have **many (!)** confounders, interactions, or nonlinearities AND **large** dataset.
 
 Hands-on-exercises of this week treats these.
 

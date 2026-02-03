@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Ozan Aksoy">
-  <meta name="dcterms.date" content="2025-12-31">
+  <meta name="dcterms.date" content="2026-02-03">
   <title>Blocking backdoors by selection on observables</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -146,7 +146,7 @@ Ozan Aksoy
 </div>
 </div>
 
-  <p class="date">December 31, 2025</p>
+  <p class="date">February 3, 2026</p>
 </section>
 <section>
 <section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
@@ -158,13 +158,14 @@ Ozan Aksoy
 <p>Most popular identification strategy: selection on observables, also known as conditional ignorability/independence (stats), unconfoundedness (econ), or conditional exchangeability (epi)</p>
 <ul>
 <li><p>What is an observational study?</p></li>
+<li><p>What is an omitted variable bias?</p></li>
 <li><p>What assumptions are required for identification?</p></li>
 <li><p>Common estimation methods:</p>
 <ol type="1">
 <li><p>Regression</p></li>
 <li><p>Matching</p></li>
 <li><p>Weighting</p></li>
-<li><p>Augmented and doubly robust estimators (preview only)</p></li>
+<li><p>Augmented and doubly robust estimators</p></li>
 </ol></li>
 </ul>
 </section></section>
@@ -211,6 +212,275 @@ Ozan Aksoy
 <li><p>Can we quantify the influence that unobserved confounding would have on our results?</p></li>
 <li><p>Can we rule out alternative explanations to the observed “treatment effect”?</p></li>
 </ul>
+</section></section>
+<section>
+<section id="omitted-variable-bias-ovb" class="title-slide slide level1 center" data-background-color="#00a191">
+<h1>Omitted variable bias (OVB)</h1>
+
+</section>
+<section id="ovb-is-everywhere" class="slide level2">
+<h2>OVB is everywhere!</h2>
+<div class="r-stack">
+<p><img data-src="img/ovb_greta_effect.png" class="fragment"></p>
+<p><img data-src="img/ovb_mortality_museums.png" class="fragment"></p>
+<p><img data-src="img/ovb_walking.jpg" class="fragment"></p>
+<p><img data-src="img/ovb_opioids.jpg" class="fragment" width="750"></p>
+</div>
+</section>
+<section id="the-anatomy-of-ovb" class="slide level2">
+<h2>The anatomy of OVB</h2>
+</section>
+<section id="ovb-structure" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB structure</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div class="left" style="margin-top: 200px;">
+<p><span class="math display">\[Y_i \color{white}{=  \alpha + {\beta} X_i + \gamma W_i + \epsilon_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yonly.svg"></p>
+</div></div>
+</section>
+<section id="ovb" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 200px;">
+<p><span class="math display">\[Y_i =  \alpha \color{white}{+ {\beta} X_i + \gamma W_i + \epsilon_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yonly.svg"></p>
+</div></div>
+</section>
+<section id="ovb-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 200px;">
+<p><span class="math display">\[Y_i =  \alpha + \color{blue}{\beta} X_i \color{white}{+ \gamma W_i + \epsilon_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yx_beta.svg"></p>
+</div></div>
+</section>
+<section id="ovb-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 200px;">
+<p><span class="math display">\[Y_i =  \alpha + \beta X_i \color{white}{+ \gamma W_i + \epsilon_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxw_beta.svg"></p>
+</div></div>
+</section>
+<section id="ovb-3" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 200px;">
+<p><span class="math display">\[Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxw_gamma.svg"></p>
+</div></div>
+</section>
+<section id="ovb-4" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 200px;">
+<p><span class="math display">\[Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxw_block.svg"></p>
+</div></div>
+</section>
+<section id="ovb-5" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 200px;">
+<p><span class="math display">\[Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxw_block2.svg"></p>
+</div></div>
+</section>
+<section id="ovb-6" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 200px;">
+<p><span class="math display">\[Y_i =  \alpha + {\beta} X_i + \gamma W_i + \epsilon_i\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxwe_beta.svg"></p>
+</div></div>
+<div class="fragment">
+<p><span class="math inline">\(\text{corr}(X_i; \epsilon_i) = 0\)</span></p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(X \rightarrow \dots \leftarrow \epsilon\)</span> is <span class="math inline">\(d-\)</span>separated</p>
+</div>
+</section>
+<section id="ovb-7" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 100px;">
+<p><span class="math display">\[\color{grey}{Y_i =  \alpha + \beta X_i + \gamma W_i + \epsilon_i}\]</span></p>
+<p><span class="math display">\[Y_i =  \zeta + \tilde{\beta} X_i + u_i\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxu_tilde.svg"></p>
+</div></div>
+</section>
+<section id="ovb-8" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">OVB</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 100px;">
+<p><span class="math display">\[\color{grey}{Y_i =  \alpha + \beta X_i +  \color{red}{\gamma W_i + \epsilon_i}}\]</span></p>
+<p><span class="math display">\[Y_i =  \zeta + \tilde{\beta} X_i + \color{red}{u_i}\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxu2_tilde.svg"></p>
+</div></div>
+<div class="fragment">
+<p><span class="math inline">\(\text{corr}(X_i ; u_i) \neq 0\)</span></p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(X \rightarrow u\)</span> is <span class="math inline">\(d-\)</span>connected</p>
+</div>
+</section>
+<section id="the-obv-formula" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">The OBV formula</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 100px;">
+<p><span class="math display">\[\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}\]</span></p>
+<p><span class="math display">\[
+\color{red}{\tilde{\beta}} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxu2.svg"></p>
+</div></div>
+</section>
+<section id="the-obv-formula-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">The OBV formula</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 100px;">
+<p><span class="math display">\[\color{grey}{Y_i =  \zeta + \tilde{\beta} X_i + u_i}\]</span></p>
+<p><span class="math display">\[
+\tilde{\beta} = \frac{\text{Cov}(X_i , \color{green}{Y_i})}{\text{Var}(X_i)}
+\]</span></p>
+<p><span class="math display">\[
+= \frac{\text{Cov}(X_i, \color{green}{\alpha + \beta X_i + \gamma W_i + \epsilon_i})}{\text{Var}(X_i)}
+\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxu2.svg"></p>
+</div></div>
+</section>
+<section id="the-obv-formula-2" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">The OBV formula</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 100px;">
+<p><span class="math display">\[\color{grey}{Y_i =  \zeta + \tilde{\beta} X_i + u_i}\]</span></p>
+<p><span class="math display">\[
+\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+\]</span></p>
+<p><span class="math display">\[
+= \frac{\color{green}{\text{Cov}(X_i}, \alpha + \color{blue}{\beta} X_i + \color{red}{\gamma} \color{green}{W_i} + \epsilon_i)}{\color{green}{\text{Var}(X_i)}}
+\]</span></p>
+<p><span class="math display">\[
+= \color{blue}{\beta} + \underbrace{\color{red}{\gamma} \times \color{green}{\frac{\text{Cov}(X_i,W_i)}{\text{Var}(X_i)}}}_{\text{Bias}}
+\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxu2.svg"></p>
+</div></div>
+</section>
+<section id="the-obv-formula-3" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">The OBV formula</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 100px;">
+<p><span class="math display">\[\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}\]</span></p>
+<p><span class="math display">\[
+\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+\]</span></p>
+<p><span class="math display">\[
+= \frac{\text{Cov}(X_i, \alpha + \beta X_i + \gamma W_i + \epsilon_i)}{\text{Var}(X_i)}
+\]</span></p>
+<p><span class="math display">\[
+= \color{blue}{\beta} + \underbrace{\color{red}{\gamma}}_{\text{Impact}} \times \underbrace{\color{green}{\delta}}_{\text{Imbalance}}
+\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxu2.svg"></p>
+</div></div>
+</section>
+<section id="the-obv-formula-4" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">The OBV formula</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><em>Regression</em></strong></p>
+<div style="margin-top: 100px;">
+<p><span class="math display">\[\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}\]</span></p>
+<p><span class="math display">\[
+\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
+\]</span></p>
+<p><span class="math display">\[
+= \frac{\text{Cov}(X_i, \alpha + \beta X_i + \gamma W_i + \epsilon_i)}{\text{Var}(X_i)}
+\]</span></p>
+<p><span class="math display">\[
+= \color{blue}{\beta} + \underbrace{\color{red}{\gamma}}_{\text{Impact}} \times \underbrace{\color{green}{\delta}}_{\text{Imbalance}}
+\]</span></p>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong><em>Path diagram</em></strong></p>
+<p><img data-src="img/dag_yxw_delta.svg"></p>
+</div></div>
+</section>
+<section id="what-to-do" class="slide level2" data-background-color="#00a191">
+<h2>What to do?</h2>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<p><img data-src="img/ovb_authors.jpg" class="center"></p>
 </section></section>
 <section>
 <section id="unconfoundedness" class="title-slide slide level1 center" data-background-color="#00a191">
@@ -340,10 +610,80 @@ E[Y^D_i|D_i,X_i] = \beta_0 + \beta_1 D_i + \gamma^{\top}X_i
 <p><span style="color:red;">Side note</span>: subscripts in regression describe what a variable or coefficient varies along, e.g.&nbsp;</p>
 <p><span class="math display">\[
 Y_{it} = \beta_g + \beta_t + \beta_1 D_{it} + \beta_2 W_i + \epsilon_{it}
-\]</span> so intercepts vary by some group (g) and time (t), while D varies by individuals and time W varies only by individuals by is time-constant.</p>
+\]</span> so intercepts vary by some group (g) and time (t), while D varies by individuals and time W varies only by individuals but is time-constant.</p>
 <div class="fragment">
 <p>What are we assuming about the treatment effect? What are we assuming about the potential outcomes? Are those assumptions sensible?</p>
 </div>
+</section>
+<section id="the-coefficient-is-a-conditional-variance-weighted-ate-under-effect-heterogeneity" class="slide level2">
+<h2><em>The</em> coefficient is a conditional variance weighted ATE under effect heterogeneity</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>S</th>
+<th>P(S, D = 0)</th>
+<th>E(Y | S, D = 0)</th>
+<th>P(S, D = 1)</th>
+<th>E(Y | S, D = 1)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0.36</td>
+<td>4</td>
+<td>0.08</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0.12</td>
+<td>6</td>
+<td>0.12</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0.12</td>
+<td>10</td>
+<td>0.20</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+<p>True ATE: <span class="math inline">\(-4\times(0.36+0.08) + 4\times(0.12+0.12) + 2\times(0.12+0.20) = -.16\)</span></p>
+<div class="fragment">
+<p>When lm(Y ~ D + as.factor(S)) <span class="math inline">\(\rightarrow \beta_D \approx  0.62^{*}\)</span>!! why?</p>
+</div>
+<div class="fragment">
+<p><font size="6"> <span class="math inline">\(\beta_D\)</span> = <span class="math inline">\(\Delta E[Y|S=1] \frac{var[D|S=1]P[S=1]}{\sum var[D|S=s]P[S=s]} +
+\Delta E[Y|S=2] \frac{var[D|S=2]P[S=2]}{\sum var[D|S=s]P[S=s]} +
+\Delta E[Y|S=3] \frac{var[D|S=3]P[S=3]}{\sum var[D|S=s]P[S=s]}\)</span> </font></p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(var[D|S=1] = (\frac{.08}{.08+.36})(1-\frac{.08}{.08+.36})= .15\)</span>, <span class="math inline">\(P[S=1] = .08+.36 = .44\)</span> <span class="math inline">\(var[D|S=2] = (\frac{.12}{.12+.12})(1-\frac{.12}{.12+.12})= .25\)</span>, <span class="math inline">\(P[S=2] = .12+.12 = .24\)</span> <span class="math inline">\(var[D|S=3] = (\frac{.20}{.20+.12})(1-\frac{.20}{.20+.12})= .23\)</span>, <span class="math inline">\(P[S=3] = .12+.20 = .32\)</span></p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(\beta_D = {\bf -4} \frac{.15 \times .44}{.15 \times .44 + .25 \times .24 + .23 \times .32}
+          + {\bf 4} \frac{.25 \times .24}{.15 \times .44 + .25 \times .24 + .23 \times .32}
+          + {\bf 2} \frac{.23 \times .32}{.15 \times .44 + .25 \times .24 + .23 \times .32} = 0.62\)</span></p>
+</div>
+</section>
+<section id="beware-that-beta-may-not-always-represent-ate-even-if-causal-assumptions-are-valid" class="slide level2">
+<h2>Beware that <span class="math inline">\(\beta\)</span> may not always represent ATE even if causal assumptions are valid</h2>
+<ul>
+<li><p>When there is heterogeneity in causal effect, beware that <span class="math inline">\(\beta\)</span> is weighted by the conditional variance of treatment</p></li>
+<li><p>Those with a lot of variance in treatment represented more strongly in <span class="math inline">\(\beta\)</span></p>
+<ul>
+<li>E.g. in DID groups which received treatment in the middle of the timeframe rather than start or end</li>
+<li>This “rediscovery” of variance weighting sparked the new dynamic DID literature</li>
+<li>With continuous and many controls weights going in <span class="math inline">\(\beta\)</span> are even more complex</li>
+</ul></li>
+<li><p>You <em>could</em> recover true ATE by, e.g., lm(Y ~ D*as.factor(S)) in the example before</p>
+<ul>
+<li>But when you have too many controls or more than one effect of interest, should you take all interactions?</li>
+</ul></li>
+</ul>
 </section>
 <section id="regression-pros-and-cons" class="slide level2">
 <h2>Regression: pros and cons</h2>
@@ -360,6 +700,7 @@ Y_{it} = \beta_g + \beta_t + \beta_1 D_{it} + \beta_2 W_i + \epsilon_{it}
 <li><p>Restrictive functional form</p></li>
 <li><p>Incorrect modeling decisions can ruin the results</p></li>
 <li><p>Simplicity can be elusive, sometimes regression can give non-transparent results (e.g.&nbsp;TWFE in diff-in-diff–later…)</p></li>
+<li><p><span class="math inline">\(\beta\)</span> is often some strange variance weighted ATE</p></li>
 <li><p>We lose interesting variation</p></li>
 <li><p>Extrapolation, possibility of non-overlap</p></li>
 </ul>
@@ -407,7 +748,7 @@ Y_{it} = \beta_g + \beta_t + \beta_1 D_{it} + \beta_2 W_i + \epsilon_{it}
 </ul>
 <p>In epidemiology, this is known as g-computation (“g” stands for “generalized”)</p>
 <p>This works well, above and beyond what looking at a single coefficient would give you</p>
-<p>Even more, this can be paired with flexible machine learning approaches (e.g.&nbsp;LASSO), going beyond linear regression models</p>
+<p>Even more, this can be paired with flexible machine learning approaches (e.g.&nbsp;LASSO), going beyond linear regression models (see augmented methods)</p>
 </section></section>
 <section>
 <section id="modeling-the-treatment-assignment" class="title-slide slide level1 center" data-background-color="#E9004C">
@@ -646,11 +987,17 @@ w_i = \frac{D_i}{e(X_i)} + \frac{1-D_i}{1-e(X_i)}
 <ul>
 <li><p>Flexible model of the outcome + imputation</p></li>
 <li><p>Flexible model of the treatment + weighting</p></li>
+<li><p>Or combibine both: <strong>Double/debiased ML</strong></p></li>
 </ul>
-<p>Two frameworks have been proposed to incorporate ML methods in causal inference</p>
+<p>*Double/Debiased Machine Learning (DML): similar to doubly robust IPW estimator but the outcome and selection are predicted using ML</p>
 <ul>
-<li>E.g., Double/Debiased Machine Learning (DML): similar to doubly robust IPW estimator but the outcome and selection are predicted using ML</li>
+<li>DML works in three steps:</li>
 </ul>
+<ol type="1">
+<li><p>Predict outcome <span class="math inline">\(Y\)</span> with ML using covariates (e.g.&nbsp;LASSO/forest …) and obtain residuals <span class="math inline">\(Y-\widehat{Y}\)</span></p></li>
+<li><p>Predict treatment <span class="math inline">\(D\)</span> with ML using covariates (e.g.&nbsp;LASSO/forest …) and obtain residuals <span class="math inline">\(D-\widehat{D}\)</span></p></li>
+<li><p>Regress (<span class="math inline">\(Y-\widehat{Y}\)</span>) on (<span class="math inline">\(D-\widehat{D}\)</span>) for the doubly robust DML estimate</p></li>
+</ol>
 </section>
 <section id="wrap-up" class="slide level2">
 <h2>Wrap up</h2>
@@ -668,7 +1015,7 @@ w_i = \frac{D_i}{e(X_i)} + \frac{1-D_i}{1-e(X_i)}
 <ul>
 <li><p>Regression is easy so do it even as robustness check.</p></li>
 <li><p>If treatment is binary, IPW or entropy balancing weighting is probably advisable vis-a-vis matching, for the latter has many researcher degrees of freedom.</p></li>
-<li><p>Try augmented estimators and double ML when you have <strong>many (!)</strong> confounders, interactions, or nonlinearities AND <strong>large</strong> dataset, but they can fail to converge in practice.</p></li>
+<li><p>Try augmented estimators and double ML when you have <strong>many (!)</strong> confounders, interactions, or nonlinearities AND <strong>large</strong> dataset.</p></li>
 </ul>
 <p>Hands-on-exercises of this week treats these.</p>
 </section>
