@@ -1030,7 +1030,7 @@ $$
 **Hint**: multiply by $e(X_i)$ for ATT and by $1 - e(X_i)$ for ATC
 
 :::aside
-Following Chattopadhyay, Hase, and Zubizarreta (2020)
+Following Chattopadhyay, Hase, and Zubizarreta (2020).
 :::
 
 ## Stabilised and trimmed weights

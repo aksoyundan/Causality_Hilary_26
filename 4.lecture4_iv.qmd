@@ -508,7 +508,7 @@ As-if randomisation can be found in "natural" experiments (random things that ha
 
 * Under no additional restrictions, i.e., from the non-parametric assumptions encoded in the DAG alone, the treatment effect **cannot** be identified.
 
-However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect
+  * However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect
 
 
 * Double machine learning can also handle IV (the idea is the same as before--predict the hell out of X, Y, and Z--and work with residuals)
