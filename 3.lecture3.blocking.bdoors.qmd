@@ -1033,6 +1033,29 @@ $$
 Following Chattopadhyay, Hase, and Zubizarreta (2020)
 :::
 
+## Stabilised and trimmed weights
+
+When weights in denominator very small, it can blow up and unstabilise the estimator.
+
+**Solution 1**: *stabilised weights*
+
+For the ATE, the corresponding stabilised IPWs are:
+
+$$
+sw_i = \frac{e(X) D_i}{e(X_i)} + \frac{(1-e(X))(1-D_i)}{1-e(X_i)}
+$$
+where $e(X) = P(Y=1)$, marginal probability of treatment (sample proportion). 
+
+For ATT: $sw_i = 1$ for treated units and $sw_i = \frac{e(X_i)}{1-e(X_i)}$ for coontrol units
+
+**Solution 2**: Cap the weights at a min and max value (*trimmed weights*)
+
+**Solution 3**: Drop cases with extreme values (*trimmed cases*)
+
+**Solution 4**: mix solutions 1-3
+
+Note when trimming is used, interpretation of ATT/ATE changes slightly.
+
 ## How to weight with a different scale: entropy balancing (calibration weights)
 
 When using propensity score weights, we want to achieve is balance on covariates. So we would:
