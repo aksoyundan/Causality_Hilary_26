@@ -5,3 +5,5 @@ https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/8e19a12395bd230e456412
 
 https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/289375671da1922714ad736aca8d626f2ee19a6e/4.lecture4_iv.html
 
+https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/b7d7de3bd061d65ee145a20bcc7f5da13028b5d4/5.lecture5_panel.html
+
