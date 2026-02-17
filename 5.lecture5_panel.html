@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Ozan Aksoy">
-  <meta name="dcterms.date" content="2026-01-27">
+  <meta name="dcterms.date" content="2026-02-17">
   <title>Difference-in-differences</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -147,7 +147,7 @@ Ozan Aksoy
 </div>
 </div>
 
-  <p class="date">January 27, 2026</p>
+  <p class="date">February 17, 2026</p>
 </section>
 <section>
 <section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
@@ -167,13 +167,11 @@ Ozan Aksoy
 <ul>
 <li>Time heterogeneity</li>
 <li>Unit heterogeneity</li>
-<li>Bias decomposition</li>
 </ul></li>
 <li><p>Extensions and alternatives</p>
 <ul>
 <li>Beyond 2x2 (staggered adoption)</li>
 <li>Alternative estimators</li>
-<li>Synthetic Control, Matrix Completion, Synthetic diff-in-diff</li>
 </ul></li>
 </ul>
 </section></section>
@@ -440,8 +438,8 @@ E(Y) = \alpha + \gamma D + \lambda T + \delta (D \times T)
 <p>But not so fast!</p>
 <p>Now we know this bring it own (many) issues:</p>
 <ul>
-<li><p>When treatment status is non-absorbing</p></li>
 <li><p>When treatment effect is heterogeneous across units and time</p></li>
+<li><p>Recall under heterogeneity regression produces some variance-weighted estimate</p></li>
 <li><p>Think about design vs model-based arguments</p></li>
 </ul>
 </section>

@@ -52,14 +52,12 @@ callout-appearance: minimal
 
   - Time heterogeneity
   - Unit heterogeneity
-  - Bias decomposition
-  
+
 * Extensions and alternatives
 
   - Beyond 2x2 (staggered adoption)
   - Alternative estimators
-  - Synthetic Control, Matrix Completion, Synthetic diff-in-diff
-  
+
 # Classical diff-in-diff {background-color="#17a091"}
 
 ## Motivating example
@@ -287,9 +285,9 @@ But not so fast!
 
 Now we know this bring it own (many) issues:
 
-* When treatment status is non-absorbing
-
 * When treatment effect is heterogeneous across units and time
+
+* Recall under heterogeneity regression produces some variance-weighted estimate
 
 * Think about design vs model-based arguments
 
