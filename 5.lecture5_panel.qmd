@@ -215,6 +215,8 @@ As with other identification assumptions, parallel trends is an unverifiable ass
 
 * However, checking for possible pre-trends is a common and good practice! ("event study")
 
+* Note: parallel trends in $Y$ don't necessarily mean PT in $ln(Y)$ or vice versa
+
 
 ## Example: Minimum wage
 
