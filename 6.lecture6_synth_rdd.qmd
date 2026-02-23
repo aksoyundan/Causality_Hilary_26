@@ -1,0 +1,855 @@
+---
+title: "Exotic designs: Synthetic Control and Regression Discontinuity"
+author: "Ozan Aksoy"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Synthetic control and RDD"
+date: today
+date-format: long
+format: 
+  revealjs:
+    theme: simple
+    width: 1600
+    height: 1000
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
+---
+
+# Outline {background-color="#17a091"}
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\plim}{\operatornamewithlimits{plim}}
+\newcommand{\diag}{\mathrm{diag}}
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\bm}[1]{\boldsymbol{\mathbf{#1}}}
+
+##
+
+* Synthetic control
+
+  - Estimand
+  - Assumptions
+  - Estimation and inference
+  
+* Regression discontinuity design
+
+  - Sharp
+  - Fuzzy
+
+
+# Synthetic control
+
+## Unique events
+
+[Vox blog](https://cepr.org/voxeu/columns/ps350-million-week-output-cost-brexit-vote)
+
+::: columns
+::: {.column width="50%"}
+
+![](img\brexit.png)
+:::
+
+::: {.column width="50%"}
+
+* E.g. effect of Brexit on UK economy
+* <span style="color:blue;">Blue line:</span> actual UK GDP
+* <span style="color:red;">Red line:</span> UK's synthetic control (a bit of USA, a bit of Canada, a sprinkle of Japan and Hungary)
+* Difference between UK and its doppelganger: 1.3% GDP loss
+:::
+:::
+
+## Unique events and DiD
+
+Why not difference-in-differences?
+
+* DiD wants data from many observations within treated and control units (e.g. many restaurants in NJ vs PA)
+* 5 countries may be too small to do a DiD for Brexit
+* DiD via TWFE relies on implicit conditional variance weights--why not make those weights more explicit?
+* DiD via TWFE adjusts for all time-invariant effects (parallel trends), how about time varying confounding?
+
+## Syntetic control: ingredients
+
+* Time periods: $1...T$
+* Units: $i...J$
+* One unit (call unit 1) is affected by a treatment from $T_0$ onwards ($1 < T_o < T$)
+* Units $2...J$ are not treated
+* We have time-invariant (and/or pre-treatment) characteristics ($Z_i$)
+* Observed outomes $Y_{it}$
+
+Define **potential** outcomes as:
+
+* $Y_{1t}^0$: what would be $Y_t$ for treated unit 1 *without* the treatment
+* $Y_{1t}^1$: what would be $Y_t$ for treated unit 1 *with* the treatment
+
+and an *ATT* for time point $t > T_0$ as:
+
+$$\tau_{1t} = Y_{1t}^1 - Y_{1t}^0$$
+
+. . .
+
+Under SUTVA $Y_{1t}^1=Y_{1t}$ for $t > T_0$
+
+## Syntetic control: weights
+
+Suppose there exists $W^* = (w_2^*, w_3^*...w_J^*)$ with $w_i^* \geq 0$ and $\sum_{i=2}^Jw_i^* = 1$, so that
+
+$$\sum_{i=2}^Jw_i^*Z_i = Z_1$$
+and
+$$\sum_{i=2}^Jw_i^*Y_{it} = Y_{1t} \quad  \forall \quad t < T_0$$
+then under some assumptions (Abadie et al. 2010)
+
+$$
+\hat\tau_{1t} = Y_{1t}^1 - \sum_{i=2}^J w_i^* Y_{it} \quad  \forall \quad t > T_0
+$$
+
+. . .
+
+ <span style="color:red;">$\sum_{i=2}^J w_i^* Y_{it}$: synthetic control!</span>
+
+
+## Weights: which weights?
+
+Unlikely that such a perfect $W^*$ exits. In reality an optimal $W$ is estimated that
+mimimises the difference between treated and control units on $Z$ and $Y_{t}|t<T_0$. Assume
+($M \times 1$) vector $X_1 = (Z_1, Y_{11}, Y_{12}...Y_{1T_0})'$ for the treated unit with
+all covariates and outcomes up to treatment time ($M$ variables). Assume ($M \times J -1$) matrix $X_0$ that 
+contains the same columns of the untreated units. Then, $W$ can be estimated for $W^*$ such that $W$ minimises:
+
+$$
+\sum_{m=1}^Mv_m(X_{1m}-X_{0m}W)^2
+$$
+where $v_m$ is a coefficient for variable $m$ reflecting the importance of variable $m$, in minimising the difference between
+$X_i$ and $X_0W$. `R` coses $v$ so that **Root mean Squared Prediction Error (RMSPE)** is minimised where
+
+$$
+RMSPE = \left[ \frac{1}{T_0} \sum_{t=1}^{T_0}\left(Y_{1t} - \sum_{i=2}^J w_i^* Y_{it} \right)^2 \right]
+$$
+
+## Inference (significance test)
+
+Not obvious where uncertainty in $\hat\tau$ comes from, there is no sampling
+
+Here, uncertainty will come from if the synthetic control is a good counterfactual. 
+
+Hence: 
+
+* Estimate many synthetic control analyses, with treatment variable swapped out for each control units in turn.
+* Plot the *actual* $\hat\tau$ against all those placebo $\tau^p$s.
+* If genuine treatment effect, $Pr(\tau^p<\hat\tau) > 0.95$
+* Randomisation inference
+
+## Assumptions, assumptions
+
+1. No anticipation of treatment
+
+2. Treat unit's counterfactual is a weighted linear combination of control units (convex hull)
+
+3. No time-varying unobserved confounders besides those that is captured by $w_i$ 
+
+4. SUTVA (no equilibrium effects, contagion, diffusion, interference etc.)
+
+5. Donor pool is good and does not include treated units
+
+6. (Practical requirement): Pre-treatment fit must be good
+
+## Advantages and disadvantages
+
+::: columns
+::: {.column width="50%"}
+
+Pros
+
+* Transparent, data-driven approach to choose optimal counterfactual
+* Uncertainty comes from the suitability of the counterfactual even with small N
+* Balance is achieved on both time-constant and *some* time-varying confounders 
+* The possibility of combining quantitative and qualitative analysis in a transparent way.
+
+:::
+
+::: {.column width="50%"}
+
+Cons 
+
+* Lots of data is preferable before the treatment
+* The outcomes of potential control units and the treated unit need to be generated by the
+same process
+* We need to assume that there are no shocks to the control units after the treatment
+date
+* Spillover can be a major issue
+* There is still a lot of researcher degree of freedom in estimation and inference
+
+:::
+:::
+
+## Example: political violence and the economy: Basque county  
+
+```{r, message=FALSE, warning=FALSE, echo = TRUE, fig.width=6, fig.height=3}
+library(Synth)
+library(SCtools)
+data("basque")
+dim(basque)
+names(basque)
+
+dataprep.out <- dataprep(
+  foo = basque,
+  predictors = c(
+    "school.illit",
+    "school.prim",
+    "school.med",
+    "school.high",
+    "school.post.high",
+    "invest"
+  ),
+  predictors.op = "mean",
+  time.predictors.prior = 1964:1969,
+  # Pre-treatment period
+  special.predictors = list(
+    list("gdpcap", 1960:1969, "mean"),
+    list("sec.agriculture", seq(1961, 1969, 2), "mean"),
+    list("sec.energy", seq(1961, 1969, 2), "mean"),
+    list("sec.industry", seq(1961, 1969, 2), "mean"),
+    list("sec.construction", seq(1961, 1969, 2), "mean"),
+    list("sec.services.venta", seq(1961, 1969, 2), "mean"),
+    list("sec.services.nonventa", seq(1961, 1969, 2), "mean"),
+    list("popdens", 1969, "mean")
+  ),
+  dependent = "gdpcap",
+  unit.variable = "regionno",
+  unit.names.variable = "regionname",
+  time.variable = "year",
+  treatment.identifier = 17,
+  # Basque region
+  controls.identifier = c(2:16, 18),
+  # Control regions
+  time.optimize.ssr = 1960:1969,
+  time.plot = 1955:1997
+)
+```
+
+## Estimate: political violence and the economy: Basque county  
+
+```{r, message=FALSE, warning=FALSE, echo = TRUE, fig.width=6, fig.height=3}
+synth.out = synth(data.prep.obj = dataprep.out)
+```
+
+## Results: political violence and the economy: Basque county  
+
+```{r, message=FALSE, warning=FALSE, echo = TRUE}
+path.plot(
+  synth.res = synth.out,
+  dataprep.res = dataprep.out,
+  Ylab = "Real Per-Capita GDP (1986 USD, thousand)",
+  Xlab = "Year"
+)
+```
+
+## Differences: political violence and the economy: Basque county  
+
+```{r, message=FALSE, warning=FALSE, echo = TRUE}
+gaps.plot(
+  synth.res = synth.out,
+  dataprep.res = dataprep.out,
+  Ylab = "Gap in Real Per-Capita GDP (1986 USD, thousand)",
+  Xlab = "Year",
+  Ylim = c(-1.5, 1.5),
+  Main = NA
+)
+```
+
+## Results: political violence and the economy: Basque county 
+
+```{r, message=FALSE, warning=FALSE, echo = TRUE}
+placebos <- generate.placebos(dataprep.out, synth.out, Sigf.ipop = 2)
+
+plot_placebos(placebos)
+```
+
+# Regression Discontinuity Design
+
+
+## What is a *discontinuity*?
+
+We are interested in the causal effect of $D$ on $Y$
+
+Assignment to *treatment* $D$ depends on the value of variable $X$
+
+After a certain threshold value $c$ on variable $X$, treatment is assigned ($D = 1$)
+
+. . .
+
+Crucial assumption: People just below and just above the threshold are basically the same. Random processes put you just above or just below the threshold.
+
+## What is a *discontinuity*?
+
+There are two types of processes for assignment
+
+**Sharp**: treatment is only and always assigned to everyone after $c$, never before that value
+
+**Fuzzy**: treatment is more likely after $c$ than before but not 100%; some below $c$ do get treatment
+
+## Examples of discontinuities
+
+*What is the causal effect of receiving a Distinction for your university degree on income?*
+
+. . .
+
+Students who get a distinction are also different in other ways from students who do not get a distinction
+
+. . .
+
+Distinction is awarded above threshold $c$, e.g. in Oxford an average of 70
+
+Nobody with average \<70 gets $D$, everyone with \>=70 gets $D$
+
+. . .
+
+What is the difference between a student with an average of 69 and a student averaging 70?
+
+## Examples of discontinuities
+
+*Do politicians use their office to enrich themselves?*
+
+. . .
+
+Earnings or wealth for former politicians and those from other careers is likely to be subject to
+selection bias. 
+
+. . .
+
+Compare wealth at death for those who narrowly won their election to the
+House of Commons to those who narrowly lost. Conservatives who narrowly won their elections died
+on average almost £250,000 wealthier than candidates who narrowly failed (Eggers and Heinmueller).
+
+. . .
+
+
+How different are candidates with who got 49% of the votes versus 51%?
+
+## Examples of discontinuities
+
+*Does more education lead to better health?*
+
+. . .
+
+Individuals with more education are different in many other ways than just education compared to people with less education.
+
+. . .
+
+In year X, the mandatory schooling age increased from age 14 to 15. People born on August 31st could leave school at 14, those born a day latter had to stay in school for another year.
+
+. . .
+
+How different are children who are born 1 day apart?
+
+. . .
+
+Impossible for parents to influence reform
+
+## Natural experiment / quasi-experimental
+
+Around the discontinuity we assume random assignment
+
+We need a deep understanding of the mechanisms that produce the threshold and assignment
+
+## Running variable (aka forcing variable)
+
+Score on the running (aka forcing) variable $X$ determines treatment $D$, which in turn affects $Y$
+
+$X$ -\> $D$ -\> $Y$
+
+Above threshold $c$ the probability of assignment to $X$ *suddenly* changes:
+
+-   Sharp: below the threshold nobody receives the treatment, above the threshold everyone receives the treatment
+
+-   Fuzzy: the probability of assignment jumps up at the threshold but the link/compliance is not perfect
+
+## Sharp or Fuzzy
+
+```{r}
+#| echo: false
+
+library(tidyverse)
+runningvariable <- seq(1,100,1)
+treatment_s <- ifelse(runningvariable>50, 1, 0)
+noise <- rnorm(100, mean=0, sd=0.02)
+treatment_f <- runningvariable/150 + noise
+treatment_f <- ifelse(runningvariable>50, ((runningvariable/200+noise) + .5), treatment_f)
+treatment_f <- ifelse(treatment_f<0, 0, treatment_f)
+treatment_f <- ifelse(treatment_f>1, 1, treatment_f)
+df <- as.data.frame(cbind(runningvariable, treatment_s, treatment_f))
+
+```
+
+<br>
+
+:::: columns
+::: {.column width="45%"}
+```{r}
+#| echo: false
+
+ggplot(data = df, aes(x = runningvariable, y = treatment_s)) +
+  geom_point(colour = "blue") +
+  scale_x_continuous(name = "running variable (X)", limits =  c(0,100), breaks = c(0,50,100)) +
+  scale_y_continuous(name = "proportion treated (D)", limits =  c(0,1), breaks = c(0,.5,1)) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  geom_vline(xintercept = 50, linetype = "dotted") +
+  theme(text=element_text(size=25))
+
+```
+:::
+::::
+
+:::: columns
+::: {.column width="45%"}
+```{r}
+#| echo: false
+
+ggplot(data = df, aes(x = runningvariable, y = treatment_f)) +
+  geom_point(colour = "darkblue") +
+  scale_x_continuous(name = "running variable (x)", limits =  c(0,100), breaks = c(0,50,100)) +
+  scale_y_continuous(name = "proportion treated (D)", limits =  c(0,1), breaks = c(0,.5,1)) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  geom_vline(xintercept = 50, linetype = "dotted") +
+  theme(text=element_text(size=25))
+
+```
+:::
+::::
+
+. . .
+
+[Here](https://tilburgsciencehub.com/topics/analyze/causal-inference/rdd/fuzzy-example/) is an example of a Fuzzy RDD in R. In this cases everyone below $c$ has $D=0$, but above $c$ likelihood of $D=1$ increases with $X$.
+
+## Discontinuity in treatment
+
+```{r}
+#| echo: false
+
+library(tidyverse)
+x <- rnorm(1000, mean = 65, sd = 20)
+x <- ifelse(x<0, 0, x)
+x <- ifelse(x>100, x-30, x)
+d <- ifelse(x>50, 1, 0)
+noise <- rnorm(1000, mean=0, sd=20)
+y <- 80 + 1.2*x + 0.5*d + 1.5*d*x + noise
+df <- as.data.frame(cbind(y,x,d))
+```
+
+```{r}
+#| echo: false
+
+ggplot(data = df, aes(x=x, y=d, color = d)) +
+  geom_jitter(height=0.1) +
+  geom_vline(xintercept = 50) +
+  theme(legend.position = "none") 
+```
+
+## Discontinuity in outcome
+
+```{r}
+#| echo: false
+
+ggplot(data = df, aes(x=x, y=y, color = d)) +
+  geom_point() +
+  geom_vline(xintercept = 50) +
+  theme(legend.position = "none") 
+```
+
+## RDD and LATE
+
+* **Treatment** $D_i \in \{0,1\}$
+* **Threshold** $c$ above which $D_i = 1$
+* **Potential outcomes** under Treatment and controlL $Y_i(1)$ and $Y_i(0)$
+* **Running/forcing variable** $X_i$ that determines if $i$ is above/below $c$
+
+$$
+D_i =
+\begin{cases}
+1 & \text{if } X_i > c, \\
+0 & \text{if } X_i \le c .
+\end{cases}
+$$
+Then, LATE is defined **at the threshold c** as:
+
+$$
+\tau = E[Y_i(1)-Y_i(0)|X_i = c]
+$$
+
+## Continuity assumption
+
+![](img/RD-PO.png)
+
+## Continuity and no manipulation assumption 
+
+Potential outcomes should be continuous at the threshold $c$ in $X$
+
+No jumps at $c$ for any other variables, only for $Y$ and $D$
+
+. . .
+
+A sufficient condition for this assumption is a lack of *perfect* manipulation
+
+-   respondents can not manipulate *exactly* where on the score they end up (ie just below or just above threshold)
+
+-   you can manipulate roughly where on a test score you end up (ie study hard), but you can not manipulate it by 1 point
+
+## Other assumptions
+
+* Continuity of POs
+
+* No perfect manipulation of $X$
+
+* Local SUTVA
+
+* Sharp RD: Treatment assignment must change discontinuously at the cutoff
+
+* Fuzzy RD: Exclusion restriction (here must be no “direct” effect of crossing ccc on the outcome.)
+
+* Correct functional form is estimated locally
+
+## Checking the continuity assumption
+
+1.  Plot observed variables against the threshold (running variable vs covariates: do we see a jump?)
+
+2.  Are there any other discontinuities?
+
+3.  Placebo discontinuity
+
+4.  McCrary density test
+
+## Density test around the cutoff
+
+![](img/Density.png)
+
+## Sharp Design in equations
+
+Clear cutoff value for the running variable
+
+-   $X < c$ : no treatment
+-   $X >= c$ : treatment
+
+$Y$ is a continuous outcome
+
+$c$ is the threshold value
+
+$D$ is a dummy for treatment (0/1)
+
+$$Y = f(X) + \beta(X \ge c) + \epsilon$$ $$or$$ $$Y = f(X) + \beta D + \epsilon$$
+
+## Sharp Design parametric
+
+To shorten the equations: $\tilde{X} = X - c$
+
+$$Y = \beta_0 + \beta_1D + \beta_2\tilde{X} + e$$
+
+$$\beta_1 \text{ describes the treatment effect at threshold c}$$
+
+. . .
+
+We often estimate a more flexible model that allows different slopes left and right from the cutoff:
+
+$$Y = \beta_0 + \beta_1D + \beta_2\tilde{X} + \beta_3\tilde{X}*D + e$$ Now $\beta_2$ is the slope of $X$ on the left and $(\beta_2+\beta_3)$ is the slope on the right.
+
+. . .
+
+If we think $f(X)$ is non-linear, e.g. quadratic, we add a functional form:
+
+$$Y = \beta_0 + \beta_1D + \beta_2\tilde{X} + \beta_3\tilde{X}^2 + \beta_4\tilde{X}*D + \beta_5\tilde{X}^2*D + e$$
+
+## $f(X)$ matters for the estimated gap
+
+```{r}
+#| echo: false
+
+ggplot(data = df, aes(x=x, y=y, color = d)) +
+  geom_point() +
+  geom_smooth(data = filter(df, x <= 50), method = "lm", colour = "red") +
+  geom_smooth(data = filter(df, x > 50), method = "lm", colour = "red") +
+  geom_vline(xintercept = 50) +
+  theme(legend.position = "none") 
+```
+
+## $f(X)$ LOESS instead of OLS
+
+```{r}
+#| echo: false
+
+ggplot(data = df, aes(x=x, y=y, color = d)) +
+  geom_point() +
+  geom_smooth(data = filter(df, x <= 50), method = "loess", colour = "red") +
+  geom_smooth(data = filter(df, x > 50), method = "loess", colour = "red") +
+  geom_vline(xintercept = 50) +
+  theme(legend.position = "none") 
+```
+
+## Bandwidth: the window around $c$
+
+Our estimand is LATE around the threshold
+
+. . .
+
+-   What counts as *around*?
+
+-   It matters who we include on either side of $c$
+
+-   Further away: more cases, less clear it's an experiment
+
+. . .
+
+What is the right or optimal bandwidth: ad hoc/substantive vs data-driven approaches
+
+## Non-parametric approaches
+
+If we don't want to make assumptions about $f(X)$
+
+Instead, an algorithm determines the shape based on the data:
+
+-   locally weighted least squares
+-   Kernel-weighted local polynomial smoothing
+-   Smooths out the curves left and right, gives more weight to points closer to each other
+-   Bandwidth still matters
+
+. . .
+
+After shaping the curves, compare the gap at the discontinuity. Compare the results of different approaches.
+
+. . .
+
+In R this can be done with the [rdrobust](https://rdpackages.github.io/) package
+
+## Fuzzy Design
+
+-   What if the threshold does not perfectly predict treatment?
+
+-   But the running variable is a strong predictor of treatment and is random around the threshold
+
+-   Sounds familiar...
+
+. . .
+
+-   We use the running variable and threshold $c$ as an IV
+
+-   $X$ -\> $D$ -\> $Y$ (IV week: $Z$ -\> $T$ -\> $Y$)
+
+. . .
+
+-   2SLS as in IV
+
+-   LATE for compliers at the threshold
+
+## Fuzzy equations
+
+$$\text{reduced form (naive)}$$
+
+$$Y = f(X) + \beta_1(X \ge c) + \epsilon$$
+
+<br><br>
+
+$$\text{first stage}$$
+
+$$D = f(X) + \beta_2(X \ge c) + \epsilon$$
+
+$$\text{second stage}$$
+
+$$Y = f(X) + \beta_3(\hat{D}) + \epsilon$$
+
+## An example
+
+-   Credit: Andrew Heiss' *Program Evaluation* course, see [here](https://evalf20.classes.andrewheiss.com/example/rdd/)
+
+-   Research question: *What is the causal effect of tutoring?*
+
+-   What is our estimand?
+
+```{r}
+
+## Credit: Andrew Heiss
+library(tidyverse)
+library(broom)
+library(rdrobust)
+library(rddensity)
+library(modelsummary)
+tutoring <- read.csv("https://evalf20.classes.andrewheiss.com/data/tutoring_program.csv")
+```
+
+## Steps
+
+1.  Is the discontinuity rule-based?
+
+2.  Is the discontinuity sharp or fuzzy?
+
+3.  Checking for manipulation
+
+4.  Finding discontinuity in outcome
+
+5.  Measuring the gap parametrically
+
+6.  Measuring the gap non-parametrically
+
+## Fuzzy or sharp?
+
+```{r}
+#| eval: true
+#| echo: false
+
+ggplot(tutoring, aes(x = entrance_exam, y = tutoring, color = tutoring)) +
+  # Make points small and semi-transparent since there are lots of them
+  geom_point(size = 1, alpha = 0.5, 
+             position = position_jitter(width = 0, height = 0.25, seed = 1234)) + 
+  # Add vertical line
+  geom_vline(xintercept = 70) + 
+  # Add labels
+  labs(x = "Entrance exam score", y = "Participated in tutoring program") + 
+  # Turn off the color legend, since it's redundant
+  guides(color = FALSE)
+```
+
+## Fuzzy or sharp?
+
+```{r}
+
+tutoring %>% 
+  group_by(tutoring, entrance_exam <= 70) %>% 
+  summarize(count = n())
+```
+
+. . .
+
+No non-compliers! This is sharp.
+
+## Is there manipulation?
+
+```{r}
+#| echo: false
+
+ggplot(tutoring, aes(x = entrance_exam, fill = tutoring)) +
+  geom_histogram(binwidth = 2, color = "white", boundary = 70) + 
+  geom_vline(xintercept = 70) + 
+  labs(x = "Entrance exam score", y = "Count", 
+       fill = "In program")
+```
+
+## Test for manipulation - McCrary test
+
+```{r}
+#| echo: TRUE
+
+## test difference in estimated density functions at the cutoff 
+test_density <- rddensity(tutoring$entrance_exam, c = 70)
+summary(test_density)
+```
+
+## Test for manipulation - McCrary test
+
+```{r}
+#| echo: TRUE
+
+plot_density_test <- rdplotdensity(rdd = test_density, 
+                                   X = tutoring$entrance_exam, 
+                                   type = "both")
+```
+
+## Is there a discontiniuty in the outcome?
+
+-   Plot two lines, one for exam \<=70 and one for \>70
+-   In sharp design, these Z and X are aligned (score \<=70 = tutoring)
+
+```{r}
+#| echo: false
+
+ggplot(tutoring, aes(x = entrance_exam, y = exit_exam, color = tutoring)) +
+  geom_point(size = 1, alpha = 0.5) + 
+  # Add a line based on a linear model for the people scoring 70 or less
+  geom_smooth(data = filter(tutoring, entrance_exam <= 70), method = "lm") +
+  # Add a line based on a linear model for the people scoring more than 70
+  geom_smooth(data = filter(tutoring, entrance_exam > 70), method = "lm") +
+  geom_vline(xintercept = 70) +
+  labs(x = "Entrance exam score", y = "Exit exam score", color = "Used tutoring")
+```
+
+## How big is the gap?
+
+$$Y =  \beta_0 + \beta_1 (X-c) + \beta_2 D + \epsilon$$
+
+$Y$ is final test score $X$ is entrance score $c$ is the cutt-off $D$ is the treatment (tutoring)
+
+```{r}
+#| eval: false
+#| echo: true
+
+lm(Y ~ X_centered + D, data = data)*
+```
+
+(\* Note Heiss does not include the interaction between $\hat{X}$ and $D$ in [his example](https://evalf20.classes.andrewheiss.com/example/rdd/#step-5-measure-the-size-of-the-effect) as in this particular case the models with and without are equivalent becasue the slopes left and right are similar)
+
+## How big is the gap? Parametric
+
+```{r}
+
+tutoring_centered <- tutoring %>% 
+  mutate(entrance_centered = entrance_exam - 70)
+
+model_simple <- lm(exit_exam ~ entrance_centered + tutoring,
+                   data = tutoring_centered)
+tidy(model_simple)
+```
+
+## How big is the gap? What bandwidth?
+
+```{r}
+#| echo: true
+model_bw_10 <- lm(exit_exam ~ entrance_centered + tutoring,
+                  data = filter(tutoring_centered,
+                                entrance_centered >= -10 & 
+                                  entrance_centered <= 10))
+tidy(model_bw_10)
+```
+
+## How big is the gap? What bandwidth?
+
+```{r}
+#| echo: true
+model_bw_5 <- lm(exit_exam ~ entrance_centered + tutoring,
+                  data = filter(tutoring_centered,
+                                entrance_centered >= -5 & 
+                                  entrance_centered <= 5))
+tidy(model_bw_5)
+```
+
+## How big is the gap? What bandwidth?
+
+```{r}
+
+modelsummary(list("Full data" = model_simple, 
+                  "Bandwidth = 10" = model_bw_10, 
+                  "Bandwidth = 5" = model_bw_5))
+```
+
+## How big is the gap? Non-parametric
+
+```{r}
+#| echo: TRUE
+
+rdrobust(y = tutoring$exit_exam, 
+         x = tutoring$entrance_exam, c = 70) %>% 
+summary()
+```
+

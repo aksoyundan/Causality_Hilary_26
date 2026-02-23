@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="6.lecture6_synth_rdd_files/libs/clipboard/clipboard.min.js"></script>
+<script src="6.lecture6_synth_rdd_files/libs/quarto-html/tabby.min.js"></script>
+<script src="6.lecture6_synth_rdd_files/libs/quarto-html/popper.min.js"></script>
+<script src="6.lecture6_synth_rdd_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="6.lecture6_synth_rdd_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="6.lecture6_synth_rdd_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="6.lecture6_synth_rdd_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.32">
+
+  <meta name="author" content="Ozan Aksoy">
+  <meta name="dcterms.date" content="2026-02-23">
+  <title>Exotic designs: Synthetic Control and Regression Discontinuity</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="6.lecture6_synth_rdd_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="6.lecture6_synth_rdd_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="6.lecture6_synth_rdd_files/libs/revealjs/dist/theme/quarto-2c1b5f745a11cfad616ebade4a4a7d24.css">
+  <link href="6.lecture6_synth_rdd_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="6.lecture6_synth_rdd_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="6.lecture6_synth_rdd_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="6.lecture6_synth_rdd_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="6.lecture6_synth_rdd_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="6.lecture6_synth_rdd_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <style>
+  .reveal .slide-logo {
+    max-height: unset;
+    height: 100px;
+  }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Exotic designs: Synthetic Control and Regression Discontinuity</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Ozan Aksoy 
+</div>
+</div>
+</div>
+
+  <p class="date">February 23, 2026</p>
+</section>
+<section>
+<section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Outline</h1>
+
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<ul>
+<li><p>Synthetic control</p>
+<ul>
+<li>Estimand</li>
+<li>Assumptions</li>
+<li>Estimation and inference</li>
+</ul></li>
+<li><p>Regression discontinuity design</p>
+<ul>
+<li>Sharp</li>
+<li>Fuzzy</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="synthetic-control" class="title-slide slide level1 center">
+<h1>Synthetic control</h1>
+
+</section>
+<section id="unique-events" class="slide level2">
+<h2>Unique events</h2>
+<p><a href="https://cepr.org/voxeu/columns/ps350-million-week-output-cost-brexit-vote">Vox blog</a></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img\brexit.png"></p>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>E.g. effect of Brexit on UK economy</li>
+<li><span style="color:blue;">Blue line:</span> actual UK GDP</li>
+<li><span style="color:red;">Red line:</span> UK’s synthetic control (a bit of USA, a bit of Canada, a sprinkle of Japan and Hungary)</li>
+<li>Difference between UK and its doppelganger: 1.3% GDP loss</li>
+</ul>
+</div></div>
+</section>
+<section id="unique-events-and-did" class="slide level2">
+<h2>Unique events and DiD</h2>
+<p>Why not difference-in-differences?</p>
+<ul>
+<li>DiD wants data from many observations within treated and control units (e.g.&nbsp;many restaurants in NJ vs PA)</li>
+<li>5 countries may be too small to do a DiD for Brexit</li>
+<li>DiD via TWFE relies on implicit conditional variance weights–why not make those weights more explicit?</li>
+<li>DiD via TWFE adjusts for all time-invariant effects (parallel trends), how about time varying confounding?</li>
+</ul>
+</section>
+<section id="syntetic-control-ingredients" class="slide level2">
+<h2>Syntetic control: ingredients</h2>
+<ul>
+<li>Time periods: <span class="math inline">\(1...T\)</span></li>
+<li>Units: <span class="math inline">\(i...J\)</span></li>
+<li>One unit (call unit 1) is affected by a treatment from <span class="math inline">\(T_0\)</span> onwards (<span class="math inline">\(1 &lt; T_o &lt; T\)</span>)</li>
+<li>Units <span class="math inline">\(2...J\)</span> are not treated</li>
+<li>We have time-invariant (and/or pre-treatment) characteristics (<span class="math inline">\(Z_i\)</span>)</li>
+<li>Observed outomes <span class="math inline">\(Y_{it}\)</span></li>
+</ul>
+<p>Define <strong>potential</strong> outcomes as:</p>
+<ul>
+<li><span class="math inline">\(Y_{1t}^0\)</span>: what would be <span class="math inline">\(Y_t\)</span> for treated unit 1 <em>without</em> the treatment</li>
+<li><span class="math inline">\(Y_{1t}^1\)</span>: what would be <span class="math inline">\(Y_t\)</span> for treated unit 1 <em>with</em> the treatment</li>
+</ul>
+<p>and an <em>ATT</em> for time point <span class="math inline">\(t &gt; T_0\)</span> as:</p>
+<p><span class="math display">\[\tau_{1t} = Y_{1t}^1 - Y_{1t}^0\]</span></p>
+<div class="fragment">
+<p>Under SUTVA <span class="math inline">\(Y_{1t}^1=Y_{1t}\)</span> for <span class="math inline">\(t &gt; T_0\)</span></p>
+</div>
+</section>
+<section id="syntetic-control-weights" class="slide level2">
+<h2>Syntetic control: weights</h2>
+<p>Suppose there exists <span class="math inline">\(W^* = (w_2^*, w_3^*...w_J^*)\)</span> with <span class="math inline">\(w_i^* \geq 0\)</span> and <span class="math inline">\(\sum_{i=2}^Jw_i^* = 1\)</span>, so that</p>
+<p><span class="math display">\[\sum_{i=2}^Jw_i^*Z_i = Z_1\]</span> and <span class="math display">\[\sum_{i=2}^Jw_i^*Y_{it} = Y_{1t} \quad  \forall \quad t &lt; T_0\]</span> then under some assumptions (Abadie et al.&nbsp;2010)</p>
+<p><span class="math display">\[
+\hat\tau_{1t} = Y_{1t}^1 - \sum_{i=2}^J w_i^* Y_{it} \quad  \forall \quad t &gt; T_0
+\]</span></p>
+<div class="fragment">
+<p><span style="color:red;"><span class="math inline">\(\sum_{i=2}^J w_i^* Y_{it}\)</span>: synthetic control!</span></p>
+</div>
+</section>
+<section id="weights-which-weights" class="slide level2">
+<h2>Weights: which weights?</h2>
+<p>Unlikely that such a perfect <span class="math inline">\(W^*\)</span> exits. In reality an optimal <span class="math inline">\(W\)</span> is estimated that mimimises the difference between treated and control units on <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y_{t}|t&lt;T_0\)</span>. Assume (<span class="math inline">\(M \times 1\)</span>) vector <span class="math inline">\(X_1 = (Z_1, Y_{11}, Y_{12}...Y_{1T_0})'\)</span> for the treated unit with all covariates and outcomes up to treatment time (<span class="math inline">\(M\)</span> variables). Assume (<span class="math inline">\(M \times J -1\)</span>) matrix <span class="math inline">\(X_0\)</span> that contains the same columns of the untreated units. Then, <span class="math inline">\(W\)</span> can be estimated for <span class="math inline">\(W^*\)</span> such that <span class="math inline">\(W\)</span> minimises:</p>
+<p><span class="math display">\[
+\sum_{m=1}^Mv_m(X_{1m}-X_{0m}W)^2
+\]</span> where <span class="math inline">\(v_m\)</span> is a coefficient for variable <span class="math inline">\(m\)</span> reflecting the importance of variable <span class="math inline">\(m\)</span>, in minimising the difference between <span class="math inline">\(X_i\)</span> and <span class="math inline">\(X_0W\)</span>. <code>R</code> coses <span class="math inline">\(v\)</span> so that <strong>Root mean Squared Prediction Error (RMSPE)</strong> is minimised where</p>
+<p><span class="math display">\[
+RMSPE = \left[ \frac{1}{T_0} \sum_{t=1}^{T_0}\left(Y_{1t} - \sum_{i=2}^J w_i^* Y_{it} \right)^2 \right]
+\]</span></p>
+</section>
+<section id="inference-significance-test" class="slide level2">
+<h2>Inference (significance test)</h2>
+<p>Not obvious where uncertainty in <span class="math inline">\(\hat\tau\)</span> comes from, there is no sampling</p>
+<p>Here, uncertainty will come from if the synthetic control is a good counterfactual.</p>
+<p>Hence:</p>
+<ul>
+<li>Estimate many synthetic control analyses, with treatment variable swapped out for each control units in turn.</li>
+<li>Plot the <em>actual</em> <span class="math inline">\(\hat\tau\)</span> against all those placebo <span class="math inline">\(\tau^p\)</span>s.</li>
+<li>If genuine treatment effect, <span class="math inline">\(Pr(\tau^p&lt;\hat\tau) &gt; 0.95\)</span></li>
+<li>Randomisation inference</li>
+</ul>
+</section>
+<section id="assumptions-assumptions" class="slide level2">
+<h2>Assumptions, assumptions</h2>
+<ol type="1">
+<li><p>No anticipation of treatment</p></li>
+<li><p>Treat unit’s counterfactual is a weighted linear combination of control units (convex hull)</p></li>
+<li><p>No time-varying unobserved confounders besides those that is captured by <span class="math inline">\(w_i\)</span></p></li>
+<li><p>SUTVA (no equilibrium effects, contagion, diffusion, interference etc.)</p></li>
+<li><p>Donor pool is good and does not include treated units</p></li>
+<li><p>(Practical requirement): Pre-treatment fit must be good</p></li>
+</ol>
+</section>
+<section id="advantages-and-disadvantages" class="slide level2">
+<h2>Advantages and disadvantages</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Pros</p>
+<ul>
+<li>Transparent, data-driven approach to choose optimal counterfactual</li>
+<li>Uncertainty comes from the suitability of the counterfactual even with small N</li>
+<li>Balance is achieved on both time-constant and <em>some</em> time-varying confounders</li>
+<li>The possibility of combining quantitative and qualitative analysis in a transparent way.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>Cons</p>
+<ul>
+<li>Lots of data is preferable before the treatment</li>
+<li>The outcomes of potential control units and the treated unit need to be generated by the same process</li>
+<li>We need to assume that there are no shocks to the control units after the treatment date</li>
+<li>Spillover can be a major issue</li>
+<li>There is still a lot of researcher degree of freedom in estimation and inference</li>
+</ul>
+</div></div>
+</section>
+<section id="example-political-violence-and-the-economy-basque-county" class="slide level2">
+<h2>Example: political violence and the economy: Basque county</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(Synth)</span>
+<span id="cb1-2"><a href=""></a><span class="fu">library</span>(SCtools)</span>
+<span id="cb1-3"><a href=""></a><span class="fu">data</span>(<span class="st">"basque"</span>)</span>
+<span id="cb1-4"><a href=""></a><span class="fu">dim</span>(basque)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 774  17</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">names</span>(basque)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "regionno"              "regionname"            "year"                 
+ [4] "gdpcap"                "sec.agriculture"       "sec.energy"           
+ [7] "sec.industry"          "sec.construction"      "sec.services.venta"   
+[10] "sec.services.nonventa" "school.illit"          "school.prim"          
+[13] "school.med"            "school.high"           "school.post.high"     
+[16] "popdens"               "invest"               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>dataprep.out <span class="ot">&lt;-</span> <span class="fu">dataprep</span>(</span>
+<span id="cb5-2"><a href=""></a>  <span class="at">foo =</span> basque,</span>
+<span id="cb5-3"><a href=""></a>  <span class="at">predictors =</span> <span class="fu">c</span>(</span>
+<span id="cb5-4"><a href=""></a>    <span class="st">"school.illit"</span>,</span>
+<span id="cb5-5"><a href=""></a>    <span class="st">"school.prim"</span>,</span>
+<span id="cb5-6"><a href=""></a>    <span class="st">"school.med"</span>,</span>
+<span id="cb5-7"><a href=""></a>    <span class="st">"school.high"</span>,</span>
+<span id="cb5-8"><a href=""></a>    <span class="st">"school.post.high"</span>,</span>
+<span id="cb5-9"><a href=""></a>    <span class="st">"invest"</span></span>
+<span id="cb5-10"><a href=""></a>  ),</span>
+<span id="cb5-11"><a href=""></a>  <span class="at">predictors.op =</span> <span class="st">"mean"</span>,</span>
+<span id="cb5-12"><a href=""></a>  <span class="at">time.predictors.prior =</span> <span class="dv">1964</span><span class="sc">:</span><span class="dv">1969</span>,</span>
+<span id="cb5-13"><a href=""></a>  <span class="co"># Pre-treatment period</span></span>
+<span id="cb5-14"><a href=""></a>  <span class="at">special.predictors =</span> <span class="fu">list</span>(</span>
+<span id="cb5-15"><a href=""></a>    <span class="fu">list</span>(<span class="st">"gdpcap"</span>, <span class="dv">1960</span><span class="sc">:</span><span class="dv">1969</span>, <span class="st">"mean"</span>),</span>
+<span id="cb5-16"><a href=""></a>    <span class="fu">list</span>(<span class="st">"sec.agriculture"</span>, <span class="fu">seq</span>(<span class="dv">1961</span>, <span class="dv">1969</span>, <span class="dv">2</span>), <span class="st">"mean"</span>),</span>
+<span id="cb5-17"><a href=""></a>    <span class="fu">list</span>(<span class="st">"sec.energy"</span>, <span class="fu">seq</span>(<span class="dv">1961</span>, <span class="dv">1969</span>, <span class="dv">2</span>), <span class="st">"mean"</span>),</span>
+<span id="cb5-18"><a href=""></a>    <span class="fu">list</span>(<span class="st">"sec.industry"</span>, <span class="fu">seq</span>(<span class="dv">1961</span>, <span class="dv">1969</span>, <span class="dv">2</span>), <span class="st">"mean"</span>),</span>
+<span id="cb5-19"><a href=""></a>    <span class="fu">list</span>(<span class="st">"sec.construction"</span>, <span class="fu">seq</span>(<span class="dv">1961</span>, <span class="dv">1969</span>, <span class="dv">2</span>), <span class="st">"mean"</span>),</span>
+<span id="cb5-20"><a href=""></a>    <span class="fu">list</span>(<span class="st">"sec.services.venta"</span>, <span class="fu">seq</span>(<span class="dv">1961</span>, <span class="dv">1969</span>, <span class="dv">2</span>), <span class="st">"mean"</span>),</span>
+<span id="cb5-21"><a href=""></a>    <span class="fu">list</span>(<span class="st">"sec.services.nonventa"</span>, <span class="fu">seq</span>(<span class="dv">1961</span>, <span class="dv">1969</span>, <span class="dv">2</span>), <span class="st">"mean"</span>),</span>
+<span id="cb5-22"><a href=""></a>    <span class="fu">list</span>(<span class="st">"popdens"</span>, <span class="dv">1969</span>, <span class="st">"mean"</span>)</span>
+<span id="cb5-23"><a href=""></a>  ),</span>
+<span id="cb5-24"><a href=""></a>  <span class="at">dependent =</span> <span class="st">"gdpcap"</span>,</span>
+<span id="cb5-25"><a href=""></a>  <span class="at">unit.variable =</span> <span class="st">"regionno"</span>,</span>
+<span id="cb5-26"><a href=""></a>  <span class="at">unit.names.variable =</span> <span class="st">"regionname"</span>,</span>
+<span id="cb5-27"><a href=""></a>  <span class="at">time.variable =</span> <span class="st">"year"</span>,</span>
+<span id="cb5-28"><a href=""></a>  <span class="at">treatment.identifier =</span> <span class="dv">17</span>,</span>
+<span id="cb5-29"><a href=""></a>  <span class="co"># Basque region</span></span>
+<span id="cb5-30"><a href=""></a>  <span class="at">controls.identifier =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">16</span>, <span class="dv">18</span>),</span>
+<span id="cb5-31"><a href=""></a>  <span class="co"># Control regions</span></span>
+<span id="cb5-32"><a href=""></a>  <span class="at">time.optimize.ssr =</span> <span class="dv">1960</span><span class="sc">:</span><span class="dv">1969</span>,</span>
+<span id="cb5-33"><a href=""></a>  <span class="at">time.plot =</span> <span class="dv">1955</span><span class="sc">:</span><span class="dv">1997</span></span>
+<span id="cb5-34"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="estimate-political-violence-and-the-economy-basque-county" class="slide level2">
+<h2>Estimate: political violence and the economy: Basque county</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>synth.out <span class="ot">=</span> <span class="fu">synth</span>(<span class="at">data.prep.obj =</span> dataprep.out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.008864761 
+
+solution.v:
+ 0.004166638 0.002212878 3.2593e-06 0.0003333134 4.62468e-05 0.01403728 0.2115848 0.09687182 0.05729951 0.08078002 0.005106782 0.006110519 0.1324116 0.3890353 
+
+solution.w:
+ 7.75e-08 9.02e-08 8.99e-07 6.18e-08 1.804e-07 1.1869e-06 8.64e-08 1.536e-07 0.8508195 7.17e-07 8.11e-08 2.174e-07 0.1491764 1.319e-07 1.191e-07 1.45e-07 </code></pre>
+</div>
+</div>
+</section>
+<section id="results-political-violence-and-the-economy-basque-county" class="slide level2">
+<h2>Results: political violence and the economy: Basque county</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">path.plot</span>(</span>
+<span id="cb8-2"><a href=""></a>  <span class="at">synth.res =</span> synth.out,</span>
+<span id="cb8-3"><a href=""></a>  <span class="at">dataprep.res =</span> dataprep.out,</span>
+<span id="cb8-4"><a href=""></a>  <span class="at">Ylab =</span> <span class="st">"Real Per-Capita GDP (1986 USD, thousand)"</span>,</span>
+<span id="cb8-5"><a href=""></a>  <span class="at">Xlab =</span> <span class="st">"Year"</span></span>
+<span id="cb8-6"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="differences-political-violence-and-the-economy-basque-county" class="slide level2">
+<h2>Differences: political violence and the economy: Basque county</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">gaps.plot</span>(</span>
+<span id="cb9-2"><a href=""></a>  <span class="at">synth.res =</span> synth.out,</span>
+<span id="cb9-3"><a href=""></a>  <span class="at">dataprep.res =</span> dataprep.out,</span>
+<span id="cb9-4"><a href=""></a>  <span class="at">Ylab =</span> <span class="st">"Gap in Real Per-Capita GDP (1986 USD, thousand)"</span>,</span>
+<span id="cb9-5"><a href=""></a>  <span class="at">Xlab =</span> <span class="st">"Year"</span>,</span>
+<span id="cb9-6"><a href=""></a>  <span class="at">Ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>),</span>
+<span id="cb9-7"><a href=""></a>  <span class="at">Main =</span> <span class="cn">NA</span></span>
+<span id="cb9-8"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="results-political-violence-and-the-economy-basque-county-1" class="slide level2">
+<h2>Results: political violence and the economy: Basque county</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>placebos <span class="ot">&lt;-</span> <span class="fu">generate.placebos</span>(dataprep.out, synth.out, <span class="at">Sigf.ipop =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.0005048674 
+
+solution.v:
+ 0.06786731 0.0009171323 0.0002497557 0.0001939303 0.0003954775 0.01656467 0.3367224 0.008248429 0.01978053 0.1966788 0.03363322 0.00427961 0.1161045 0.1983643 
+
+solution.w:
+ 0.006192844 0.001952288 0.003622388 0.002375025 0.00158705 0.005613648 0.004761488 0.02092922 0.01042842 0.2648973 0.6349946 0.03327229 0.003248374 0.003582981 0.002542111 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.0005460731 
+
+solution.v:
+ 0.1522613 0.04675 0.004200871 0.01726939 0.01076942 0.008928617 0.04788228 0.4419616 0.05583099 4.22393e-05 0.0003075346 0.1722856 0.03507543 0.006434768 
+
+solution.w:
+ 0.02475861 0.1384927 0.05053769 0.04891854 0.07400801 0.04762289 0.0294627 0.04116999 0.03815864 0.03616288 0.03720407 0.04178755 0.06647764 0.08682001 0.2384183 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.0002467048 
+
+solution.v:
+ 0.05838084 0.04943481 0.05040768 0.04772201 0.05239882 0.09501002 0.04080262 0.1356022 0.05842884 0.07940213 0.1201669 0.006329607 0.1337692 0.07214437 
+
+solution.w:
+ 0.0001983812 0.4894395 0.02875322 0.3096396 0.008609138 0.000687094 0.001295664 0.1402324 0.002074929 0.0002413971 0.001160322 0.0005517656 0.01411757 0.001513319 0.001485648 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.1793011 
+
+solution.v:
+ 0.08522735 0.0004204442 9.18569e-05 3.98386e-05 3.94184e-05 0.01427054 0.4618016 0.001399806 0.1350607 4.41851e-05 0.06255731 0.2038799 0.03512876 3.8311e-05 
+
+solution.w:
+ 0.01321282 0.02210226 0.01522881 0.03919376 0.03979713 0.01348349 0.01287488 0.07263046 0.04004619 0.01494414 0.01638148 0.6467372 0.01558924 0.02095846 0.01681921 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.001651303 
+
+solution.v:
+ 0.0005868222 0.01359931 0.05229501 0.05568131 0.04004885 0.09035413 0.09990513 0.03900915 0.2124499 0.1596133 4.2379e-06 0.005746471 0.2305669 0.000139575 
+
+solution.w:
+ 0.006141562 0.002285466 0.01724027 0.1670271 0.002107469 0.009219208 0.0007301749 0.001037648 0.00221841 0.2724782 0.003927149 0.004507064 0.5098213 0.0007183777 0.0005406494 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 7.837784e-05 
+
+solution.v:
+ 0.03088714 0.05769279 0.07256682 0.06476906 0.06437788 0.1170097 0.04805494 0.02290319 0.05542746 0.04986589 0.1608906 0.1138618 0.07313656 0.06855617 
+
+solution.w:
+ 0.001486135 0.01738757 0.03832477 0.06942791 0.02245042 0.004125819 0.007019438 9.329e-07 0.6124548 0.005926197 0.00508559 0.0005023153 0.01905639 0.08760053 0.1091506 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.0007159646 
+
+solution.v:
+ 0.1663663 0.1438047 8.27891e-05 7.93e-08 3.25079e-05 0.02742595 0.07645302 0.1145234 0.1633917 0.02178579 2.40633e-05 0.09827906 0.01493678 0.172894 
+
+solution.w:
+ 0.004584769 0.03985851 0.1481864 0.007965144 0.007981778 0.009264932 0.4228092 0.02588724 0.01062422 0.004704745 0.2718254 0.00553053 0.01315054 0.01499287 0.01263383 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.007203148 
+
+solution.v:
+ 0.1029369 6.1915e-06 0.0009268222 0.0001940402 0.0003264338 0.08120249 0.2600462 0.3574928 0.08937763 6.5711e-06 5.437e-07 0.1071551 1.33e-08 0.000328266 
+
+solution.w:
+ 0.05137585 0.01293932 0.01458161 0.001546776 0.005121231 0.003584965 0.05300252 0.003875096 0.007013308 0.7414463 0.02789967 0.002170449 0.01745935 0.016794 0.04118953 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.01402777 
+
+solution.v:
+ 4.0035e-06 1.13945e-05 0.2901716 0.03436731 0.0308597 5.5463e-05 0.06540475 0.3233854 0.004948773 0.2407099 0.0100504 4.8667e-06 1.3238e-05 1.30774e-05 
+
+solution.w:
+ 0.005642803 0.003474049 0.003115474 0.001829216 0.001598546 0.3384028 0.003350214 0.002318782 0.01139419 0.00141626 0.003231086 0.6131213 0.00257973 0.004627497 0.003898168 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.002900825 
+
+solution.v:
+ 0.2594905 0.01699657 0.0009060488 0.0009646692 0.01853333 0.1750845 0.142807 0.08489139 0.08000533 0.02284199 0.06782453 0.005564022 0.008342581 0.1157475 
+
+solution.w:
+ 0.1780551 0.009516547 0.00504365 0.008105663 0.009628692 0.3515973 0.01575591 0.043155 0.2327301 0.01265258 0.02872467 0.03427792 0.01910029 0.0152482 0.03640834 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.1453962 
+
+solution.v:
+ 0.0001559391 0.003662996 8.913e-07 1.51591e-05 5.7408e-06 4.267e-07 0.4590622 0.2027474 0.1746232 0.1597256 2.57e-08 0 0 4.281e-07 
+
+solution.w:
+ 0.01697485 0.002508928 0.0004540435 0.002009722 0.00970972 0.001327584 0.004311757 0.9442191 5.11954e-05 0.002478708 0.008257338 7.72374e-05 0.002603442 0.002275863 0.002740486 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.009060654 
+
+solution.v:
+ 0.07233593 0.0478629 0.03974881 0.07546857 0.04171017 0.08669613 0.5300081 0.03566488 0.03207023 9.14107e-05 0.001520312 0.03572249 0.0008638439 0.000236189 
+
+solution.w:
+ 0.165269 0.01657019 0.02073679 0.005566764 0.02678761 0.01489308 0.2813835 0.02240126 0.01205775 0.01930133 0.3574118 0.006338821 0.02672227 0.01221865 0.0123411 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.7219906 
+
+solution.v:
+ 0.02747076 1.15042e-05 1.25769e-05 4.1068e-06 0.2915231 0.05267388 1.04695e-05 2.11474e-05 0.01810741 5.688e-07 6.5936e-06 0.4779982 1.3551e-06 0.1321584 
+
+solution.w:
+ 2.4043e-06 1.73044e-05 2.00858e-05 0.1061375 1.05944e-05 1.29272e-05 1.86817e-05 1.79041e-05 0.8936474 1.55618e-05 1.7089e-05 2.3525e-05 2.36207e-05 1.77014e-05 1.76494e-05 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.002970733 
+
+solution.v:
+ 0.001400166 0.05037924 0.07506518 0.03500082 0.06565213 0.001244755 0.3125693 0.007522907 0.02954635 0.0001224073 0.003196945 0.0226571 0.3447559 0.0508868 
+
+solution.w:
+ 0.004321332 0.02255771 0.03300085 0.007834375 0.6111054 0.010398 0.02712239 0.01628875 0.004267707 0.006396945 0.2045485 0.009559372 0.0001460547 0.01828604 0.02416656 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.0007584875 
+
+solution.v:
+ 0.01884771 0.03871197 0.01232604 0.0226646 0.0004574561 0.1079908 0.1437863 0.3208035 0.1625558 0.05759849 0.0186102 0.0002276711 0.0946659 0.0007536587 
+
+solution.w:
+ 0.01285011 0.02485671 0.01106621 0.1120605 0.01041087 0.08200251 0.009884454 0.004818278 0.02902771 0.01697422 0.01926181 0.0122074 0.03867188 0.01195924 0.6039481 
+
+
+X1, X0, Z1, Z0 all come directly from dataprep object.
+
+
+**************** 
+ searching for synthetic control unit  
+ 
+
+**************** 
+**************** 
+**************** 
+
+MSPE (LOSS V): 0.0006323766 
+
+solution.v:
+ 0.1230444 0.3172288 0.01998892 0.1353199 0.02095765 0.06802177 0.09153856 0.00342702 0.0004237666 0.1048787 0.04103751 0.006799904 0.05907876 0.008254322 
+
+solution.w:
+ 0.0001105499 0.003846454 0.001800404 0.001908123 0.00262274 0.000998464 0.004699336 0.05523457 0.001289689 0.003895255 0.005065419 0.004896258 0.001662369 0.06138781 0.8505824 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">plot_placebos</span>(placebos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="regression-discontinuity-design" class="title-slide slide level1 center">
+<h1>Regression Discontinuity Design</h1>
+
+</section>
+<section id="what-is-a-discontinuity" class="slide level2">
+<h2>What is a <em>discontinuity</em>?</h2>
+<p>We are interested in the causal effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span></p>
+<p>Assignment to <em>treatment</em> <span class="math inline">\(D\)</span> depends on the value of variable <span class="math inline">\(X\)</span></p>
+<p>After a certain threshold value <span class="math inline">\(c\)</span> on variable <span class="math inline">\(X\)</span>, treatment is assigned (<span class="math inline">\(D = 1\)</span>)</p>
+<div class="fragment">
+<p>Crucial assumption: People just below and just above the threshold are basically the same. Random processes put you just above or just below the threshold.</p>
+</div>
+</section>
+<section id="what-is-a-discontinuity-1" class="slide level2">
+<h2>What is a <em>discontinuity</em>?</h2>
+<p>There are two types of processes for assignment</p>
+<p><strong>Sharp</strong>: treatment is only and always assigned to everyone after <span class="math inline">\(c\)</span>, never before that value</p>
+<p><strong>Fuzzy</strong>: treatment is more likely after <span class="math inline">\(c\)</span> than before but not 100%; some below <span class="math inline">\(c\)</span> do get treatment</p>
+</section>
+<section id="examples-of-discontinuities" class="slide level2">
+<h2>Examples of discontinuities</h2>
+<p><em>What is the causal effect of receiving a Distinction for your university degree on income?</em></p>
+<div class="fragment">
+<p>Students who get a distinction are also different in other ways from students who do not get a distinction</p>
+</div>
+<div class="fragment">
+<p>Distinction is awarded above threshold <span class="math inline">\(c\)</span>, e.g.&nbsp;in Oxford an average of 70</p>
+<p>Nobody with average &lt;70 gets <span class="math inline">\(D\)</span>, everyone with &gt;=70 gets <span class="math inline">\(D\)</span></p>
+</div>
+<div class="fragment">
+<p>What is the difference between a student with an average of 69 and a student averaging 70?</p>
+</div>
+</section>
+<section id="examples-of-discontinuities-1" class="slide level2">
+<h2>Examples of discontinuities</h2>
+<p><em>Do politicians use their office to enrich themselves?</em></p>
+<div class="fragment">
+<p>Earnings or wealth for former politicians and those from other careers is likely to be subject to selection bias.</p>
+</div>
+<div class="fragment">
+<p>Compare wealth at death for those who narrowly won their election to the House of Commons to those who narrowly lost. Conservatives who narrowly won their elections died on average almost £250,000 wealthier than candidates who narrowly failed (Eggers and Heinmueller).</p>
+</div>
+<div class="fragment">
+<p>How different are candidates with who got 49% of the votes versus 51%?</p>
+</div>
+</section>
+<section id="examples-of-discontinuities-2" class="slide level2">
+<h2>Examples of discontinuities</h2>
+<p><em>Does more education lead to better health?</em></p>
+<div class="fragment">
+<p>Individuals with more education are different in many other ways than just education compared to people with less education.</p>
+</div>
+<div class="fragment">
+<p>In year X, the mandatory schooling age increased from age 14 to 15. People born on August 31st could leave school at 14, those born a day latter had to stay in school for another year.</p>
+</div>
+<div class="fragment">
+<p>How different are children who are born 1 day apart?</p>
+</div>
+<div class="fragment">
+<p>Impossible for parents to influence reform</p>
+</div>
+</section>
+<section id="natural-experiment-quasi-experimental" class="slide level2">
+<h2>Natural experiment / quasi-experimental</h2>
+<p>Around the discontinuity we assume random assignment</p>
+<p>We need a deep understanding of the mechanisms that produce the threshold and assignment</p>
+</section>
+<section id="running-variable-aka-forcing-variable" class="slide level2">
+<h2>Running variable (aka forcing variable)</h2>
+<p>Score on the running (aka forcing) variable <span class="math inline">\(X\)</span> determines treatment <span class="math inline">\(D\)</span>, which in turn affects <span class="math inline">\(Y\)</span></p>
+<p><span class="math inline">\(X\)</span> -&gt; <span class="math inline">\(D\)</span> -&gt; <span class="math inline">\(Y\)</span></p>
+<p>Above threshold <span class="math inline">\(c\)</span> the probability of assignment to <span class="math inline">\(X\)</span> <em>suddenly</em> changes:</p>
+<ul>
+<li><p>Sharp: below the threshold nobody receives the treatment, above the threshold everyone receives the treatment</p></li>
+<li><p>Fuzzy: the probability of assignment jumps up at the threshold but the link/compliance is not perfect</p></li>
+</ul>
+</section>
+<section id="sharp-or-fuzzy" class="slide level2">
+<h2>Sharp or Fuzzy</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="fragment">
+<p><a href="https://tilburgsciencehub.com/topics/analyze/causal-inference/rdd/fuzzy-example/">Here</a> is an example of a Fuzzy RDD in R. In this cases everyone below <span class="math inline">\(c\)</span> has <span class="math inline">\(D=0\)</span>, but above <span class="math inline">\(c\)</span> likelihood of <span class="math inline">\(D=1\)</span> increases with <span class="math inline">\(X\)</span>.</p>
+</div>
+</section>
+<section id="discontinuity-in-treatment" class="slide level2">
+<h2>Discontinuity in treatment</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="discontinuity-in-outcome" class="slide level2">
+<h2>Discontinuity in outcome</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-11-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rdd-and-late" class="slide level2">
+<h2>RDD and LATE</h2>
+<ul>
+<li><strong>Treatment</strong> <span class="math inline">\(D_i \in \{0,1\}\)</span></li>
+<li><strong>Threshold</strong> <span class="math inline">\(c\)</span> above which <span class="math inline">\(D_i = 1\)</span></li>
+<li><strong>Potential outcomes</strong> under Treatment and controlL <span class="math inline">\(Y_i(1)\)</span> and <span class="math inline">\(Y_i(0)\)</span></li>
+<li><strong>Running/forcing variable</strong> <span class="math inline">\(X_i\)</span> that determines if <span class="math inline">\(i\)</span> is above/below <span class="math inline">\(c\)</span></li>
+</ul>
+<p><span class="math display">\[
+D_i =
+\begin{cases}
+1 &amp; \text{if } X_i &gt; c, \\
+0 &amp; \text{if } X_i \le c .
+\end{cases}
+\]</span> Then, LATE is defined <strong>at the threshold c</strong> as:</p>
+<p><span class="math display">\[
+\tau = E[Y_i(1)-Y_i(0)|X_i = c]
+\]</span></p>
+</section>
+<section id="continuity-assumption" class="slide level2">
+<h2>Continuity assumption</h2>
+<p><img data-src="img/RD-PO.png"></p>
+</section>
+<section id="continuity-and-no-manipulation-assumption" class="slide level2">
+<h2>Continuity and no manipulation assumption</h2>
+<p>Potential outcomes should be continuous at the threshold <span class="math inline">\(c\)</span> in <span class="math inline">\(X\)</span></p>
+<p>No jumps at <span class="math inline">\(c\)</span> for any other variables, only for <span class="math inline">\(Y\)</span> and <span class="math inline">\(D\)</span></p>
+<div class="fragment">
+<p>A sufficient condition for this assumption is a lack of <em>perfect</em> manipulation</p>
+<ul>
+<li><p>respondents can not manipulate <em>exactly</em> where on the score they end up (ie just below or just above threshold)</p></li>
+<li><p>you can manipulate roughly where on a test score you end up (ie study hard), but you can not manipulate it by 1 point</p></li>
+</ul>
+</div>
+</section>
+<section id="other-assumptions" class="slide level2">
+<h2>Other assumptions</h2>
+<ul>
+<li><p>Continuity of POs</p></li>
+<li><p>No perfect manipulation of <span class="math inline">\(X\)</span></p></li>
+<li><p>Local SUTVA</p></li>
+<li><p>Sharp RD: Treatment assignment must change discontinuously at the cutoff</p></li>
+<li><p>Fuzzy RD: Exclusion restriction (here must be no “direct” effect of crossing ccc on the outcome.)</p></li>
+<li><p>Correct functional form is estimated locally</p></li>
+</ul>
+</section>
+<section id="checking-the-continuity-assumption" class="slide level2">
+<h2>Checking the continuity assumption</h2>
+<ol type="1">
+<li><p>Plot observed variables against the threshold (running variable vs covariates: do we see a jump?)</p></li>
+<li><p>Are there any other discontinuities?</p></li>
+<li><p>Placebo discontinuity</p></li>
+<li><p>McCrary density test</p></li>
+</ol>
+</section>
+<section id="density-test-around-the-cutoff" class="slide level2">
+<h2>Density test around the cutoff</h2>
+<p><img data-src="img/Density.png"></p>
+</section>
+<section id="sharp-design-in-equations" class="slide level2">
+<h2>Sharp Design in equations</h2>
+<p>Clear cutoff value for the running variable</p>
+<ul>
+<li><span class="math inline">\(X &lt; c\)</span> : no treatment</li>
+<li><span class="math inline">\(X &gt;= c\)</span> : treatment</li>
+</ul>
+<p><span class="math inline">\(Y\)</span> is a continuous outcome</p>
+<p><span class="math inline">\(c\)</span> is the threshold value</p>
+<p><span class="math inline">\(D\)</span> is a dummy for treatment (0/1)</p>
+<p><span class="math display">\[Y = f(X) + \beta(X \ge c) + \epsilon\]</span> <span class="math display">\[or\]</span> <span class="math display">\[Y = f(X) + \beta D + \epsilon\]</span></p>
+</section>
+<section id="sharp-design-parametric" class="slide level2">
+<h2>Sharp Design parametric</h2>
+<p>To shorten the equations: <span class="math inline">\(\tilde{X} = X - c\)</span></p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1D + \beta_2\tilde{X} + e\]</span></p>
+<p><span class="math display">\[\beta_1 \text{ describes the treatment effect at threshold c}\]</span></p>
+<div class="fragment">
+<p>We often estimate a more flexible model that allows different slopes left and right from the cutoff:</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1D + \beta_2\tilde{X} + \beta_3\tilde{X}*D + e\]</span> Now <span class="math inline">\(\beta_2\)</span> is the slope of <span class="math inline">\(X\)</span> on the left and <span class="math inline">\((\beta_2+\beta_3)\)</span> is the slope on the right.</p>
+</div>
+<div class="fragment">
+<p>If we think <span class="math inline">\(f(X)\)</span> is non-linear, e.g.&nbsp;quadratic, we add a functional form:</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1D + \beta_2\tilde{X} + \beta_3\tilde{X}^2 + \beta_4\tilde{X}*D + \beta_5\tilde{X}^2*D + e\]</span></p>
+</div>
+</section>
+<section id="fx-matters-for-the-estimated-gap" class="slide level2">
+<h2><span class="math inline">\(f(X)\)</span> matters for the estimated gap</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fx-loess-instead-of-ols" class="slide level2">
+<h2><span class="math inline">\(f(X)\)</span> LOESS instead of OLS</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="bandwidth-the-window-around-c" class="slide level2">
+<h2>Bandwidth: the window around <span class="math inline">\(c\)</span></h2>
+<p>Our estimand is LATE around the threshold</p>
+<div class="fragment">
+<ul>
+<li><p>What counts as <em>around</em>?</p></li>
+<li><p>It matters who we include on either side of <span class="math inline">\(c\)</span></p></li>
+<li><p>Further away: more cases, less clear it’s an experiment</p></li>
+</ul>
+</div>
+<div class="fragment">
+<p>What is the right or optimal bandwidth: ad hoc/substantive vs data-driven approaches</p>
+</div>
+</section>
+<section id="non-parametric-approaches" class="slide level2">
+<h2>Non-parametric approaches</h2>
+<p>If we don’t want to make assumptions about <span class="math inline">\(f(X)\)</span></p>
+<p>Instead, an algorithm determines the shape based on the data:</p>
+<ul>
+<li>locally weighted least squares</li>
+<li>Kernel-weighted local polynomial smoothing</li>
+<li>Smooths out the curves left and right, gives more weight to points closer to each other</li>
+<li>Bandwidth still matters</li>
+</ul>
+<div class="fragment">
+<p>After shaping the curves, compare the gap at the discontinuity. Compare the results of different approaches.</p>
+</div>
+<div class="fragment">
+<p>In R this can be done with the <a href="https://rdpackages.github.io/">rdrobust</a> package</p>
+</div>
+</section>
+<section id="fuzzy-design" class="slide level2">
+<h2>Fuzzy Design</h2>
+<ul>
+<li><p>What if the threshold does not perfectly predict treatment?</p></li>
+<li><p>But the running variable is a strong predictor of treatment and is random around the threshold</p></li>
+<li><p>Sounds familiar…</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><p>We use the running variable and threshold <span class="math inline">\(c\)</span> as an IV</p></li>
+<li><p><span class="math inline">\(X\)</span> -&gt; <span class="math inline">\(D\)</span> -&gt; <span class="math inline">\(Y\)</span> (IV week: <span class="math inline">\(Z\)</span> -&gt; <span class="math inline">\(T\)</span> -&gt; <span class="math inline">\(Y\)</span>)</p></li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><p>2SLS as in IV</p></li>
+<li><p>LATE for compliers at the threshold</p></li>
+</ul>
+</div>
+</section>
+<section id="fuzzy-equations" class="slide level2">
+<h2>Fuzzy equations</h2>
+<p><span class="math display">\[\text{reduced form (naive)}\]</span></p>
+<p><span class="math display">\[Y = f(X) + \beta_1(X \ge c) + \epsilon\]</span></p>
+<p><br><br></p>
+<p><span class="math display">\[\text{first stage}\]</span></p>
+<p><span class="math display">\[D = f(X) + \beta_2(X \ge c) + \epsilon\]</span></p>
+<p><span class="math display">\[\text{second stage}\]</span></p>
+<p><span class="math display">\[Y = f(X) + \beta_3(\hat{D}) + \epsilon\]</span></p>
+</section>
+<section id="an-example" class="slide level2">
+<h2>An example</h2>
+<ul>
+<li><p>Credit: Andrew Heiss’ <em>Program Evaluation</em> course, see <a href="https://evalf20.classes.andrewheiss.com/example/rdd/">here</a></p></li>
+<li><p>Research question: <em>What is the causal effect of tutoring?</em></p></li>
+<li><p>What is our estimand?</p></li>
+</ul>
+</section>
+<section id="steps" class="slide level2">
+<h2>Steps</h2>
+<ol type="1">
+<li><p>Is the discontinuity rule-based?</p></li>
+<li><p>Is the discontinuity sharp or fuzzy?</p></li>
+<li><p>Checking for manipulation</p></li>
+<li><p>Finding discontinuity in outcome</p></li>
+<li><p>Measuring the gap parametrically</p></li>
+<li><p>Measuring the gap non-parametrically</p></li>
+</ol>
+</section>
+<section id="fuzzy-or-sharp" class="slide level2">
+<h2>Fuzzy or sharp?</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fuzzy-or-sharp-1" class="slide level2">
+<h2>Fuzzy or sharp?</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+# Groups:   tutoring [2]
+  tutoring `entrance_exam &lt;= 70` count
+  &lt;lgl&gt;    &lt;lgl&gt;                 &lt;int&gt;
+1 FALSE    FALSE                   759
+2 TRUE     TRUE                    241</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>No non-compliers! This is sharp.</p>
+</div>
+</section>
+<section id="is-there-manipulation" class="slide level2">
+<h2>Is there manipulation?</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-17-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="test-for-manipulation---mccrary-test" class="slide level2">
+<h2>Test for manipulation - McCrary test</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="do">## test difference in estimated density functions at the cutoff </span></span>
+<span id="cb14-2"><a href=""></a>test_density <span class="ot">&lt;-</span> <span class="fu">rddensity</span>(tutoring<span class="sc">$</span>entrance_exam, <span class="at">c =</span> <span class="dv">70</span>)</span>
+<span id="cb14-3"><a href=""></a><span class="fu">summary</span>(test_density)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Manipulation testing using local polynomial density estimation.
+
+Number of obs =       1000
+Model =               unrestricted
+Kernel =              triangular
+BW method =           estimated
+VCE method =          jackknife
+
+c = 70                Left of c           Right of c          
+Number of obs         237                 763                 
+Eff. Number of obs    208                 577                 
+Order est. (p)        2                   2                   
+Order bias (q)        3                   3                   
+BW est. (h)           22.444              19.966              
+
+Method                T                   P &gt; |T|             
+Robust                -0.5521             0.5809              </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+P-values of binomial tests (H0: p=0.5).
+
+Window Length / 2          &lt;c     &gt;=c    P&gt;|T|
+0.900                      20      21    1.0000
+1.800                      36      38    0.9076
+2.700                      47      57    0.3776
+3.600                      62      78    0.2047
+4.500                      75      98    0.0941
+5.400                      87     120    0.0259
+6.300                     105     151    0.0048
+7.200                     119     173    0.0019
+8.100                     129     200    0.0001
+9.000                     136     227    0.0000</code></pre>
+</div>
+</div>
+</section>
+<section id="test-for-manipulation---mccrary-test-1" class="slide level2">
+<h2>Test for manipulation - McCrary test</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>plot_density_test <span class="ot">&lt;-</span> <span class="fu">rdplotdensity</span>(<span class="at">rdd =</span> test_density, </span>
+<span id="cb17-2"><a href=""></a>                                   <span class="at">X =</span> tutoring<span class="sc">$</span>entrance_exam, </span>
+<span id="cb17-3"><a href=""></a>                                   <span class="at">type =</span> <span class="st">"both"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="is-there-a-discontiniuty-in-the-outcome" class="slide level2">
+<h2>Is there a discontiniuty in the outcome?</h2>
+<ul>
+<li>Plot two lines, one for exam &lt;=70 and one for &gt;70</li>
+<li>In sharp design, these Z and X are aligned (score &lt;=70 = tutoring)</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="6.lecture6_synth_rdd_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="how-big-is-the-gap" class="slide level2">
+<h2>How big is the gap?</h2>
+<p><span class="math display">\[Y =  \beta_0 + \beta_1 (X-c) + \beta_2 D + \epsilon\]</span></p>
+<p><span class="math inline">\(Y\)</span> is final test score <span class="math inline">\(X\)</span> is entrance score <span class="math inline">\(c\)</span> is the cutt-off <span class="math inline">\(D\)</span> is the treatment (tutoring)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">lm</span>(Y <span class="sc">~</span> X_centered <span class="sc">+</span> D, <span class="at">data =</span> data)<span class="sc">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>(* Note Heiss does not include the interaction between <span class="math inline">\(\hat{X}\)</span> and <span class="math inline">\(D\)</span> in <a href="https://evalf20.classes.andrewheiss.com/example/rdd/#step-5-measure-the-size-of-the-effect">his example</a> as in this particular case the models with and without are equivalent becasue the slopes left and right are similar)</p>
+</section>
+<section id="how-big-is-the-gap-parametric" class="slide level2">
+<h2>How big is the gap? Parametric</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  term              estimate std.error statistic  p.value
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)         59.4      0.442      134.  0       
+2 entrance_centered    0.510    0.0269      18.9 1.40e-68
+3 tutoringTRUE        10.8      0.800       13.5 3.12e-38</code></pre>
+</div>
+</div>
+</section>
+<section id="how-big-is-the-gap-what-bandwidth" class="slide level2">
+<h2>How big is the gap? What bandwidth?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a>model_bw_10 <span class="ot">&lt;-</span> <span class="fu">lm</span>(exit_exam <span class="sc">~</span> entrance_centered <span class="sc">+</span> tutoring,</span>
+<span id="cb20-2"><a href=""></a>                  <span class="at">data =</span> <span class="fu">filter</span>(tutoring_centered,</span>
+<span id="cb20-3"><a href=""></a>                                entrance_centered <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">10</span> <span class="sc">&amp;</span> </span>
+<span id="cb20-4"><a href=""></a>                                  entrance_centered <span class="sc">&lt;=</span> <span class="dv">10</span>))</span>
+<span id="cb20-5"><a href=""></a><span class="fu">tidy</span>(model_bw_10)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  term              estimate std.error statistic   p.value
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)         60.4       0.752     80.3  2.99e-249
+2 entrance_centered    0.388     0.114      3.40 7.45e-  4
+3 tutoringTRUE         9.27      1.31       7.09 6.27e- 12</code></pre>
+</div>
+</div>
+</section>
+<section id="how-big-is-the-gap-what-bandwidth-1" class="slide level2">
+<h2>How big is the gap? What bandwidth?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>model_bw_5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(exit_exam <span class="sc">~</span> entrance_centered <span class="sc">+</span> tutoring,</span>
+<span id="cb22-2"><a href=""></a>                  <span class="at">data =</span> <span class="fu">filter</span>(tutoring_centered,</span>
+<span id="cb22-3"><a href=""></a>                                entrance_centered <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">5</span> <span class="sc">&amp;</span> </span>
+<span id="cb22-4"><a href=""></a>                                  entrance_centered <span class="sc">&lt;=</span> <span class="dv">5</span>))</span>
+<span id="cb22-5"><a href=""></a><span class="fu">tidy</span>(model_bw_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  term              estimate std.error statistic   p.value
+  &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)         60.6       1.12      54.3  4.78e-118
+2 entrance_centered    0.380     0.331      1.15 2.53e-  1
+3 tutoringTRUE         9.12      1.91       4.77 3.66e-  6</code></pre>
+</div>
+</div>
+</section>
+<section id="how-big-is-the-gap-what-bandwidth-2" class="slide level2">
+<h2>How big is the gap? What bandwidth?</h2>
+<div class="cell">
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
+
+    <script>
+      // Create table-specific functions using external factory
+      const tableFns_o1pep4d6umci9wha5eoh = TinyTable.createTableFunctions("tinytable_o1pep4d6umci9wha5eoh");
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '14', j: 2 }, { i: '14', j: 3 }, { i: '14', j: 4 } ], css_id: 'tinytable_css_uovtq1elvw3lu9dkqctm',}, 
+          { positions: [ { i: '6', j: 2 }, { i: '6', j: 3 }, { i: '6', j: 4 } ], css_id: 'tinytable_css_9o0rentqb4iw8tgbiund',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '12', j: 3 }, { i: '13', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '11', j: 4 }, { i: '12', j: 4 }, { i: '13', j: 4 } ], css_id: 'tinytable_css_mikjgkoek36sv2idcx3p',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 } ], css_id: 'tinytable_css_s6qntan7qi409v62ulds',}, 
+          { positions: [ { i: '14', j: 1 } ], css_id: 'tinytable_css_k27uy8jf5v69tfqxi0jl',}, 
+          { positions: [ { i: '6', j: 1 } ], css_id: 'tinytable_css_74ngs8j83c9y0u4x0h4d',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 } ], css_id: 'tinytable_css_obv17z9tx5k86zsvh71s',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_ec87di8r9ozgy3xflz8z',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  tableFns_o1pep4d6umci9wha5eoh.styleCell(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
+    <style>
+    /* tinytable css entries after */
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_uovtq1elvw3lu9dkqctm, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_uovtq1elvw3lu9dkqctm {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_9o0rentqb4iw8tgbiund, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_9o0rentqb4iw8tgbiund {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_mikjgkoek36sv2idcx3p, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_mikjgkoek36sv2idcx3p { text-align: center }
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_s6qntan7qi409v62ulds, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_s6qntan7qi409v62ulds {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_k27uy8jf5v69tfqxi0jl, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_k27uy8jf5v69tfqxi0jl {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_74ngs8j83c9y0u4x0h4d, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_74ngs8j83c9y0u4x0h4d {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_obv17z9tx5k86zsvh71s, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_obv17z9tx5k86zsvh71s { text-align: left }
+    #tinytable_o1pep4d6umci9wha5eoh td.tinytable_css_ec87di8r9ozgy3xflz8z, #tinytable_o1pep4d6umci9wha5eoh th.tinytable_css_ec87di8r9ozgy3xflz8z {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    </style>
+    <div class="container">
+      <table class="tinytable" id="tinytable_o1pep4d6umci9wha5eoh" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        
+        <thead>
+              <tr>
+                <th scope="col" data-row="0" data-col="1"> </th>
+                <th scope="col" data-row="0" data-col="2">Full data</th>
+                <th scope="col" data-row="0" data-col="3">Bandwidth = 10</th>
+                <th scope="col" data-row="0" data-col="4">Bandwidth = 5</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="1">(Intercept)</td>
+                  <td data-row="1" data-col="2">59.411</td>
+                  <td data-row="1" data-col="3">60.377</td>
+                  <td data-row="1" data-col="4">60.631</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="1"></td>
+                  <td data-row="2" data-col="2">(0.442)</td>
+                  <td data-row="2" data-col="3">(0.752)</td>
+                  <td data-row="2" data-col="4">(1.117)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="1">entrance_centered</td>
+                  <td data-row="3" data-col="2">0.510</td>
+                  <td data-row="3" data-col="3">0.388</td>
+                  <td data-row="3" data-col="4">0.380</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="1"></td>
+                  <td data-row="4" data-col="2">(0.027)</td>
+                  <td data-row="4" data-col="3">(0.114)</td>
+                  <td data-row="4" data-col="4">(0.331)</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="1">tutoringTRUE</td>
+                  <td data-row="5" data-col="2">10.800</td>
+                  <td data-row="5" data-col="3">9.273</td>
+                  <td data-row="5" data-col="4">9.122</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">(0.800)</td>
+                  <td data-row="6" data-col="3">(1.309)</td>
+                  <td data-row="6" data-col="4">(1.912)</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="1">Num.Obs.</td>
+                  <td data-row="7" data-col="2">1000</td>
+                  <td data-row="7" data-col="3">404</td>
+                  <td data-row="7" data-col="4">194</td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="1">R2</td>
+                  <td data-row="8" data-col="2">0.268</td>
+                  <td data-row="8" data-col="3">0.162</td>
+                  <td data-row="8" data-col="4">0.222</td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="1">R2 Adj.</td>
+                  <td data-row="9" data-col="2">0.267</td>
+                  <td data-row="9" data-col="3">0.158</td>
+                  <td data-row="9" data-col="4">0.214</td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="1">AIC</td>
+                  <td data-row="10" data-col="2">6595.3</td>
+                  <td data-row="10" data-col="3">2663.5</td>
+                  <td data-row="10" data-col="4">1303.1</td>
+                </tr>
+                <tr>
+                  <td data-row="11" data-col="1">BIC</td>
+                  <td data-row="11" data-col="2">6615.0</td>
+                  <td data-row="11" data-col="3">2679.5</td>
+                  <td data-row="11" data-col="4">1316.2</td>
+                </tr>
+                <tr>
+                  <td data-row="12" data-col="1">Log.Lik.</td>
+                  <td data-row="12" data-col="2">-3293.663</td>
+                  <td data-row="12" data-col="3">-1327.755</td>
+                  <td data-row="12" data-col="4">-647.567</td>
+                </tr>
+                <tr>
+                  <td data-row="13" data-col="1">F</td>
+                  <td data-row="13" data-col="2">182.971</td>
+                  <td data-row="13" data-col="3">38.891</td>
+                  <td data-row="13" data-col="4">27.310</td>
+                </tr>
+                <tr>
+                  <td data-row="14" data-col="1">RMSE</td>
+                  <td data-row="14" data-col="2">6.52</td>
+                  <td data-row="14" data-col="3">6.47</td>
+                  <td data-row="14" data-col="4">6.81</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+<section id="how-big-is-the-gap-non-parametric" class="slide level2">
+<h2>How big is the gap? Non-parametric</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">rdrobust</span>(<span class="at">y =</span> tutoring<span class="sc">$</span>exit_exam, </span>
+<span id="cb24-2"><a href=""></a>         <span class="at">x =</span> tutoring<span class="sc">$</span>entrance_exam, <span class="at">c =</span> <span class="dv">70</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href=""></a><span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sharp RD estimates using local polynomial regression.
+
+Number of Obs.                 1000
+BW type                       mserd
+Kernel                   Triangular
+VCE method                       NN
+
+Number of Obs.                  237          763
+Eff. Number of Obs.             144          256
+Order est. (p)                    1            1
+Order bias  (q)                   2            2
+BW est. (h)                   9.969        9.969
+BW bias (b)                  14.661       14.661
+rho (h/b)                     0.680        0.680
+Unique Obs.                     155          262
+
+=====================================================================
+                   Point    Robust Inference
+                Estimate         z     P&gt;|z|      [ 95% C.I. ]       
+---------------------------------------------------------------------
+     RD Effect    -8.578    -4.352     0.000   [-12.101 , -4.587]    
+=====================================================================</code></pre>
+</div>
+</div>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Synthetic control and RDD</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="6.lecture6_synth_rdd_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 1000,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
