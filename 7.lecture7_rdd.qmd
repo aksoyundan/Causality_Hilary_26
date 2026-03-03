@@ -1,5 +1,5 @@
 ---
-title: "Exotic designs: Synthetic Control and Regression Discontinuity"
+title: "Exotic designs: Regression Discontinuity"
 author: "Ozan Aksoy"
 logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/oxford.png?itok=yBrBnRnK"
 include-in-header:
@@ -41,12 +41,6 @@ callout-appearance: minimal
 
 ##
 
-* Synthetic control
-
-  - Estimand
-  - Assumptions
-  - Estimation and inference
-  
 * Regression discontinuity design
 
   - Estimand
@@ -54,234 +48,6 @@ callout-appearance: minimal
   - Estimation
   - Sharp
   - Fuzzy
-
-
-# Synthetic control
-
-## Unique events
-
-[Vox blog](https://cepr.org/voxeu/columns/ps350-million-week-output-cost-brexit-vote)
-
-::: columns
-::: {.column width="50%"}
-
-![](img\brexit.png)
-:::
-
-::: {.column width="50%"}
-
-* E.g. effect of Brexit on UK economy
-* <span style="color:blue;">Blue line:</span> actual UK GDP
-* <span style="color:red;">Red line:</span> UK's synthetic control (a bit of USA, a bit of Canada, a sprinkle of Japan and Hungary)
-* Difference between UK and its doppelganger: 1.3% GDP loss
-:::
-:::
-
-## Unique events and DiD
-
-Why not difference-in-differences?
-
-* DiD wants data from many observations within treated and control units (e.g. many restaurants in NJ vs PA)
-* 5 countries may be too small to do a DiD for Brexit
-* DiD via TWFE relies on implicit conditional variance weights--why not make those weights more explicit?
-* DiD via TWFE adjusts for all time-invariant effects (parallel trends), how about time varying confounding?
-
-## Syntetic control: ingredients
-
-* Time periods: $1...T$
-* Units: $i...J$
-* One unit (call unit 1) is affected by a treatment from $T_0$ onwards ($1 < T_o < T$)
-* Units $2...J$ are not treated
-* We have time-invariant (and/or pre-treatment) characteristics ($Z_i$)
-* Observed outomes $Y_{it}$
-
-Define **potential** outcomes as:
-
-* $Y_{1t}^0$: what would be $Y_t$ for treated unit 1 *without* the treatment
-* $Y_{1t}^1$: what would be $Y_t$ for treated unit 1 *with* the treatment
-
-and an *ATT* for time point $t > T_0$ as:
-
-$$\tau_{1t} = Y_{1t}^1 - Y_{1t}^0$$
-
-. . .
-
-Under SUTVA $Y_{1t}^1=Y_{1t}$ for $t > T_0$
-
-## Syntetic control: weights
-
-Suppose there exists $W^* = (w_2^*, w_3^*...w_J^*)$ with $w_i^* \geq 0$ and $\sum_{i=2}^Jw_i^* = 1$, so that
-
-$$\sum_{i=2}^Jw_i^*Z_i = Z_1$$
-and
-$$\sum_{i=2}^Jw_i^*Y_{it} = Y_{1t} \quad  \forall \quad t < T_0$$
-then under some assumptions (Abadie et al. 2010)
-
-$$
-\hat\tau_{1t} = Y_{1t}^1 - \sum_{i=2}^J w_i^* Y_{it} \quad  \forall \quad t > T_0
-$$
-
-. . .
-
- <span style="color:red;">$\sum_{i=2}^J w_i^* Y_{it}$: synthetic control!</span>
-
-
-## Weights: which weights?
-
-Unlikely that such a perfect $W^*$ exits. In reality an optimal $W$ is estimated that
-mimimises the difference between treated and control units on $Z$ and $Y_{t}|t<T_0$. Assume
-($M \times 1$) vector $X_1 = (Z_1, Y_{11}, Y_{12}...Y_{1T_0})'$ for the treated unit with
-all covariates and outcomes up to treatment time ($M$ variables). Assume ($M \times J -1$) matrix $X_0$ that 
-contains the same columns of the untreated units. Then, $W$ can be estimated for $W^*$ such that $W$ minimises:
-
-$$
-\sum_{m=1}^Mv_m(X_{1m}-X_{0m}W)^2
-$$
-where $v_m$ is a coefficient for variable $m$ reflecting the importance of variable $m$, in minimising the difference between
-$X_i$ and $X_0W$. `R` and `Synth` chooses $v$ so that **Root Mean Squared Prediction Error (RMSPE)** is minimised where
-
-$$
-RMSPE = \left[ \frac{1}{T_0} \sum_{t=1}^{T_0}\left(Y_{1t} - \sum_{i=2}^J w_i^* Y_{it} \right)^2 \right]
-$$
-
-## Inference (significance test)
-
-Not obvious where uncertainty in $\hat\tau$ comes from, there is no sampling
-
-Here, uncertainty will come from if the synthetic control is a good counterfactual. 
-
-Hence: 
-
-* Estimate many synthetic control analyses, with treatment variable swapped out for each control units in turn.
-* Plot the *actual* $\hat\tau$ against all those placebo $\tau^p$s.
-* If genuine treatment effect, $Pr(\tau^p<\hat\tau) > 0.95$
-* Randomisation inference
-
-## Assumptions, assumptions
-
-1. No anticipation of treatment
-
-2. Treated unit's counterfactual is a weighted linear combination of control units (convex hull)
-
-3. No time-varying unobserved confounders besides those that is captured by $w_i$ 
-
-4. SUTVA (no equilibrium effects, contagion, diffusion, interference etc.)
-
-5. Donor pool is good and does not include treated units
-
-6. (Practical requirement): Pre-treatment fit must be good
-
-## Advantages and disadvantages
-
-::: columns
-::: {.column width="50%"}
-
-Pros
-
-* Transparent, data-driven approach to choose optimal counterfactual
-* Uncertainty comes from the suitability of the counterfactual even with small N
-* Balance is achieved on both time-constant and *some* time-varying confounders 
-* The possibility of combining quantitative and qualitative analysis in a transparent way.
-
-:::
-
-::: {.column width="50%"}
-
-Cons 
-
-* Lots of data are preferable before the treatment
-* The outcomes of potential control units and the treated unit need to be generated by the
-same process
-* We need to assume that there are no shocks to the control units after the treatment
-date
-* Spillover can be a major issue
-* There is still a lot of researcher degree of freedom in estimation and inference
-
-:::
-:::
-
-## Example: political violence and the economy: Basque county  
-
-```{r, message=FALSE, warning=FALSE, echo = TRUE, fig.width=6, fig.height=3}
-library(Synth)
-library(SCtools)
-data("basque")
-dim(basque)
-names(basque)
-
-dataprep.out <- dataprep(
-  foo = basque,
-  predictors = c(
-    "school.illit",
-    "school.prim",
-    "school.med",
-    "school.high",
-    "school.post.high",
-    "invest"
-  ),
-  predictors.op = "mean",
-  time.predictors.prior = 1964:1969,
-  # Pre-treatment period
-  special.predictors = list(
-    list("gdpcap", 1960:1969, "mean"),
-    list("sec.agriculture", seq(1961, 1969, 2), "mean"),
-    list("sec.energy", seq(1961, 1969, 2), "mean"),
-    list("sec.industry", seq(1961, 1969, 2), "mean"),
-    list("sec.construction", seq(1961, 1969, 2), "mean"),
-    list("sec.services.venta", seq(1961, 1969, 2), "mean"),
-    list("sec.services.nonventa", seq(1961, 1969, 2), "mean"),
-    list("popdens", 1969, "mean")
-  ),
-  dependent = "gdpcap",
-  unit.variable = "regionno",
-  unit.names.variable = "regionname",
-  time.variable = "year",
-  treatment.identifier = 17,
-  # Basque region
-  controls.identifier = c(2:16, 18),
-  # Control regions
-  time.optimize.ssr = 1960:1969,
-  time.plot = 1955:1997
-)
-```
-
-## Estimate: political violence and the economy: Basque county  
-
-```{r, message=FALSE, warning=FALSE, echo = TRUE, fig.width=6, fig.height=3}
-synth.out = synth(data.prep.obj = dataprep.out)
-```
-
-## Results: political violence and the economy: Basque county  
-
-```{r, message=FALSE, warning=FALSE, echo = TRUE}
-path.plot(
-  synth.res = synth.out,
-  dataprep.res = dataprep.out,
-  Ylab = "Real Per-Capita GDP (1986 USD, thousand)",
-  Xlab = "Year"
-)
-```
-
-## Differences: political violence and the economy: Basque county  
-
-```{r, message=FALSE, warning=FALSE, echo = TRUE}
-gaps.plot(
-  synth.res = synth.out,
-  dataprep.res = dataprep.out,
-  Ylab = "Gap in Real Per-Capita GDP (1986 USD, thousand)",
-  Xlab = "Year",
-  Ylim = c(-1.5, 1.5),
-  Main = NA
-)
-```
-
-## Results: political violence and the economy: Basque county 
-
-```{r, message=FALSE, warning=FALSE, echo = TRUE}
-placebos <- generate.placebos(dataprep.out, synth.out, Sigf.ipop = 2)
-
-plot_placebos(placebos)
-```
 
 # Regression Discontinuity Design
 
@@ -476,6 +242,8 @@ ggplot(data = df, aes(x=x, y=y, color = d)) +
   theme(legend.position = "none") 
 ```
 
+# Sharp RDD
+
 ## RDD and LATE
 
 * **Treatment** $D_i \in \{0,1\}$
@@ -647,41 +415,30 @@ After shaping the curves, compare the gap at the discontinuity. Compare the resu
 
 In R this can be done with the [rdrobust](https://rdpackages.github.io/) package
 
-## Fuzzy Design
+## Why should you be careful about $f(x)$:
 
--   What if the threshold does not perfectly predict treatment?
+```{r, echo = FALSE}
+# simultate nonlinearity
+dat <- tibble(
+    x = rnorm(1000, 100, 50)
+  ) %>% 
+  mutate(
+    x = case_when(x < 0 ~ 0, TRUE ~ x),
+    D = case_when(x > 140 ~ 1, TRUE ~ 0),
+    x2 = x*x,
+    x3 = x*x*x,
+    y3 = 10000 + 0 * D - 100 * x + x2 + rnorm(1000, 0, 1000)
+  ) %>% 
+  filter(x < 280)
 
--   But the running variable is a strong predictor of treatment and is random around the threshold
 
--   Sounds familiar...
+ggplot(aes(x, y3, colour = factor(D)), data = dat) +
+  geom_point(alpha = 0.2) +
+  geom_vline(xintercept = 140, colour = "grey", linetype = 2) +
+  stat_smooth(method = "lm", se = F) +
+  labs(x = "Test score (X)", y = "Potential Outcome (Y)")
+```
 
-. . .
-
--   We use the running variable and threshold $c$ as an IV
-
--   $X$ -\> $D$ -\> $Y$ (IV week: $Z$ -\> $T$ -\> $Y$)
-
-. . .
-
--   2SLS as in IV
-
--   LATE for compliers at the threshold
-
-## Fuzzy equations
-
-$$\text{reduced form (naive)}$$
-
-$$Y = f(X) + \beta_1(X \ge c) + \epsilon$$
-
-<br><br>
-
-$$\text{first stage}$$
-
-$$D = f(X) + \beta_2(X \ge c) + \epsilon$$
-
-$$\text{second stage}$$
-
-$$Y = f(X) + \beta_3(\hat{D}) + \epsilon$$
 
 ## An example
 
@@ -864,4 +621,284 @@ rdrobust(y = tutoring$exit_exam,
          x = tutoring$entrance_exam, c = 70) %>% 
 summary()
 ```
+
+
+## How sensitive are the results for bandwidth choice?
+
+```{r, echo = FALSE}
+x  <- tutoring$entrance_exam
+y  <- tutoring$exit_exam
+c0 <- 70
+bw_grid <- seq(5, 50, by = 5)
+results <- data.frame()
+
+for (bw in bw_grid) {
+  model <- rdrobust(
+    y = y,
+    x = x,
+    c = c0,
+    h = bw
+  )
+  
+  results <- rbind(results, data.frame(
+    bandwidth = bw,
+    coef      = model$coef[1],
+    se        = model$se[1],
+    ci_low    = model$ci[1,1],
+    ci_high   = model$ci[1,2]
+  ))
+}
+
+# -------------------------------------------------------------
+# Plot with ggplot2
+# -------------------------------------------------------------
+ggplot(results, aes(x = bandwidth, y = coef)) +
+  geom_point(size = 2) +
+  geom_line() +
+  geom_errorbar(aes(ymin = ci_low, ymax = ci_high), width = 0.5) +
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "RDD Sensitivity to Bandwidth Choice",
+    x = "Bandwidth (h)",
+    y = "Treatment Effect Estimate"
+  )
+```
+
+# Fuzzy RDD
+
+
+## Fuzzy RDD
+
+-   What if the threshold does not perfectly predict treatment?
+
+-   But the running variable is a strong predictor of treatment and is random around the threshold
+
+-   Sounds familiar...
+
+. . .
+
+-   We use the running variable and threshold $c$ as an IV
+
+-   $X$ -\> $D$ -\> $Y$ (IV week: $Z$ -\> $T$ -\> $Y$)
+
+. . .
+
+-   2SLS as in IV
+
+-   LATE for compliers at the threshold
+
+
+## Sharp vs Fuzzy RD
+
+A regression discontinuity setup has:
+
+-   Running variable: `X`
+-   Cutoff: `c`
+-   Treatment indicator: `D`
+
+Sharp RD:
+
+-   `D = 1(X >= c)` exactly.
+
+Fuzzy RD:
+
+-   Probability of treatment jumps at `c`, but compliance is imperfect.
+-   The cutoff indicator is an instrument for actual treatment near `c`.
+
+
+## Fuzzy equations
+
+$$\text{reduced form}$$
+
+$$Y = f(X) + \beta_1(X \ge c) + \epsilon$$
+
+<br><br>
+
+$$\text{first stage}$$
+
+$$D = f(X) + \beta_2(X \ge c) + \epsilon$$
+
+$$\text{second stage}$$
+
+$$Y = f(X) + \beta_3(\hat{D}) + \epsilon$$
+
+## Identification in Fuzzy RD
+
+At the cutoff, the parameter of interest is:
+
+$$ \tau\_{FRD} = \frac{\lim_{x\downarrow c}E[Y|X=x]-\lim_{x\uparrow c}E[Y|X=x]}{\lim_{x\downarrow c}E[D|X=x]-\lim_{x\uparrow c}E[D|X=x]} $$
+
+Interpretation:
+
+-   Ratio of reduced-form jump in outcome to first-stage jump in treatment.
+-   A local average treatment effect for **compliers at the cutoff**.
+
+
+## R Setup
+
+```{r}
+# Install if needed:
+# install.packages(c("rdrobust", "fixest", "ggplot2", "dplyr"))
+
+library(rdrobust)
+library(fixest)
+library(ggplot2)
+library(dplyr)
+```
+
+## Applied Example (Simulated Fuzzy RD)
+
+```{r, echo = TRUE}
+set.seed(2026)
+n <- 3000
+
+# Running variable and cutoff
+x <- runif(n, -1, 1)
+c0 <- 0
+z <- as.integer(x >= c0)  # cutoff indicator (instrument)
+
+# Imperfect compliance: treatment probability jumps at cutoff
+p_treat <- pmin(pmax(0.25 + 0.40 * z + 0.20 * x, 0.02), 0.98)
+d <- rbinom(n, 1, p_treat)
+
+# Outcome with true causal effect of treatment = 2.0
+y <- 1 + 2.0 * d + 1.2 * x + 0.6 * x^2 + rnorm(n, sd = 1)
+
+frd_dat <- data.frame(y = y, d = d, x = x, z = z)
+```
+
+## Visual Check: Fuzzy First Stage
+
+```{r, echo = TRUE}
+# Plot binned means of d with local polynomial fits
+rdrobust::rdplot(y = frd_dat$d, x = frd_dat$x, c = 0,
+                 y.label = "Pr(treated)", x.label = "X")
+```
+
+## Visual Check: Reduced form for outcome
+
+```{r, echo = TRUE}
+# Plot binned means of y with local polynomial fits
+rdrobust::rdplot(y = frd_dat$y, x = frd_dat$x, c = 0,
+                 y.label = "Outcome", x.label = "X")
+```
+## Visual check: potential manipulation of x around the cutoff
+
+```{r, eval=TRUE, warning = FALSE, echo = TRUE}
+# Density manipulation test around cutoff
+library(rddensity)
+test_d <- rddensity(X = frd_dat$x, c = 0)
+plot_density_test <- rdplotdensity(rdd = test_d, 
+                                   X = frd_dat$x)
+```
+
+## Reduced form RD (not fuzzy yet)
+
+```{r, echo = TRUE}
+rf <- rdrobust(y = frd_dat$y, x = frd_dat$x, c = 0)
+summary(rf)
+```
+
+## Estimation with `rdrobust` (Fuzzy)
+
+```{r, echo = TRUE}
+# Fuzzy RD: supply y, x, and fuzzy = treatment variable
+a <- rdrobust(y = frd_dat$y, x = frd_dat$x, c = 0, fuzzy = frd_dat$d)
+summary(a)
+```
+
+`a` includes:
+-   Point estimate of local treatment effect at the cutoff
+-   Robust standard error / confidence interval
+-   MSE-optimal bandwidth choices
+
+## Doing it with 2SLS using bandwidths
+
+Idea: mimic FRD by restricting to observations near cutoff and instrumenting `d` with `z`.
+
+```{r, echo = TRUE}
+# Use the rdrobust bandwidth (left/right) to define a local sample
+h_left <- a$bws[1, 1] ; h_right <- a$bws[1, 2]
+local_dat <- frd_dat |>
+  filter(x >= -h_left, x <= h_right) |>
+  mutate(x_c = x, x_right = z * x_c)
+iv_fit <- feols(y ~ x_c + x_right | d ~ z, data = local_dat)
+modelsummary::msummary(list('second stage' = iv_fit, 'first stage' = iv_fit$iv_first_stage$d), stars = TRUE)
+```
+
+## Why This 2SLS Matches `rdrobust`` Intuition
+
+-   `z = 1(x >= c)` is exogenous at the cutoff under RD assumptions.
+-   First stage: `z` shifts treatment take-up (`d`) discontinuously.
+-   Exclusion restriction: after controlling for local trends in `x`, `z` affects `y` only through `d`.
+-   Second stage uses only local variation around `c`.
+-   With local polynomial controls and small bandwidths, this targets the same local complier effect as fuzzy RD.
+
+## Always check robustness to bandwidth selection
+
+```{r}
+x  <- frd_dat$x    # Running variable
+y  <- frd_dat$y      # Outcome variable
+z  <- frd_dat$d    # Treatment variable (for fuzzy RDD)
+c0 <- 0         # Cutoff
+
+# Sequence of bandwidths to test
+bw_grid <- seq(0.1, 1, by = 0.1)
+
+# -------------------------------------------------------------
+# Run fuzzy rdrobust for each bandwidth and collect results
+# -------------------------------------------------------------
+results <- data.frame()
+
+for (bw in bw_grid) {
+  
+  model <- rdrobust(
+    y = y,
+    x = x,
+    fuzzy = z,   # Fuzzy RDD specification
+    c = c0,
+    h = bw
+  )
+  
+  # model$coef[1] is the fuzzy Wald estimate (LATE)
+  results <- rbind(results, data.frame(
+    bandwidth = bw,
+    coef      = model$coef[1],
+    se        = model$se[1],
+    ci_low    = model$ci[1,1],
+    ci_high   = model$ci[1,2]
+  ))
+}
+
+# -------------------------------------------------------------
+# Plot using ggplot2
+# -------------------------------------------------------------
+ggplot(results, aes(x = bandwidth, y = coef)) +  geom_point(size = 2) +  
+  geom_line() +  geom_errorbar(aes(ymin = ci_low, ymax = ci_high), width = 0.02) +  
+  theme_minimal(base_size = 14) +  
+  geom_hline(yintercept=0, linetype="dashed", 
+                color = "red", size=2) +
+  labs(    title = "Fuzzy RDD Sensitivity (estimated with rdrobust)",    
+           x = "Bandwidth (b)",    y = "Fuzzy RDD Estimate (Wald LATE)"  )
+
+```
+
+## Practical Checklist for Fuzzy RD
+
+-   Verify a clear first-stage jump at cutoff.
+-   Use robust bias-corrected inference (`rdrobust`).
+-   Report bandwidth and polynomial order.
+-   Show sensitivity (alternative bandwidths / kernels).
+-   Check manipulation of running variable (e.g. McCrary test via `rddensity`)
+-   Peform placebo tests (use pre-treatment variables to check if there is discontinuity or significant RD effect)
+
+## Takeaway
+
+Fuzzy RD is an IV design in a neighborhood of the cutoff:
+
+-   **Instrument:** crossing the threshold
+-   **Treatment:** actual take-up
+-   **Estimand:** local complier effect at the cutoff
+
+`rdrobust` gives a principled default implementation, and local 2SLS makes the mechanics transparent.
 
