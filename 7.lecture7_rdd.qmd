@@ -70,7 +70,7 @@ There are two types of processes for assignment
 
 **Sharp**: treatment is only and always assigned to everyone after $c$, never before that value
 
-**Fuzzy**: treatment is more likely after $c$ than before but not 100%; some below $c$ do get treatment
+**Fuzzy**: treatment is more likely after $c$ than before but not 100%; some below $c$ may get treatment, some above $c$ may not get treatment
 
 ## Examples of discontinuities
 
@@ -248,7 +248,7 @@ ggplot(data = df, aes(x=x, y=y, color = d)) +
 
 * **Treatment** $D_i \in \{0,1\}$
 * **Threshold** $c$ above which $D_i = 1$
-* **Potential outcomes** under Treatment and controlL $Y_i(1)$ and $Y_i(0)$
+* **Potential outcomes** under Treatment and control $Y_i(1)$ and $Y_i(0)$
 * **Running/forcing variable** $X_i$ that determines if $i$ is above/below $c$
 
 $$
@@ -292,7 +292,7 @@ A sufficient condition for this assumption is a lack of *perfect* manipulation
 
 * Sharp RD: Treatment assignment must change discontinuously at the cutoff
 
-* Fuzzy RD: Exclusion restriction (here must be no “direct” effect of crossing ccc on the outcome.)
+* Fuzzy RD: Exclusion restriction (here must be no “direct” effect of crossing $c$ on the outcome)
 
 * Correct functional form is estimated locally
 
@@ -736,7 +736,7 @@ Interpretation:
 
 ## R Setup
 
-```{r}
+```{r, echo = TRUE}
 # Install if needed:
 # install.packages(c("rdrobust", "fixest", "ggplot2", "dplyr"))
 
@@ -826,7 +826,7 @@ iv_fit <- feols(y ~ x_c + x_right | d ~ z, data = local_dat)
 modelsummary::msummary(list('second stage' = iv_fit, 'first stage' = iv_fit$iv_first_stage$d), stars = TRUE)
 ```
 
-## Why This 2SLS Matches `rdrobust`` Intuition
+## Why This 2SLS Matches `rdrobust` Intuition
 
 -   `z = 1(x >= c)` is exogenous at the cutoff under RD assumptions.
 -   First stage: `z` shifts treatment take-up (`d`) discontinuously.
@@ -902,3 +902,7 @@ Fuzzy RD is an IV design in a neighborhood of the cutoff:
 
 `rdrobust` gives a principled default implementation, and local 2SLS makes the mechanics transparent.
 
+
+## Be creative discontinuities more common than you think
+
+![](img/Aksoy-AJS)

@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Ozan Aksoy">
-  <meta name="dcterms.date" content="2026-03-03">
+  <meta name="dcterms.date" content="2026-03-04">
   <title>Exotic designs: Regression Discontinuity</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -212,7 +212,7 @@ Ozan Aksoy
 </div>
 </div>
 
-  <p class="date">March 3, 2026</p>
+  <p class="date">March 4, 2026</p>
 </section>
 <section>
 <section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
@@ -250,7 +250,7 @@ Ozan Aksoy
 <h2>What is a <em>discontinuity</em>?</h2>
 <p>There are two types of processes for assignment</p>
 <p><strong>Sharp</strong>: treatment is only and always assigned to everyone after <span class="math inline">\(c\)</span>, never before that value</p>
-<p><strong>Fuzzy</strong>: treatment is more likely after <span class="math inline">\(c\)</span> than before but not 100%; some below <span class="math inline">\(c\)</span> do get treatment</p>
+<p><strong>Fuzzy</strong>: treatment is more likely after <span class="math inline">\(c\)</span> than before but not 100%; some below <span class="math inline">\(c\)</span> may get treatment, some above <span class="math inline">\(c\)</span> may not get treatment</p>
 </section>
 <section id="examples-of-discontinuities" class="slide level2">
 <h2>Examples of discontinuities</h2>
@@ -375,7 +375,7 @@ Ozan Aksoy
 <ul>
 <li><strong>Treatment</strong> <span class="math inline">\(D_i \in \{0,1\}\)</span></li>
 <li><strong>Threshold</strong> <span class="math inline">\(c\)</span> above which <span class="math inline">\(D_i = 1\)</span></li>
-<li><strong>Potential outcomes</strong> under Treatment and controlL <span class="math inline">\(Y_i(1)\)</span> and <span class="math inline">\(Y_i(0)\)</span></li>
+<li><strong>Potential outcomes</strong> under Treatment and control <span class="math inline">\(Y_i(1)\)</span> and <span class="math inline">\(Y_i(0)\)</span></li>
 <li><strong>Running/forcing variable</strong> <span class="math inline">\(X_i\)</span> that determines if <span class="math inline">\(i\)</span> is above/below <span class="math inline">\(c\)</span></li>
 </ul>
 <p><span class="math display">\[
@@ -412,7 +412,7 @@ D_i =
 <li><p>No perfect manipulation of <span class="math inline">\(X\)</span></p></li>
 <li><p>Local SUTVA</p></li>
 <li><p>Sharp RD: Treatment assignment must change discontinuously at the cutoff</p></li>
-<li><p>Fuzzy RD: Exclusion restriction (here must be no “direct” effect of crossing ccc on the outcome.)</p></li>
+<li><p>Fuzzy RD: Exclusion restriction (here must be no “direct” effect of crossing <span class="math inline">\(c\)</span> on the outcome)</p></li>
 <li><p>Correct functional form is estimated locally</p></li>
 </ul>
 </section>
@@ -730,25 +730,25 @@ Window Length / 2          &lt;c     &gt;=c    P&gt;|T|
 
     <script>
       // Create table-specific functions using external factory
-      const tableFns_0lprje3f9f0c4ai1prxd = TinyTable.createTableFunctions("tinytable_0lprje3f9f0c4ai1prxd");
+      const tableFns_wkcvma13ls3y1tzstnja = TinyTable.createTableFunctions("tinytable_wkcvma13ls3y1tzstnja");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '14', j: 2 }, { i: '14', j: 3 }, { i: '14', j: 4 } ], css_id: 'tinytable_css_yk1djojq9n0e3olnguuz',}, 
-          { positions: [ { i: '6', j: 2 }, { i: '6', j: 3 }, { i: '6', j: 4 } ], css_id: 'tinytable_css_2kko8js0dqf65l47m0ci',}, 
-          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '12', j: 3 }, { i: '13', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '11', j: 4 }, { i: '12', j: 4 }, { i: '13', j: 4 } ], css_id: 'tinytable_css_9k4gtv1gi9ou587za2kp',}, 
-          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 } ], css_id: 'tinytable_css_15hwmd3q91xrkbtfz0n4',}, 
-          { positions: [ { i: '14', j: 1 } ], css_id: 'tinytable_css_2obsrrpidp2mj10kc85i',}, 
-          { positions: [ { i: '6', j: 1 } ], css_id: 'tinytable_css_bpx208j7pxoqk0fylvyu',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 } ], css_id: 'tinytable_css_1r2ms4yet41lvg6p8t6q',}, 
-          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_6wu1puy770g4nzyisbid',}, 
+          { positions: [ { i: '14', j: 2 }, { i: '14', j: 3 }, { i: '14', j: 4 } ], css_id: 'tinytable_css_x604d6ziy6dcovnmkgki',}, 
+          { positions: [ { i: '6', j: 2 }, { i: '6', j: 3 }, { i: '6', j: 4 } ], css_id: 'tinytable_css_b8ett9xz27tremxnizit',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '12', j: 3 }, { i: '13', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '11', j: 4 }, { i: '12', j: 4 }, { i: '13', j: 4 } ], css_id: 'tinytable_css_x2e0qqbof8jhg2nipvu9',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 } ], css_id: 'tinytable_css_fggz617nia83us08p4jl',}, 
+          { positions: [ { i: '14', j: 1 } ], css_id: 'tinytable_css_aoljj1y7i72s39khmedf',}, 
+          { positions: [ { i: '6', j: 1 } ], css_id: 'tinytable_css_rrpit9qoxrhodveo6mk3',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 } ], css_id: 'tinytable_css_6ckyil26sv8fexoli3rm',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_gdkz5mz5vt3flwms6hhz',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  tableFns_0lprje3f9f0c4ai1prxd.styleCell(cell.i, cell.j, group.css_id);
+                  tableFns_wkcvma13ls3y1tzstnja.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -757,17 +757,17 @@ Window Length / 2          &lt;c     &gt;=c    P&gt;|T|
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
     /* tinytable css entries after */
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_yk1djojq9n0e3olnguuz, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_yk1djojq9n0e3olnguuz {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_2kko8js0dqf65l47m0ci, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_2kko8js0dqf65l47m0ci {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_9k4gtv1gi9ou587za2kp, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_9k4gtv1gi9ou587za2kp { text-align: center }
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_15hwmd3q91xrkbtfz0n4, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_15hwmd3q91xrkbtfz0n4 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_2obsrrpidp2mj10kc85i, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_2obsrrpidp2mj10kc85i {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_bpx208j7pxoqk0fylvyu, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_bpx208j7pxoqk0fylvyu {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_1r2ms4yet41lvg6p8t6q, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_1r2ms4yet41lvg6p8t6q { text-align: left }
-    #tinytable_0lprje3f9f0c4ai1prxd td.tinytable_css_6wu1puy770g4nzyisbid, #tinytable_0lprje3f9f0c4ai1prxd th.tinytable_css_6wu1puy770g4nzyisbid {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_x604d6ziy6dcovnmkgki, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_x604d6ziy6dcovnmkgki {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_b8ett9xz27tremxnizit, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_b8ett9xz27tremxnizit {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_x2e0qqbof8jhg2nipvu9, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_x2e0qqbof8jhg2nipvu9 { text-align: center }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_fggz617nia83us08p4jl, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_fggz617nia83us08p4jl {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_aoljj1y7i72s39khmedf, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_aoljj1y7i72s39khmedf {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_rrpit9qoxrhodveo6mk3, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_rrpit9qoxrhodveo6mk3 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_6ckyil26sv8fexoli3rm, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_6ckyil26sv8fexoli3rm { text-align: left }
+    #tinytable_wkcvma13ls3y1tzstnja td.tinytable_css_gdkz5mz5vt3flwms6hhz, #tinytable_wkcvma13ls3y1tzstnja th.tinytable_css_gdkz5mz5vt3flwms6hhz {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
     </style>
     <div class="container">
-      <table class="tinytable" id="tinytable_0lprje3f9f0c4ai1prxd" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="tinytable" id="tinytable_wkcvma13ls3y1tzstnja" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
         <thead>
               <tr>
@@ -979,34 +979,43 @@ Unique Obs.                     155          262
 </section>
 <section id="r-setup" class="slide level2">
 <h2>R Setup</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="co"># Install if needed:</span></span>
+<span id="cb14-2"><a href=""></a><span class="co"># install.packages(c("rdrobust", "fixest", "ggplot2", "dplyr"))</span></span>
+<span id="cb14-3"><a href=""></a></span>
+<span id="cb14-4"><a href=""></a><span class="fu">library</span>(rdrobust)</span>
+<span id="cb14-5"><a href=""></a><span class="fu">library</span>(fixest)</span>
+<span id="cb14-6"><a href=""></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb14-7"><a href=""></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="applied-example-simulated-fuzzy-rd" class="slide level2">
 <h2>Applied Example (Simulated Fuzzy RD)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
-<span id="cb14-2"><a href=""></a>n <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
-<span id="cb14-3"><a href=""></a></span>
-<span id="cb14-4"><a href=""></a><span class="co"># Running variable and cutoff</span></span>
-<span id="cb14-5"><a href=""></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb14-6"><a href=""></a>c0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb14-7"><a href=""></a>z <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(x <span class="sc">&gt;=</span> c0)  <span class="co"># cutoff indicator (instrument)</span></span>
-<span id="cb14-8"><a href=""></a></span>
-<span id="cb14-9"><a href=""></a><span class="co"># Imperfect compliance: treatment probability jumps at cutoff</span></span>
-<span id="cb14-10"><a href=""></a>p_treat <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="fl">0.25</span> <span class="sc">+</span> <span class="fl">0.40</span> <span class="sc">*</span> z <span class="sc">+</span> <span class="fl">0.20</span> <span class="sc">*</span> x, <span class="fl">0.02</span>), <span class="fl">0.98</span>)</span>
-<span id="cb14-11"><a href=""></a>d <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, p_treat)</span>
-<span id="cb14-12"><a href=""></a></span>
-<span id="cb14-13"><a href=""></a><span class="co"># Outcome with true causal effect of treatment = 2.0</span></span>
-<span id="cb14-14"><a href=""></a>y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">2.0</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">1</span>)</span>
-<span id="cb14-15"><a href=""></a></span>
-<span id="cb14-16"><a href=""></a>frd_dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">d =</span> d, <span class="at">x =</span> x, <span class="at">z =</span> z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb15-2"><a href=""></a>n <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
+<span id="cb15-3"><a href=""></a></span>
+<span id="cb15-4"><a href=""></a><span class="co"># Running variable and cutoff</span></span>
+<span id="cb15-5"><a href=""></a>x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb15-6"><a href=""></a>c0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb15-7"><a href=""></a>z <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(x <span class="sc">&gt;=</span> c0)  <span class="co"># cutoff indicator (instrument)</span></span>
+<span id="cb15-8"><a href=""></a></span>
+<span id="cb15-9"><a href=""></a><span class="co"># Imperfect compliance: treatment probability jumps at cutoff</span></span>
+<span id="cb15-10"><a href=""></a>p_treat <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="fl">0.25</span> <span class="sc">+</span> <span class="fl">0.40</span> <span class="sc">*</span> z <span class="sc">+</span> <span class="fl">0.20</span> <span class="sc">*</span> x, <span class="fl">0.02</span>), <span class="fl">0.98</span>)</span>
+<span id="cb15-11"><a href=""></a>d <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, p_treat)</span>
+<span id="cb15-12"><a href=""></a></span>
+<span id="cb15-13"><a href=""></a><span class="co"># Outcome with true causal effect of treatment = 2.0</span></span>
+<span id="cb15-14"><a href=""></a>y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">2.0</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb15-15"><a href=""></a></span>
+<span id="cb15-16"><a href=""></a>frd_dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">d =</span> d, <span class="at">x =</span> x, <span class="at">z =</span> z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="visual-check-fuzzy-first-stage" class="slide level2">
 <h2>Visual Check: Fuzzy First Stage</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="co"># Plot binned means of d with local polynomial fits</span></span>
-<span id="cb15-2"><a href=""></a>rdrobust<span class="sc">::</span><span class="fu">rdplot</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>d, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>,</span>
-<span id="cb15-3"><a href=""></a>                 <span class="at">y.label =</span> <span class="st">"Pr(treated)"</span>, <span class="at">x.label =</span> <span class="st">"X"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="co"># Plot binned means of d with local polynomial fits</span></span>
+<span id="cb16-2"><a href=""></a>rdrobust<span class="sc">::</span><span class="fu">rdplot</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>d, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>,</span>
+<span id="cb16-3"><a href=""></a>                 <span class="at">y.label =</span> <span class="st">"Pr(treated)"</span>, <span class="at">x.label =</span> <span class="st">"X"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -1019,9 +1028,9 @@ Unique Obs.                     155          262
 <section id="visual-check-reduced-form-for-outcome" class="slide level2">
 <h2>Visual Check: Reduced form for outcome</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="co"># Plot binned means of y with local polynomial fits</span></span>
-<span id="cb16-2"><a href=""></a>rdrobust<span class="sc">::</span><span class="fu">rdplot</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>y, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>,</span>
-<span id="cb16-3"><a href=""></a>                 <span class="at">y.label =</span> <span class="st">"Outcome"</span>, <span class="at">x.label =</span> <span class="st">"X"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="co"># Plot binned means of y with local polynomial fits</span></span>
+<span id="cb17-2"><a href=""></a>rdrobust<span class="sc">::</span><span class="fu">rdplot</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>y, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>,</span>
+<span id="cb17-3"><a href=""></a>                 <span class="at">y.label =</span> <span class="st">"Outcome"</span>, <span class="at">x.label =</span> <span class="st">"X"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -1034,11 +1043,11 @@ Unique Obs.                     155          262
 <section id="visual-check-potential-manipulation-of-x-around-the-cutoff" class="slide level2">
 <h2>Visual check: potential manipulation of x around the cutoff</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="co"># Density manipulation test around cutoff</span></span>
-<span id="cb17-2"><a href=""></a><span class="fu">library</span>(rddensity)</span>
-<span id="cb17-3"><a href=""></a>test_d <span class="ot">&lt;-</span> <span class="fu">rddensity</span>(<span class="at">X =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>)</span>
-<span id="cb17-4"><a href=""></a>plot_density_test <span class="ot">&lt;-</span> <span class="fu">rdplotdensity</span>(<span class="at">rdd =</span> test_d, </span>
-<span id="cb17-5"><a href=""></a>                                   <span class="at">X =</span> frd_dat<span class="sc">$</span>x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="co"># Density manipulation test around cutoff</span></span>
+<span id="cb18-2"><a href=""></a><span class="fu">library</span>(rddensity)</span>
+<span id="cb18-3"><a href=""></a>test_d <span class="ot">&lt;-</span> <span class="fu">rddensity</span>(<span class="at">X =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>)</span>
+<span id="cb18-4"><a href=""></a>plot_density_test <span class="ot">&lt;-</span> <span class="fu">rdplotdensity</span>(<span class="at">rdd =</span> test_d, </span>
+<span id="cb18-5"><a href=""></a>                                   <span class="at">X =</span> frd_dat<span class="sc">$</span>x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure>
@@ -1051,8 +1060,8 @@ Unique Obs.                     155          262
 <section id="reduced-form-rd-not-fuzzy-yet" class="slide level2">
 <h2>Reduced form RD (not fuzzy yet)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>rf <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>y, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>)</span>
-<span id="cb18-2"><a href=""></a><span class="fu">summary</span>(rf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>rf <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>y, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>)</span>
+<span id="cb19-2"><a href=""></a><span class="fu">summary</span>(rf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Sharp RD estimates using local polynomial regression.
 
@@ -1082,9 +1091,9 @@ Unique Obs.                    1491         1509
 <section id="estimation-with-rdrobust-fuzzy" class="slide level2">
 <h2>Estimation with <code>rdrobust</code> (Fuzzy)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="co"># Fuzzy RD: supply y, x, and fuzzy = treatment variable</span></span>
-<span id="cb20-2"><a href=""></a>a <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>y, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>, <span class="at">fuzzy =</span> frd_dat<span class="sc">$</span>d)</span>
-<span id="cb20-3"><a href=""></a><span class="fu">summary</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="co"># Fuzzy RD: supply y, x, and fuzzy = treatment variable</span></span>
+<span id="cb21-2"><a href=""></a>a <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> frd_dat<span class="sc">$</span>y, <span class="at">x =</span> frd_dat<span class="sc">$</span>x, <span class="at">c =</span> <span class="dv">0</span>, <span class="at">fuzzy =</span> frd_dat<span class="sc">$</span>d)</span>
+<span id="cb21-3"><a href=""></a><span class="fu">summary</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Fuzzy RD estimates using local polynomial regression.
 
@@ -1127,13 +1136,13 @@ Treatment effect estimates.
 <h2>Doing it with 2SLS using bandwidths</h2>
 <p>Idea: mimic FRD by restricting to observations near cutoff and instrumenting <code>d</code> with <code>z</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="co"># Use the rdrobust bandwidth (left/right) to define a local sample</span></span>
-<span id="cb22-2"><a href=""></a>h_left <span class="ot">&lt;-</span> a<span class="sc">$</span>bws[<span class="dv">1</span>, <span class="dv">1</span>] ; h_right <span class="ot">&lt;-</span> a<span class="sc">$</span>bws[<span class="dv">1</span>, <span class="dv">2</span>]</span>
-<span id="cb22-3"><a href=""></a>local_dat <span class="ot">&lt;-</span> frd_dat <span class="sc">|&gt;</span></span>
-<span id="cb22-4"><a href=""></a>  <span class="fu">filter</span>(x <span class="sc">&gt;=</span> <span class="sc">-</span>h_left, x <span class="sc">&lt;=</span> h_right) <span class="sc">|&gt;</span></span>
-<span id="cb22-5"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">x_c =</span> x, <span class="at">x_right =</span> z <span class="sc">*</span> x_c)</span>
-<span id="cb22-6"><a href=""></a>iv_fit <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x_c <span class="sc">+</span> x_right <span class="sc">|</span> d <span class="sc">~</span> z, <span class="at">data =</span> local_dat)</span>
-<span id="cb22-7"><a href=""></a>modelsummary<span class="sc">::</span><span class="fu">msummary</span>(<span class="fu">list</span>(<span class="st">'second stage'</span> <span class="ot">=</span> iv_fit, <span class="st">'first stage'</span> <span class="ot">=</span> iv_fit<span class="sc">$</span>iv_first_stage<span class="sc">$</span>d), <span class="at">stars =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="co"># Use the rdrobust bandwidth (left/right) to define a local sample</span></span>
+<span id="cb23-2"><a href=""></a>h_left <span class="ot">&lt;-</span> a<span class="sc">$</span>bws[<span class="dv">1</span>, <span class="dv">1</span>] ; h_right <span class="ot">&lt;-</span> a<span class="sc">$</span>bws[<span class="dv">1</span>, <span class="dv">2</span>]</span>
+<span id="cb23-3"><a href=""></a>local_dat <span class="ot">&lt;-</span> frd_dat <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href=""></a>  <span class="fu">filter</span>(x <span class="sc">&gt;=</span> <span class="sc">-</span>h_left, x <span class="sc">&lt;=</span> h_right) <span class="sc">|&gt;</span></span>
+<span id="cb23-5"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">x_c =</span> x, <span class="at">x_right =</span> z <span class="sc">*</span> x_c)</span>
+<span id="cb23-6"><a href=""></a>iv_fit <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x_c <span class="sc">+</span> x_right <span class="sc">|</span> d <span class="sc">~</span> z, <span class="at">data =</span> local_dat)</span>
+<span id="cb23-7"><a href=""></a>modelsummary<span class="sc">::</span><span class="fu">msummary</span>(<span class="fu">list</span>(<span class="st">'second stage'</span> <span class="ot">=</span> iv_fit, <span class="st">'first stage'</span> <span class="ot">=</span> iv_fit<span class="sc">$</span>iv_first_stage<span class="sc">$</span>d), <span class="at">stars =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <!-- preamble start -->
 
@@ -1282,7 +1291,7 @@ Treatment effect estimates.
 </div>
 </section>
 <section id="why-this-2sls-matches-rdrobust-intuition" class="slide level2">
-<h2>Why This 2SLS Matches `rdrobust`` Intuition</h2>
+<h2>Why This 2SLS Matches <code>rdrobust</code> Intuition</h2>
 <ul>
 <li><code>z = 1(x &gt;= c)</code> is exogenous at the cutoff under RD assumptions.</li>
 <li>First stage: <code>z</code> shifts treatment take-up (<code>d</code>) discontinuously.</li>
@@ -1323,6 +1332,10 @@ Treatment effect estimates.
 <li><strong>Estimand:</strong> local complier effect at the cutoff</li>
 </ul>
 <p><code>rdrobust</code> gives a principled default implementation, and local 2SLS makes the mechanics transparent.</p>
+</section>
+<section id="be-creative-discontinuities-more-common-than-you-think" class="slide level2">
+<h2>Be creative discontinuities more common than you think</h2>
+<p><img data-src="img/Aksoy-AJS.png"></p>
 
 </section></section>
     </div>
