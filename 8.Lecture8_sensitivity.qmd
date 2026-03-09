@@ -27,20 +27,154 @@ callout-appearance: minimal
 
 # Outline {background-color="#17a091"}
 
+* Front-door criterion: identification through mechanisms
+
+* Sensitivity: what to do with untestable assumptions?
+
+* Feedback
+
 \newcommand\indep{\perp\!\!\!\perp}
 \newcommand\nindep{\not\!\perp\!\!\!\perp}
 
+## Assessment feedback
+
+* Generally PS1 reports were good
+* $E[Y^T(D=C)]$ often estimable in RCT--also pay attention some POs can be observed (and estimable) under SUTVA!
+* Define concepts when asked (e.g. basis set)
+* Try to use equations we discussed in class as much as possible (e.g. $\delta_{naive}=\delta+selectionbias+differentialTEbias$) or precise language
+* Study the exercises!! (e.g. tests of the basis set)
+* In your own DAG: justify missing arrows too, provide a formal analysis of your own DAG
+* Interpretation, interpretation, interpretation!
+
+# Final mechanism for causal ID: front door {background-color="#17a091"}
+
+## Causes of effects vs effects of causes
+
+We have learned how to identify $X \rightarrow Y$
+
+* Experiments (randomise $X$)
+* Selection on observables (satisfy backdoor criterion via excessive control--regression, matching, weighting, Double Machine Learning)
+* Difference-in-differences
+* Natural experiments (Instrumental variables, regression discontinuity, synthetic control)
+
+Those mostly identify **effects of causes**
+
+Analytical sociology is about **mechanisms** $\approx$ **causes of effects**
+
+* How do causal effects come about, through which mechanisms
+* Macro-micro-macro aggegation (Headstrom 2005)
+* Agent-based modelling and causal inference (Manzo 2022)
+* Formal theoretical modelling (Coleman 1994)
+* Qualitative process tracing (Varese 2024)
+
+## Front-door criterion: where mechanisms meet causal identification
+
+::: columns
+::: {.column width="50%"}
+Model 1: 
+```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height=2}
+library(dagitty)
+
+plot(dagitty('dag{ 
+  D [pos="0,0"] 
+  M [pos="1,0"] 
+  U [pos="1,-1"] 
+  Y [pos="2,0"] 
+  D -> M; M -> Y; U -> {D Y};}'))
+```
+Can you identify $M \rightarrow Y$?
+
+How about $D \rightarrow M$?
+
+How about $D \rightarrow Y$?
+
+:::
+
+::: {.column width="50%"}
+
+Model 2: 
+```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height=2}
+plot(dagitty('dag{ 
+  D [pos="0,0"]
+  M [pos="1,-0.25"]
+  N [pos="1,0.25"]
+  U [pos="1,-1"]
+  Y [pos="2,0"] 
+  D -> M; M -> Y; D -> N; N -> Y; U -> {D Y};}'))
+```
+How about $D \rightarrow Y$ now?
+:::
+:::
+
+## Front-door criterion
+
+When $X$ have an unblocked backdoor path to $Y$, the causal effect $X \rightarrow Y$
+is still identified by conditioning on a set of observed variables $\{M\}$ if
+
+* **Condition 1 (exhaustiveness)**: The variables in $\{M\}$ intercepts **all** directed paths from $X$ to $Y$; and
+
+* **Condition 2 (isolation)**: *(a)* **No** unblocked backdoor-paths connect $X$ to variables in $\{M\}$ and *(b)* **all** backdoor paths from the variables in $\{M \}$ on $Y$ can be blocked by contioning on $X$ 
+
+## Front-door criterion is tough
+
+::: columns
+::: {.column width="50%"}
+Model 1: 
+```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height=2}
+library(dagitty)
+
+plot(dagitty('dag{ 
+  D [pos="0,0"] 
+  M [pos="1,0"] 
+  U [pos="1,-1"] 
+  Y [pos="2,0"] 
+  D -> M; M -> Y; U -> {D Y}; U -> M}'))
+```
+Is the front-door criterion satisfied here?
+
+:::
+
+::: {.column width="50%"}
+
+Model 2: 
+```{r, message=FALSE, echo = FALSE, fig.width=4, fig.height=2}
+plot(dagitty('dag{ 
+  D [pos="0,0"]
+  M [pos="1,-0.25"]
+  N [pos="1,0.25"]
+  U [pos="1,-1"]
+  Y [pos="2,0"] 
+  D -> M; M -> Y; D -> N; N -> Y; U -> {D Y};}'))
+```
+Is the front-door criterion satisfied here if N is unobserved?
+:::
+:::
+
+. . .
+
+**If** you can find a setup in Sociology where front-door criterion is convincingly satisfied, you have a top paper already!
+
+
+# Course feedback
+
+* Give feedback on the course, help be understand the strengths of the module
+as well as places to improve
+
+
+![](img/Causality_Feedback_26.png){width=30%}
+
+[Here is the same link](https://forms.cloud.microsoft/pages/responsepage.aspx?id=G96VzPWXk0-0uv5ouFLPkfVqTPEaufZAs46xUYI7U6xURjFYTTBXSEhHUldYNDVVR1MwRDhIU1UyNi4u&route=shorturl)
+
+Write / talk to me as well if you have feedback
+
+
+# Sensitivity: what to do with untestable assumptions? {background-color="#17a091"}
 
 ## Roadmap
 
 * [Conceptual clarification]{.fragment .highlight-blue} 
 
   [robustness vs sensitivity]{.fragment .fade-in-then-out}
-
-* [Be careful when conditioning]{.fragment .highlight-blue}
-
-  [Inducing bias (M-bias)]{.fragment .fade-in-then-out}
-  [Amplifying bias (Z-bias)]{.fragment .fade-in-then-out}
 
 * [Assessing unconfoundedness]{.fragment .highlight-blue}
   
@@ -52,17 +186,14 @@ callout-appearance: minimal
   [Assumption-free bounds (Manski)]{.fragment .fade-in-then-out}
   [Worst-case bounds (Rosenbaum)]{.fragment .fade-in-then-out}
   
-  [E-value (VanderWeele and Peng)]{.fragment .fade-in-then-out}
   [R-value (Cinelli and Hazlett)]{.fragment .fade-in-then-out}
-  
-  [A general framework for bias analysis (with `autobounds`) (Duarte)]{.fragment .fade-in-then-out}
   
 * [There is so much more out there!]{.fragment .highlight-blue}
 
-  
+
 # What is sensitivity analysis? {background-color="#17a091"}
 
-## 
+## Credibility revolution: be clear about causal identification *and* open about the procedure through which results are obtained
 
 :::{.r-stack}
 ![](img/sens_9billionregs.png){.fragment width="600" height="450"}
@@ -106,65 +237,13 @@ To the first, we will call [*sensitivity*]{.fragment .highlight-blue}, i.e., how
 To the second, we will call [*robustness*]{.fragment .highlight-green}, i.e., how our results change as we modify the ways in which we analyse the data
 
 
-# Be careful when conditioning {background-color="#17a091"}
-
-## Recall unconfoundedness
-
-We described the unconfoundedness assumption as
-
-$$
-Y_d \indep D | X
-$$
-
-which implies that
-
-$$
-P(Y_1|D=1,X) = P(Y_1|D=0,X)
-$$
-
-$$
-P(Y_0|D=1,X) = P(Y_0|D=0,X)
-$$
-
-Given the missing potential outcomes, we cannot directly "test" these assumptions, so we have to rely on indirect evaluations to put such assumptions to test.
-
-:::aside
-What follows is based on Ding (2024)
-::: 
-
-
-## Inducing bias through conditioning (M-bias)
-
-![](img/sens_mbias.png)
-
-. . .
-
-In this example, it is easy to see that the unconditional association between the treatment $Z$ and outcome $Y$ is zero.
-
-Now, for simplicity, interpret this graph as a path diagram. Then we will have that the regression $\beta_{(ZY|X)}$ is proportional to the (product of the) paths $Z \leftarrow U_1 \times U_1 \rightarrow X \times X \leftarrow U_2 \times U_2 \rightarrow Y$, which is not zero.
-
-
-## Amplifying bias through conditioning (Z-bias)
-
-![](img/sens_zbias.png)
-
-. . .
-
-**Intuition**: The treatment is a function of $(X,U)$. Conditioning by covariates $X$, the treatment becomes a function solely of $U$ and random errors. So, after conditioning, the treatment becomes "less random", with $U$ being even more important to determine who gets the treatment.
-
-In the linear model case:
-
-* The unadjusted estimator has bias $\frac{bc}{a^2 + b^2 +1}$
-
-* The adjusted estimator has bias $\frac{bc}{b^2 + 1}$
-
 # Assessing unconfoundedness {background-color="#17a091"}
 
 ## Negative outcomes
 
 One possible way to assess if the unconfoundedness assumption holds is to assume we have a negative outcome ($Y^n$), similar in confounding structure to the outcome of interest ($Y$), but we know the treatment effect for $Y^n$.
 
-A particular case, commonly invoked, is when we know $\tau(D \rightarrow Y^n) =0$
+A particular case, commonly invoked, is when we know $\tau(X \rightarrow Y^n) =0$
 
 ![](img/sens_negativeoutcome.png)
 
@@ -182,7 +261,7 @@ A particular case, commonly invoked, is when we know $\tau(D \rightarrow Y^n) =0
 
 Another way to assess if the uncounfoundedness assumption holds is to assume we have  negative exposure ($D^n$), similar in confounding structure to the outcome of interest ($Y$), but we know the treatment effect of $D^n$
 
-A particular case, commonly invoked, is when we know $\tau(D^n \rightarrow Y) = 0$
+A particular case, commonly invoked, is when we know $\tau(X \rightarrow Z^n) = 0$
 
 ![](img/sens_negativetreatment.png)
 
@@ -214,488 +293,95 @@ There are two different ways of doing this:
 
 * Start with the strongest possible assumption (you're willing to defend), and incrementally relax it until the estimated effect vanishes: [sensitivity analysis]{.fragment .highlight-red}
 
+## Bounding / set identification / partial identification
+
+$$
+a + b = 10
+$$
+
+What is the value of $a$?
+
+. . .
+
+What is the possible range of $a$?
+
+. . .
+
+What is the range of $a$ if $0 \leq b \leq 10$
+
+. . .
+
+What is the range of $a$ if $5 \leq b \leq 7$
+
+
 ## Assumption-free bounds (Manski)
 
-Recall that we can decompose $\tau = E(Y_1 - Y_0)$ as
-
-$$
-\tau = \{E(Y|D=1) P(D=1) + E(Y_1|D=0)P(D=0)\}
-$$
-
-$$
-- \{E(Y_0|D=1) P(D=1) + E(Y|D=0)P(D=0)\}
-$$
-
-Which quantities are observed and which are missing?
+|     |$E[Y^1|.]$ |	$E[Y^0|.]$ |	   	
+|-----|---------- |----------- |
+| $E[\delta_{naive}]=0.4$ | | |
+| Treatment group |  $E[Y^1|D=1] = 0.7$ | <span style="color:red;">$E[Y^0|D=1] =??$</span> |
+| Control group | <span style="color:red;">$E[Y^1|D=0] =??$</span> |  $E[Y^0|D=0] = 0.3$ |
 
 . . . 
 
-Manski bounds would use only information on the *range* of the missing variable to calculate lower and upper bounds for the treatment effect:
+| $E[\delta_{max}]=0.7$    |           |	           |	   	
+|-----|---------- |----------- |
+| Treatment |  $E[Y^1|D=1] = 0.7$ | <span style="color:red;">$E[Y^0|D=1] =0$</span> |
+| Control | <span style="color:red;">$E[Y^1|D=0] =1$</span> |  $E[Y^0|D=0] = 0.3$ |
 
-For $E(Y_1)$ the lower bound is: $Y(Y|D=1)P(D=1) + \underline{y}P(D=0)$
+. . . 
 
-and upper bound: $Y(Y|D=1)P(D=1) + \overline{y}P(D=0)$
+|$E[\delta_{min}]=-0.3$ | | |
+|-----|---------- |----------- |
+| Treatment |  $E[Y^1|D=1] = 0.7$ | <span style="color:red;">$E[Y^0|D=1] =1$</span> |
+| Control | <span style="color:red;">$E[Y^1|D=0] =0$</span> |  $E[Y^0|D=0] = 0.3$ |
 
-* The length of these bounds is $\overline{y} - \underline{y}$, which is half of the a priori bounds 
+Assumption free Manski bounds: $-0.3\leq \delta \leq 0.7$
 
-## E(vidence)-value (VanderWeele and Peng)
+## Weak assumptions (with $Pr(T)=0.5$)
 
-Let's assume the existence of an unobserved confounder $U$ that, if included, would make the exchangeability hold, such that $Y_d \nindep D|X$, but
+Monotone treatment response bounds $\delta_i\geq 0$ 
 
-$$
-Y_d \indep D|X,U
-$$
+. . .
 
-VanderWeele and Peng define two sensitivity parameters and show that, for the risk ratio, they bound the strength required by unobserved confounding to account for an observed effect:
+$\delta_{min} = 0.5(0.7-\color{red}{0.7})+0.5(\color{red}{0.3}-0.3)=0$
 
-$$
-RR_{DU|x} = \frac{P(U=1|D=1,x)}{P(U=1|D=0,x)}
-$$
 
-$$
-RR_{UY|x} = \frac{P(Y=1|U=1,x)}{P(Y=1|U=0,x)}
-$$
+$0\leq \delta \leq 0.7$
 
-## E-value (cont)
+. . .
 
-With observed conditional risk ratio $RR_{DY|x}^{obs}$, the E-value is
+Monotone treatment selection bounds (treated always have larger POs than control)
 
-$$
-RR_{DY|x}^{obs} + \sqrt{RR_{DY|x}^{obs} \times (RR_{DY|x}^{obs} - 1)}
-$$
+. . .
 
+$\delta_{max} = 0.5(0.7-\color{red}{0.3})+0.5(\color{red}{0.7}-0.3)=0.4$
+
+
+$-0.3\leq \delta \leq 0.4$
+
+. . .
+
+Monotone treatment response **and** selection:
+
+. . . 
+
+$0\leq \delta \leq 0.4$
 
 
 ## Worst-case bound (Rosenbaum)
 
-For matched studies, Rosenbaum (2002) proposed bounds based on a single sensitivity parameter: $\Gamma \geq 1$ measuring departures from unconfoundedness (what Rosenbaum calls "hidden bias")
+For **matching**, Rosenbaum (2002) proposed bounds based on a single sensitivity parameter: $\Gamma \geq 1$ measuring departures from unconfoundedness (what Rosenbaum calls "hidden bias")
 
 Under unconfoundedness, two observationally equivalent units with $X_i=X_j$ have the same propensity score. Now, let's assume a binary unobserved confounder $U$ affecting their odds of being treated
 
 $$
-\frac{1}{\Gamma} \leq \frac{\pi_i(1-\pi_j)}{(1-\pi_i)} \leq \Gamma
+\frac{1}{\Gamma} \leq \frac{\pi_t}{(1-\pi_t)}\frac{(1-\pi_c)}{\pi_c} \leq \Gamma
 $$
 
-* For example: $\Gamma = 2$ means that the $i$ unit has twice the odds of being treated as unit $j$. 
+* For example: $\Gamma = 2$ means that the $t$ unit has twice the odds of being treated unit $j$. 
 
-* Rosenbaum bounds assume an *infinite* effect on the outcome, but that can be relatex (two parameters version with $\Gamma$ and $\Lambda$)
-
-
-## OVB structure {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {.left style="margin-top: 200px;"}
-$$Y_i \color{white}{=  \alpha + {\beta} X_i + \gamma W_i + \epsilon_i}$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yonly.svg)
-
-:::
-
-:::
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 200px;"}
-$$Y_i =  \alpha \color{white}{+ {\beta} X_i + \gamma W_i + \epsilon_i}$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yonly.svg)
-
-:::
-
-:::
-
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 200px;"}
-$$Y_i =  \alpha + \color{blue}{\beta} X_i \color{white}{+ \gamma W_i + \epsilon_i}$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yx_beta.svg)
-:::
-
-:::
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 200px;"}
-$$Y_i =  \alpha + \beta X_i \color{white}{+ \gamma W_i + \epsilon_i}$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxw_beta.svg)
-:::
-
-:::
-
-
-
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 200px;"}
-$$Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxw_gamma.svg)
-:::
-
-:::
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 200px;"}
-$$Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxw_block.svg)
-:::
-
-:::
-
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 200px;"}
-$$Y_i =  \alpha + \beta X_i + \color{red}{\gamma} W_i \color{white}{+ \epsilon_i}$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxw_block2.svg)
-:::
-
-:::
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 200px;"}
-$$Y_i =  \alpha + {\beta} X_i + \gamma W_i + \epsilon_i$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxwe_beta.svg)
-
-
-:::
-
-:::
-
-::: {.fragment}
-$\text{corr}(X_i; \epsilon_i) = 0$
-:::
-
-:::{.fragment}
-$X \rightarrow \dots \leftarrow \epsilon$ is $d-$separated
-:::
-
-
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 100px;"}
-$$\color{grey}{Y_i =  \alpha + \beta X_i + \gamma W_i + \epsilon_i}$$
-
-$$Y_i =  \zeta + \tilde{\beta} X_i + u_i$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxu_tilde.svg)
-:::
-
-:::
-
-
-
-
-
-
-## OVB {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 100px;"}
-$$\color{grey}{Y_i =  \alpha + \beta X_i +  \color{red}{\gamma W_i + \epsilon_i}}$$
-
-$$Y_i =  \zeta + \tilde{\beta} X_i + \color{red}{u_i}$$
-
-
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxu2_tilde.svg)
-:::
-
-:::
-
-
-:::{.fragment}
-$\text{corr}(X_i ; u_i) \neq 0$
-:::
-
-:::{.fragment}
-$X \rightarrow u$ is $d-$connected
-:::
-
-
-
-
-## The OBV formula  {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 100px;"}
-$$\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}$$
-
-$$
-\color{red}{\tilde{\beta}} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
-$$
-
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxu2.svg)
-:::
-
-:::
-
-
-
-
-
-
-## The OBV formula  {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 100px;"}
-$$\color{grey}{Y_i =  \zeta + \tilde{\beta} X_i + u_i}$$
-
-$$
-\tilde{\beta} = \frac{\text{Cov}(X_i , \color{green}{Y_i})}{\text{Var}(X_i)}
-$$
-
-$$
-= \frac{\text{Cov}(X_i, \color{green}{\alpha + \beta X_i + \gamma W_i + \epsilon_i})}{\text{Var}(X_i)}
-$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxu2.svg)
-:::
-
-:::
-
-
-
-
-
-## The OBV formula  {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 100px;"}
-$$\color{grey}{Y_i =  \zeta + \tilde{\beta} X_i + u_i}$$
-
-$$
-\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
-$$
-
-$$
-= \frac{\color{green}{\text{Cov}(X_i}, \alpha + \color{blue}{\beta} X_i + \color{red}{\gamma} \color{green}{W_i} + \epsilon_i)}{\color{green}{\text{Var}(X_i)}}
-$$
-
-$$
-= \color{blue}{\beta} + \underbrace{\color{red}{\gamma} \times \color{green}{\frac{\text{Cov}(X_i,W_i)}{\text{Var}(X_i)}}}_{\text{Bias}}
-$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxu2.svg)
-:::
-
-:::
-
-
-
-
-## The OBV formula  {auto-animate=true}
-
-::: {.columns}
-
-::: {.column width="50%"}
-***Regression***
-
-::: {style="margin-top: 100px;"}
-$$\color{grey}{Y_i =  \zeta + \color{red}{\tilde{\beta}} X_i + u_i}$$
-
-$$
-\tilde{\beta} = \frac{\text{Cov}(X_i , Y_i)}{\text{Var}(X_i)}
-$$
-
-$$
-= \frac{\text{Cov}(X_i, \alpha + \beta X_i + \gamma W_i + \epsilon_i)}{\text{Var}(X_i)}
-$$
-
-$$
-= \color{blue}{\beta} + \underbrace{\color{red}{\gamma}}_{\text{Impact}} \times \underbrace{\color{green}{\delta}}_{\text{Imbalance}}
-$$
-:::
-
-
-:::
-
-::: {.column width="50%"}
-***Path diagram***
-
-![](img/dag_yxu2.svg)
-:::
-
-:::
-
-
+* Rosenbaum bounds assume an *infinite* effect on the outcome (that is $R^2_{Y \sim U|X}=1$), but that can be relaxed (two parameters version with $\Gamma$ and $\Lambda$)
 
 
 ## The OBV formula  {auto-animate=true}
@@ -737,11 +423,18 @@ $$
 
 ![](img/sens_cinellihazlett.png){.fragment .center}
 
-* **RV**: What percentage of the *residual* variance in $Y$ and $D$ would need to be explained by the omitted variable to account for the effect?
+* **RV**: What percentage of the *residual* variance in $Y$ and $D$ would need to be explained by the omitted variable to nullify the effect?
 
-* $R^2_{Y \sim D|X}$: if the omitted confounder explains 100\% of the residual variance in the outcome, how much residual variance in the treatment should it explain?
 
 ## R(obustness)-value (Cinelli and Hazlett)
 
 ![](img/ovb_cinelli_hazlett.png){.fragment .center}
 
+## Extreme-value analysis (similar to Rosenbaum)
+
+![](img/PartialID-extreme-1.png){width=50%}
+
+Imagine $U$ explains 100%, 75%, 50%, of the residual variation in outcome; how strongly U needs to be related to treatment to nullify the estimated effect? 
+
+
+# It was a joy! {background-color="#17a091"}
