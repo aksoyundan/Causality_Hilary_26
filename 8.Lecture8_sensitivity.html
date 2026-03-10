@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Ozan Aksoy">
-  <meta name="dcterms.date" content="2026-03-09">
+  <meta name="dcterms.date" content="2026-03-10">
   <title>Front Door and Sensitivity Analysis</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -146,7 +146,7 @@ Ozan Aksoy
 </div>
 </div>
 
-  <p class="date">March 9, 2026</p>
+  <p class="date">March 10, 2026</p>
 </section>
 <section>
 <section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
@@ -154,17 +154,15 @@ Ozan Aksoy
 <ul>
 <li><p>Front-door criterion: identification through mechanisms</p></li>
 <li><p>Sensitivity: what to do with untestable assumptions?</p></li>
-<li><p>Feedback</p></li>
 </ul>
 </section>
 <section id="assessment-feedback" class="slide level2">
 <h2>Assessment feedback</h2>
 <ul>
-<li>Generally PS1 reports were good</li>
 <li><span class="math inline">\(E[Y^T(D=C)]\)</span> often estimable in RCT–also pay attention some POs can be observed (and estimable) under SUTVA!</li>
 <li>Define concepts when asked (e.g.&nbsp;basis set)</li>
 <li>Try to use equations we discussed in class as much as possible (e.g.&nbsp;<span class="math inline">\(\delta_{naive}=\delta+selectionbias+differentialTEbias\)</span>) or precise language</li>
-<li>Study the exercises!! (e.g.&nbsp;tests of the basis set)</li>
+<li>Study the exercises! (e.g.&nbsp;tests of the basis set)</li>
 <li>In your own DAG: justify missing arrows too, provide a formal analysis of your own DAG</li>
 <li>Interpretation, interpretation, interpretation!</li>
 </ul>
@@ -418,7 +416,7 @@ a + b = 10
 <tbody>
 <tr class="odd">
 <td><span class="math inline">\(E[\delta_{naive}]=0.4\)</span></td>
-<td></td>
+<td>(assume <span class="math inline">\(0 \leq Y \leq1\)</span>)</td>
 <td></td>
 </tr>
 <tr class="even">
@@ -517,12 +515,21 @@ a + b = 10
 <p>For <strong>matching</strong>, Rosenbaum (2002) proposed bounds based on a single sensitivity parameter: <span class="math inline">\(\Gamma \geq 1\)</span> measuring departures from unconfoundedness (what Rosenbaum calls “hidden bias”)</p>
 <p>Under unconfoundedness, two observationally equivalent units with <span class="math inline">\(X_i=X_j\)</span> have the same propensity score. Now, let’s assume a binary unobserved confounder <span class="math inline">\(U\)</span> affecting their odds of being treated</p>
 <p><span class="math display">\[
-\frac{1}{\Gamma} \leq \frac{\pi_t}{(1-\pi_t)}\frac{(1-\pi_c)}{\pi_c} \leq \Gamma
+\frac{1}{\Gamma} \leq \frac{\pi_i}{(1-\pi_i)}\frac{(1-\pi_j)}{\pi_j} \leq \Gamma
 \]</span></p>
 <ul>
-<li><p>For example: <span class="math inline">\(\Gamma = 2\)</span> means that the <span class="math inline">\(t\)</span> unit has twice the odds of being treated unit <span class="math inline">\(j\)</span>.</p></li>
-<li><p>Rosenbaum bounds assume an <em>infinite</em> effect on the outcome (that is <span class="math inline">\(R^2_{Y \sim U|X}=1\)</span>), but that can be relaxed (two parameters version with <span class="math inline">\(\Gamma\)</span> and <span class="math inline">\(\Lambda\)</span>)</p></li>
+<li><p>For example: <span class="math inline">\(\Gamma = 2\)</span> means that the <span class="math inline">\(i\)</span> unit has twice the odds of being treated unit <span class="math inline">\(j\)</span>.</p></li>
+<li><p>Rosenbaum bounds assume an <em>infinite</em> effect on the outcome (that is treatment assignment happens (within the bounds of <span class="math inline">\(\Gamma\)</span>) so as to maximise observed treatment effect), but that can be relaxed (two parameters version with <span class="math inline">\(\Gamma\)</span> and <span class="math inline">\(\Lambda\)</span>)</p></li>
 </ul>
+</section>
+<section id="example-unemployment-benefits-and-job-search-outcomes" class="slide level2">
+<h2>Example: Unemployment benefits and job search outcomes</h2>
+<p><img data-src="img/Dipetre-Gangl-1.png"></p>
+<p>(DiPetre and Gangl 2004)</p>
+</section>
+<section id="example-rosenbaum-bounds" class="slide level2">
+<h2>Example: Rosenbaum bounds</h2>
+<p><img data-src="img/Dipetre-Gangl-2.png" style="width:50.0%"></p>
 </section>
 <section id="the-obv-formula" class="slide level2" data-auto-animate="true">
 <h2 data-id="quarto-animate-title">The OBV formula</h2>
@@ -556,14 +563,15 @@ a + b = 10
 <section id="robustness-value-cinelli-and-hazlett-1" class="slide level2">
 <h2>R(obustness)-value (Cinelli and Hazlett)</h2>
 <p><img data-src="img/ovb_cinelli_hazlett.png" class="fragment center"></p>
+<p>(Exposure to violence <span class="math inline">\(\rightarrow\)</span> peace attitudes)</p>
 </section>
-<section id="extreme-value-analysis-similar-to-rosenbaum" class="slide level2">
-<h2>Extreme-value analysis (similar to Rosenbaum)</h2>
+<section id="extreme-value-analysis" class="slide level2">
+<h2>Extreme-value analysis</h2>
 <p><img data-src="img/PartialID-extreme-1.png" style="width:50.0%"></p>
 <p>Imagine <span class="math inline">\(U\)</span> explains 100%, 75%, 50%, of the residual variation in outcome; how strongly U needs to be related to treatment to nullify the estimated effect?</p>
 </section></section>
 <section id="it-was-a-joy" class="title-slide slide level1 center" data-background-color="#17a091">
-<h1>It was a Joy!</h1>
+<h1>It was a joy!</h1>
 
 </section>
     </div>

@@ -31,18 +31,15 @@ callout-appearance: minimal
 
 * Sensitivity: what to do with untestable assumptions?
 
-* Feedback
-
 \newcommand\indep{\perp\!\!\!\perp}
 \newcommand\nindep{\not\!\perp\!\!\!\perp}
 
 ## Assessment feedback
 
-* Generally PS1 reports were good
 * $E[Y^T(D=C)]$ often estimable in RCT--also pay attention some POs can be observed (and estimable) under SUTVA!
 * Define concepts when asked (e.g. basis set)
 * Try to use equations we discussed in class as much as possible (e.g. $\delta_{naive}=\delta+selectionbias+differentialTEbias$) or precise language
-* Study the exercises!! (e.g. tests of the basis set)
+* Study the exercises! (e.g. tests of the basis set)
 * In your own DAG: justify missing arrows too, provide a formal analysis of your own DAG
 * Interpretation, interpretation, interpretation!
 
@@ -318,7 +315,7 @@ What is the range of $a$ if $5 \leq b \leq 7$
 
 |     |$E[Y^1|.]$ |	$E[Y^0|.]$ |	   	
 |-----|---------- |----------- |
-| $E[\delta_{naive}]=0.4$ | | |
+| $E[\delta_{naive}]=0.4$ | (assume $0 \leq Y \leq1$) | |
 | Treatment group |  $E[Y^1|D=1] = 0.7$ | <span style="color:red;">$E[Y^0|D=1] =??$</span> |
 | Control group | <span style="color:red;">$E[Y^1|D=0] =??$</span> |  $E[Y^0|D=0] = 0.3$ |
 
@@ -376,12 +373,22 @@ For **matching**, Rosenbaum (2002) proposed bounds based on a single sensitivity
 Under unconfoundedness, two observationally equivalent units with $X_i=X_j$ have the same propensity score. Now, let's assume a binary unobserved confounder $U$ affecting their odds of being treated
 
 $$
-\frac{1}{\Gamma} \leq \frac{\pi_t}{(1-\pi_t)}\frac{(1-\pi_c)}{\pi_c} \leq \Gamma
+\frac{1}{\Gamma} \leq \frac{\pi_i}{(1-\pi_i)}\frac{(1-\pi_j)}{\pi_j} \leq \Gamma
 $$
 
-* For example: $\Gamma = 2$ means that the $t$ unit has twice the odds of being treated unit $j$. 
+* For example: $\Gamma = 2$ means that the $i$ unit has twice the odds of being treated unit $j$. 
 
-* Rosenbaum bounds assume an *infinite* effect on the outcome (that is $R^2_{Y \sim U|X}=1$), but that can be relaxed (two parameters version with $\Gamma$ and $\Lambda$)
+* Rosenbaum bounds assume an *infinite* effect on the outcome (that is treatment assignment happens (within the bounds of $\Gamma$) so as to maximise observed treatment effect), but that can be relaxed (two parameters version with $\Gamma$ and $\Lambda$)
+
+## Example: Unemployment benefits and job search outcomes
+
+![](img/Dipetre-Gangl-1.png)
+
+(DiPetre and Gangl 2004)
+
+## Example: Rosenbaum bounds
+
+![](img/Dipetre-Gangl-2.png){width=50%}
 
 
 ## The OBV formula  {auto-animate=true}
@@ -430,7 +437,9 @@ $$
 
 ![](img/ovb_cinelli_hazlett.png){.fragment .center}
 
-## Extreme-value analysis (similar to Rosenbaum)
+(Exposure to violence $\rightarrow$ peace attitudes) 
+
+## Extreme-value analysis
 
 ![](img/PartialID-extreme-1.png){width=50%}
 
