@@ -34,15 +34,6 @@ callout-appearance: minimal
 \newcommand\indep{\perp\!\!\!\perp}
 \newcommand\nindep{\not\!\perp\!\!\!\perp}
 
-## Assessment feedback
-
-* $E[Y^T(D=C)]$ often estimable in RCT--also pay attention some POs can be observed (and estimable) under SUTVA!
-* Define concepts when asked (e.g. basis set)
-* Try to use equations we discussed in class as much as possible (e.g. $\delta_{naive}=\delta+selectionbias+differentialTEbias$) or precise language
-* Study the exercises! (e.g. tests of the basis set)
-* In your own DAG: justify missing arrows too, provide a formal analysis of your own DAG
-* Interpretation, interpretation, interpretation!
-
 # Final mechanism for causal ID: front door {background-color="#17a091"}
 
 ## Causes of effects vs effects of causes
@@ -151,6 +142,14 @@ Is the front-door criterion satisfied here if N is unobserved?
 
 **If** you can find a setup in Sociology where front-door criterion is convincingly satisfied, you have a top paper already!
 
+## Assessment feedback
+
+* $E[Y^T(D=C)]$ often estimable in RCT--also pay attention some POs can be observed (and estimable) under SUTVA!
+* Define concepts when asked (e.g. basis set)
+* Try to use equations we discussed in class as much as possible (e.g. $\delta_{naive}=\delta+selectionbias+differentialTEbias$) or precise language
+* Study the exercises! (e.g. tests of the basis set)
+* In your own DAG: justify missing arrows too, provide a formal analysis of your own DAG
+* Interpretation, interpretation, interpretation!
 
 # Course feedback
 
