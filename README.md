@@ -4,9 +4,10 @@ https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/878e110b6826d1829285ec
 
 https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/8e19a12395bd230e45641224b6ad0436452cdbd9/3.lecture3.blocking.bdoors.html
 
-
 https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/289375671da1922714ad736aca8d626f2ee19a6e/4.lecture4_iv.html
 
 https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/b7d7de3bd061d65ee145a20bcc7f5da13028b5d4/5.lecture5_panel.html
 
 https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/51c20ae6b5e19f64639cf5d41cad6037967d98d9/7.lecture7_rdd.html#/title-slide
+
+https://rawcdn.githack.com/aksoyundan/Causality_Hilary_26/791c3f46d86e95a95dd3ae5f6d884a46bb9b7edf/8.Lecture8_sensitivity.html#/title-slide
